@@ -22,6 +22,9 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('album-component', require('./components/AlbumComponent.vue').default);
+Vue.component('upload-component', require('./components/Upload.vue').default);
+Vue.component('artist-component', require('./components/ArtistComponent.vue').default);
+Vue.component('artistadmin-component', require('./components/ArtistAdminComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

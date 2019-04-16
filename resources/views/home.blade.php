@@ -21,5 +21,6 @@
     </div>
 </div>
 <br>
-<album-component></album-component>
+
+<artist-component :artist=$data></artist-component>
 @endsection

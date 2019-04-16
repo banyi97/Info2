@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
-class AdminController extends Controller
+class ArtistController extends Controller
 {
     public function __construct()
     {
@@ -20,7 +19,6 @@ class AdminController extends Controller
     public function index()
     {
         //
-        return view('admin');
     }
 
     /**
@@ -31,7 +29,7 @@ class AdminController extends Controller
     public function create()
     {
         //
-        return view('create');
+        return view('');
     }
 
     /**
@@ -43,8 +41,7 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         //
-        $path = $request->pic->store('image');
-        return $path;
+        
     }
 
     /**

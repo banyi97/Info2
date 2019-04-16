@@ -19,6 +19,7 @@
                         <input type="file" name="pic">
                         <button type="submit">Upload</button>
                     </form>
+                    <upload-component></upload-component>
                 </div>
             </div>
         </div>
