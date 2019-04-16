@@ -13,13 +13,16 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    You are logged in!
+                    Add page
+                    <form action="/admin/store" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="pic">
+                        <button type="submit">Upload</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <br>
-<album-component></album-component>
 @endsection

@@ -3,6 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
+    
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Dashboard</div>
@@ -13,13 +14,11 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    You are logged in!
+                    Admin page
                 </div>
             </div>
         </div>
     </div>
 </div>
 <br>
-<album-component></album-component>
 @endsection
