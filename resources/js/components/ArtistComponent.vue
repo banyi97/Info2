@@ -2,10 +2,10 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
+                <div class="card">                 
                     <div class="card-header">
                         <div class="row">                            
-                            <div><img :src="artist.pic" width="150" height="150"></div>
+                            <div><img :src="artist.pic_url" width="150" height="150"></div>
                             <div><h2>{{artist.name}}</h2></div>
                         </div>
                     </div> 
@@ -26,13 +26,15 @@ const axios = require('axios');
             }
         },
         mounted() {
-            
+            console.log(artist.name)
         },
-        props: {
-            artist:{
+        props: ['artist'],
+       // {        
+            
+        /*    artist:{
                 id: Number,
                 name: String,
-                pic: String,
+                pic_url: String,
                 albums : {
                     id: String,
                     title: String,
@@ -49,8 +51,8 @@ const axios = require('axios');
                         }
                     ]
                 }
-            }
-        },
+            } */
+      //  },
         methods: {
             testClick(){
                 

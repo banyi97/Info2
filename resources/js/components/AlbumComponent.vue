@@ -43,7 +43,7 @@ import {Howl, Howler} from 'howler';
         data: function () {
             return {
                 message : "Hello User",
-                albums:{
+                album:{
                     id:555234,
                     title: "The Source",
                     pic: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5e/Ayreon_-_The_Source.jpg/220px-Ayreon_-_The_Source.jpg",
@@ -96,7 +96,7 @@ import {Howl, Howler} from 'howler';
             }
         },
         props: {
-            album : {
+            albums : {
                 id: String,
                 title: String,
                 year: Number,

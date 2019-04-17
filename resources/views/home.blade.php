@@ -15,12 +15,17 @@
                     @endif
 
                     You are logged in!
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 <br>
+{{$name}} <br>
+{{$names}}<br>
+{{$albums}}<br>
+@json($albums)
+<test-component prop-message="{{$name}}" :prop-messages="{{$names}}" :albums="{{$albums}}"></test-component>
 
-<artist-component :artist=$data></artist-component>
 @endsection

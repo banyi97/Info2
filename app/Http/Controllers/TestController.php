@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TestController extends Controller
 {
@@ -13,7 +14,15 @@ class TestController extends Controller
      */
     public function index()
     {
-        //       
+        //  
+     //   return ['artist' => DB::table('artists')->get()];
+     // DB::table('albums')->insert(['artist_id' => 3, 'title' => 'The Source', 'pic_url' => "id", 'release_date' => 2017]);    
+        return view('home')->with(
+            [
+            'name' => 'Samantha', 
+            'names' => json_encode(['Name1', 'Name2']),
+            'albums'=> json_encode(DB::table('albums')->get()->where('id','1'))
+            ]);
     }
 
     /**
@@ -24,6 +33,9 @@ class TestController extends Controller
     public function create()
     {
         //
+        DB::table('albums')->insert(
+            ['artist_id' => 3, 'title' => 'The Source', 'pic_url' => "id", 'release_date' => 2017]
+        );
     }
 
     /**
