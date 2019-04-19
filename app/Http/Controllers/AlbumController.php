@@ -75,7 +75,7 @@ class AlbumController extends Controller
                     'url' => "URL helye",
                     'song_length' => $songs->length
                 ];
-                array_push($ret['songs'], $song);
+                $ret['songs'][] = $song;
             }
             break;
         }
