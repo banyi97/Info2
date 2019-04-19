@@ -40,6 +40,8 @@ class AlbumController extends Controller
     public function store(Request $request)
     {
         //
+
+        
     }
 
     /**
@@ -50,7 +52,39 @@ class AlbumController extends Controller
      */
     public function show($id)
     {
-        //
+        $query = DB::table('songs')
+            ->select( 'songs.*', 'albums.title as album_title', 'albums.release_date', 'artists.name', 'albums.pic_url')
+            ->join('albums', 'songs.album_id', '=', 'albums.id')
+            ->join('artists', 'artists.id', '=', 'albums.artist_id')
+            ->where('albums.id', $id)
+            ->orderby('number_of')
+            ->get();      
+         
+        $songs = [];
+        foreach($query as $item){
+            $song = [
+                'id' => $item->id,
+                'title' => $item->title,
+                'number_of' => $item->number_of,
+                'url' => "URL helye",
+                'song_length' => $item->length
+            ];
+            array_push($songs, $song);
+        }; 
+        $ret = [
+            'id' => $query[0]->album_id,
+            'title' => $query[0]->album_title,
+            'year' => $query[0]->release_date,
+            'pic' => $query[0]->pic_url,
+            'songs' => $songs
+        ]; 
+              
+        return view('admin')->with(
+            [              
+                'album'=> json_encode( $ret ),
+                'query' => json_encode( $query)
+            ]
+        );
     }
 
     /**

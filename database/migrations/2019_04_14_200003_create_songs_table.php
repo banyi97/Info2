@@ -14,12 +14,12 @@ class CreateSongsTable extends Migration
     public function up()
     {
         Schema::create('songs', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id');    
+            $table->unsignedBigInteger('album_id');
             $table->tinyInteger("number_of");
             $table->unsignedBigInteger('plays')->default(0);
-            $table->unsignedBigInteger('album_id');
             $table->string('title');
-            $table->time("length");
+            $table->unsignedSmallInteger("length");
             $table->timestamps();
 
             $table->foreign('album_id')->references('id')->on('albums');

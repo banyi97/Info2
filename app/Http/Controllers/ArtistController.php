@@ -53,6 +53,40 @@ class ArtistController extends Controller
     public function show($id)
     {
         //
+        $query = DB::table('artists')
+            ->select( 'songs.*','albums.title as album_title', 'albums.pic_url as album_pic', 'artists.name as artist_name', 'artists.pic_url as artist_pic', 'artists.id as artist_id')
+            ->join('albums', 'artists.id', '=', 'albums.artist_id')
+            ->join('songs', 'albums.id', '=', 'songs.album_id')
+            ->where('artists.id', $id)
+            ->orderby('songs.album_id')
+            ->orderby('songs.number_of')
+            ->get();           
+
+        $songs = [];
+        foreach($query as $item){
+            $song = [
+                'id' => $item->id,
+                'title' => $item->title,
+                'number_of' => $item->number_of,
+                'url' => "URL helye",
+                'song_length' => $item->length
+            ];
+            array_push($songs, $song);
+        };
+              
+        $ret = [
+            'id' => $query[0]->artist_id,
+            'title' => $query[0]->artist_name,
+            'pic' => $query[0]->artist_pic,
+            'albums' => $songs
+        ]; 
+                        
+        return view('admin')->with(
+            [              
+                'artist'=> json_encode( $ret ),
+                'query' => json_encode( $query)
+            ]
+        );
     }
 
     /**

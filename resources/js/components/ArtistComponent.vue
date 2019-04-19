@@ -10,7 +10,7 @@
                         </div>
                     </div> 
                     <div v-bind:key="item.id" v-for="item in artist.albums">
-                        <album-component :album="item"></album-component>
+                        <artist-component :album="item"></artist-component>
                     </div>
                 </div>
             </div>
@@ -26,24 +26,23 @@ const axios = require('axios');
             }
         },
         mounted() {
-            console.log(artist.name)
+            console.log("run")
         },
-        props: ['artist'],
-       // {        
-            
-        /*    artist:{
+        props: 
+        {        
+            artist:{
                 id: Number,
                 name: String,
                 pic_url: String,
-                albums : {
-                    id: String,
+                album : {
+                    id: Number,
                     title: String,
                     year: Number,
                     pic: String,
-                    artistName: String,
-                    artistId: Number,
+                    long: Number,
                     songs: [
                         {
+                            id: Number,
                             title:String,
                             number_of:Number,
                             url: String,
@@ -51,8 +50,8 @@ const axios = require('axios');
                         }
                     ]
                 }
-            } */
-      //  },
+            }
+        },
         methods: {
             testClick(){
                 

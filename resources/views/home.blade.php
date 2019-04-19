@@ -28,4 +28,8 @@
 @json($albums)
 <test-component prop-message="{{$name}}" :prop-messages="{{$names}}" :albums="{{$albums}}"></test-component>
 
+<album-component :album="{{$album}}"></album-component>
+
+<album-component :artist="{{$artist}}"></album-component>
+
 @endsection

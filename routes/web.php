@@ -27,3 +27,6 @@ Route::get('/admin/create','AdminController@create');
 Route::post('/admin/store','AdminController@store');
 Route::get('/admin/albums/?{albumId}', 'AdminController@showalbums');
 Route::get('/admin/artists/?{artistId}', 'AdminController@showartists');
+
+Route::get('/albums/show/{id}','AlbumController@show');
+Route::get('/artists/show/{id}', 'ArtistController@show');

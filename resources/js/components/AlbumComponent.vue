@@ -1,38 +1,37 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row">                            
-                            <div>
-                                <img :src="album.pic" width="150" height="150">
-                                </div>
-                            <div>
-                                <h6>{{album.year}}</h6>
-                                <h2>{{album.title}}</h2>
-                            </div>
-                        </div>
-                    </div> 
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Title</th>
-                                <th scope="col">Time</th>
-                            </tr>
-                            </thead>
-                        <tbody>
-                            <tr v-bind:key="item.id" v-for="item in album.songs">
-                                 <th scope="row">{{item.number_of}}</th>
-                                <td>{{item.title}}</td>
-                                <td>{{item.long}}</td>
-                            </tr>
-                        </tbody>                    
-                    </table>
+        <div class="row justify-content-left">
+            <div class="row">                            
+                <div>
+                    <img :src="'/img/img.jpg'" width="150" height="150">
+                </div>
+                <div>
+                    <h6>{{album.year}}</h6>
+                    <h2>{{album.title}}</h2>
+                    <div v-show="!isInArtist">
+                        <p>By: {{album.artist}}</p>
+                        <p>{{album.year}} * {{album.songs.length}} songs, {{ totalTime(album.songs) }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div> 
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Time</th>
+                </tr>
+            </thead>
+                <tbody>
+                    <tr v-bind:key="item.id" v-for="item in album.songs">
+                    <th scope="row"> <a href="">{{item.number_of}}</a> </th>
+                    <td>{{item.title}}</td>
+                    <td>{{convertToTime(item.song_length)}}</td>
+                </tr>
+            </tbody>                    
+        </table>
+       
     </div>
 </template>
 
@@ -42,79 +41,31 @@ import {Howl, Howler} from 'howler';
     export default {
         data: function () {
             return {
-                message : "Hello User",
-                album:{
-                    id:555234,
-                    title: "The Source",
-                    pic: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5e/Ayreon_-_The_Source.jpg/220px-Ayreon_-_The_Source.jpg",
-                    long: 56,
-                    artistName: "",
-                    artistId: 123,
-                    songs:[
-                        {
-                            title: "The Day That the World Breaks Down",
-                            number_of: 1,
-                            long: 12*60+31,
-                        },
-                        {
-                            title: "Sea of Machines",
-                            number_of: 2,
-                            long: 6.32
-                        },
-                        {
-                            title: "Everybody Dies",
-                            number_of: 3,
-                            long: 12*60+31,
-                        },
-                        {
-                            title: "Star of Sirrah",
-                            number_of: 4,
-                            long: 12*60+31,
-                        },
-                        {
-                            title: "All That Was",
-                            number_of: 5,
-                            long: 12*60+31,
-                        },
-                        {
-                            title: "Run! Apocalypse! Run!",
-                            number_of: 6,
-                            long: 12*60+31,
-                        },
-                        {
-                            title: "Condemned to Live",
-                            number_of: 7,
-                            long: 12*60+31,
-                        },
-                        {
-                            title: "Aquatic Race",
-                            number_of: 8,
-                            long: 12*60+31,
-                        },
-                    ]
-                }
-            }
+            }           
         },
         props: {
-            albums : {
-                id: String,
+            isInArtist: Boolean,
+            album : {
+                id: Number,
+                artist_id: Number,
+                artist: String,
                 title: String,
                 year: Number,
                 pic: String,
-                long: Number,
                 songs: [
                     {
+                        id: Number,
                         title:String,
                         number_of:Number,
                         url: String,
-                        long: Number
+                        song_length: String
                     }
                 ]
             }
         },
+        created: function () {
+        },
         mounted() {
-            
-            console.log('Component mounted.')
         },
         methods: {
             testClick(){
@@ -122,6 +73,40 @@ import {Howl, Howler} from 'howler';
                     src: ['/sound/sound.mp3']
                 });
                 sound.play();
+            },
+            convertToTime(length){
+                const hour = Math.floor(length/3600);
+                const min = Math.floor((length-hour*3600)/60);
+                const sec = Math.floor(length-(hour*3600+min*60));
+                if(hour === 0)
+                {
+                    if(min < 10 && sec < 10)
+                        return new String('0'+ min + ':' + '0' + sec);
+                    else if(min < 10 && sec > 9)
+                        return new String('0'+ min + ':' + sec);
+                    else if(min > 9 && sec < 10)
+                        return new String(min + ':' + '0' + sec);
+                    else 
+                        return new String(min + ':' + sec);
+                }
+                else
+                {
+                    if(min < 10 && sec < 10)
+                        return new String(hour + ':' + '0'+ min + ':' + '0' + sec);
+                    else if(min < 10 && sec > 9)
+                        return new String(hour + ':' + '0'+ min + ':' + sec);
+                    else if(min > 9 && sec < 10)
+                        return new String(hour + ':' + min + ':' + '0' + sec);
+                    else 
+                        return new String(hour + ':' + min + ':' + sec);
+                }
+            },
+            totalTime(songs){
+                var sec = 0;
+                songs.forEach(element => {
+                    sec += element.song_length;
+                });                           
+            return this.convertToTime(sec);   
             }
         }    
     }

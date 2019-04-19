@@ -23,6 +23,7 @@ class TestController extends Controller
             'names' => json_encode(['Name1', 'Name2']),
             'albums'=> json_encode(DB::table('albums')->get()->where('id','1'))
             ]);
+            
     }
 
     /**
