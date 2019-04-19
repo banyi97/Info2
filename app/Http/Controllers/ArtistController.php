@@ -73,12 +73,31 @@ class ArtistController extends Controller
             ];
             array_push($songs, $song);
         };
+
+        $albums = [];
+        foreach($songs as $item){
+            foreach($albums as $check){
+                if($item->id == $check->album_id){
+                    array_push($check, $item);
+                }
+            }
+
+            $album = [
+                'id' => $item->album_id,
+                'title' => $item->album_title,
+                'year' => $item->year,
+                'pic' => 'hello',
+                'songs' => []
+            ]; 
+            array_push($album->songs, $item);
+            array_push($albums, $album);
+        }
               
         $ret = [
             'id' => $query[0]->artist_id,
             'title' => $query[0]->artist_name,
             'pic' => $query[0]->artist_pic,
-            'albums' => $songs
+            'albums' => $albums
         ]; 
                         
         return view('admin')->with(
@@ -89,6 +108,7 @@ class ArtistController extends Controller
         );
     }
 
+    
     /**
      * Show the form for editing the specified resource.
      *

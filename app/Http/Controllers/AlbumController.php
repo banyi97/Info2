@@ -58,27 +58,28 @@ class AlbumController extends Controller
             ->join('artists', 'artists.id', '=', 'albums.artist_id')
             ->where('albums.id', $id)
             ->orderby('number_of')
-            ->get();      
-         
-        $songs = [];
+            ->get();         
+    
+        $ret = array();
         foreach($query as $item){
-            $song = [
-                'id' => $item->id,
-                'title' => $item->title,
-                'number_of' => $item->number_of,
-                'url' => "URL helye",
-                'song_length' => $item->length
-            ];
-            array_push($songs, $song);
-        }; 
-        $ret = [
-            'id' => $query[0]->album_id,
-            'title' => $query[0]->album_title,
-            'year' => $query[0]->release_date,
-            'pic' => $query[0]->pic_url,
-            'songs' => $songs
-        ]; 
-              
+            $ret['id'] = $item->album_id;
+            $ret['title'] = $item->album_title;
+            $ret['year'] = $item->release_date;
+            $ret['pic'] = $item->pic_url;
+            $ret['songs'] = array();
+            foreach($query as $songs){
+                $song = [
+                    'id' => $songs->id,
+                    'title' => $songs->title,
+                    'number_of' => $songs->number_of,
+                    'url' => "URL helye",
+                    'song_length' => $songs->length
+                ];
+                array_push($ret['songs'], $song);
+            }
+            break;
+        }
+
         return view('admin')->with(
             [              
                 'album'=> json_encode( $ret ),
