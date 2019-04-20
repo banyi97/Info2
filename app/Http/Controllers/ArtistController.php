@@ -54,60 +54,61 @@ class ArtistController extends Controller
     {
         //
         $query = DB::table('artists')
-            ->select( 'songs.*','albums.title as album_title', 'albums.pic_url as album_pic', 'artists.name as artist_name', 'artists.pic_url as artist_pic', 'artists.id as artist_id')
+            ->select( 'songs.*', 'artists.id as artist_id', 'artists.name as artist_name', 'artists.pic_url as artist_pic', 'albums.title as album_title', 'albums.pic_url as album_pic', 'albums.release_date as album_year' )
             ->join('albums', 'artists.id', '=', 'albums.artist_id')
             ->join('songs', 'albums.id', '=', 'songs.album_id')
             ->where('artists.id', $id)
             ->orderby('songs.album_id')
             ->orderby('songs.number_of')
             ->get();           
-
-        $songs = [];
+     
+        $ret = array();
         foreach($query as $item){
-            $song = [
-                'id' => $item->id,
-                'title' => $item->title,
-                'number_of' => $item->number_of,
-                'url' => "URL helye",
-                'song_length' => $item->length
-            ];
-            array_push($songs, $song);
-        };
-
-        $albums = [];
-        foreach($songs as $item){
-            foreach($albums as $check){
-                if($item->id == $check->album_id){
-                    array_push($check, $item);
+            $ret['id'] = $item->artist_id;
+            $ret['name'] = $item->artist_name;
+            $ret['pic_url'] = $item->artist_pic;
+            $ret['albums'] = array();
+            foreach($query as $albums){
+                if($this->checkElement($ret['albums'],$albums) == true)
+                    continue;
+                $album = [
+                    'id' => $albums->album_id,
+                    'title' => $albums->album_title,
+                    'year' => $albums->album_year,
+                    'pic' => $albums->album_pic,
+                    'songs' => array()
+                ];
+                foreach($query as $item){
+                    if(!$item->album_id == $album['id'])
+                        continue;
+                    $song = [
+                        'id' => $item->id,
+                        'title' => $item->title,
+                        'number_of' => $item->number_of,
+                        'url' => "URL helye",
+                        'song_length' => $item->length
+                    ];
+                    $album['songs'][] = $song;
                 }
+                $ret['albums'][] = $album;
             }
-
-            $album = [
-                'id' => $item->album_id,
-                'title' => $item->album_title,
-                'year' => $item->year,
-                'pic' => 'hello',
-                'songs' => []
-            ]; 
-            array_push($album->songs, $item);
-            array_push($albums, $album);
+            break;
         }
-              
-        $ret = [
-            'id' => $query[0]->artist_id,
-            'title' => $query[0]->artist_name,
-            'pic' => $query[0]->artist_pic,
-            'albums' => $albums
-        ]; 
-                        
+
         return view('admin')->with(
             [              
                 'artist'=> json_encode( $ret ),
-                'query' => json_encode( $query)
+                'query' => json_encode( $ret)
             ]
         );
     }
-
+    public function checkElement($array, $query){
+        foreach($array as $check){
+            if($check['id'] == $query->album_id)
+             return true;
+        }
+        return false;
+    }
     
     /**
      * Show the form for editing the specified resource.
