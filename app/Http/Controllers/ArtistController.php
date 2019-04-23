@@ -79,7 +79,7 @@ class ArtistController extends Controller
                     'songs' => array()
                 ];
                 foreach($query as $item){
-                    if(!$item->album_id == $album['id'])
+                    if($item->album_id != $album['id'])
                         continue;
                     $song = [
                         'id' => $item->id,

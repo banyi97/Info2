@@ -1,19 +1,13 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">                 
-                    <div class="card-header">
-                        <div class="row">                            
-                            <div><img :src="artist.pic_url" width="150" height="150"></div>
-                            <div><h2>{{artist.name}}</h2></div>
-                        </div>
-                    </div> 
-                    <div v-bind:key="item.id" v-for="item in artist.albums">
-                        <artist-component :album="item"></artist-component>
-                    </div>
-                </div>
+        <div class="row justify-content-center">           
+            <div class="row">                            
+                <div><img :src="artist.pic_url" width="150" height="150"></div>
+                <div><h2>{{artist.name}}</h2></div>
             </div>
+        </div> 
+        <div v-bind:key="item.id" v-for="item in artist.albums">
+            <album-component :album="item"></album-component>   
         </div>
     </div>
 </template>
@@ -34,7 +28,7 @@ const axios = require('axios');
                 id: Number,
                 name: String,
                 pic_url: String,
-                album : {
+                albums : {
                     id: Number,
                     title: String,
                     year: Number,
@@ -46,7 +40,7 @@ const axios = require('axios');
                             title:String,
                             number_of:Number,
                             url: String,
-                            long: Number
+                            song_length: Number
                         }
                     ]
                 }

@@ -1968,12 +1968,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1988,7 +1982,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       id: Number,
       name: String,
       pic_url: String,
-      album: {
+      albums: {
         id: Number,
         title: String,
         year: Number,
@@ -1999,7 +1993,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
           title: String,
           number_of: Number,
           url: String,
-          "long": Number
+          song_length: Number
         }]
       }
     }
@@ -40863,43 +40857,33 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-md-8" }, [
-        _c(
-          "div",
-          { staticClass: "card" },
-          [
-            _c("div", { staticClass: "card-header" }, [
-              _c("div", { staticClass: "row" }, [
-                _c("div", [
-                  _c("img", {
-                    attrs: {
-                      src: _vm.artist.pic_url,
-                      width: "150",
-                      height: "150"
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", [_c("h2", [_vm._v(_vm._s(_vm.artist.name))])])
-              ])
-            ]),
-            _vm._v(" "),
-            _vm._l(_vm.artist.albums, function(item) {
-              return _c(
-                "div",
-                { key: item.id },
-                [_c("artist-component", { attrs: { album: item } })],
-                1
-              )
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", [
+            _c("img", {
+              attrs: { src: _vm.artist.pic_url, width: "150", height: "150" }
             })
-          ],
-          2
+          ]),
+          _vm._v(" "),
+          _c("div", [_c("h2", [_vm._v(_vm._s(_vm.artist.name))])])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm._l(_vm.artist.albums, function(item) {
+        return _c(
+          "div",
+          { key: item.id },
+          [_c("album-component", { attrs: { album: item } })],
+          1
         )
-      ])
-    ])
-  ])
+      })
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
