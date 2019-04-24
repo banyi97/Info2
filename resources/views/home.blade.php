@@ -32,4 +32,6 @@
 
 <album-component :artist="{{$artist}}"></album-component>
 
+<artist-component :artist="{{$artist}}"></artist-component>
+
 @endsection

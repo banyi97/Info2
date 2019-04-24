@@ -15,8 +15,7 @@
                         </div>
                     @endif
                     Admin page
-                    {{$query}}
-                    <artist-component :artist="{{$artist}}"></artist-component>
+                    <albumadmin-component></albumadmin-component>
                 </div>
             </div>
         </div>

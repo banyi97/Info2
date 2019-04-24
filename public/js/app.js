@@ -1773,17 +1773,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    form: [{
-      id: Number,
-      title: String
-    }];
+    return {
+      createid: 0,
+      createform: []
+    };
   },
   mounted: function mounted() {
     console.log('Component mounted.');
   },
-  props: {}
+  props: {
+    forms: []
+  },
+  methods: {
+    addNew: function addNew() {
+      var q = {
+        id: this.createid++,
+        title: ''
+      };
+      this.createform.push(q);
+    },
+    removeRow: function removeRow(index) {
+      this.createform.splice(index, 1);
+    }
+  }
 });
 
 /***/ }),
@@ -2089,25 +2107,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    propMessage: String,
-    propMessages: [],
-    albums: {
+    formElem: {
       id: Number,
-      artist_id: Number,
-      title: String,
-      release_date: String
+      title: String
     }
   },
   mounted: function mounted() {
@@ -40628,32 +40632,38 @@ var render = function() {
     _c(
       "div",
       { staticClass: "row justify-content-center" },
-      _vm._l(_vm.form, function(item) {
-        return _c("div", { key: item.id }, [
-          _c("input", {
-            directives: [
+      _vm._l(_vm.createform, function(item, index) {
+        return _c(
+          "div",
+          { key: item.id },
+          [
+            _vm._v(
+              "  \n           Index: " +
+                _vm._s(index) +
+                "           \n           "
+            ),
+            _c("test-component", { attrs: { formElem: item } }),
+            _c("br"),
+            _vm._v(" "),
+            _c(
+              "button",
               {
-                name: "model",
-                rawName: "v-model",
-                value: item.title,
-                expression: "item.title"
-              }
-            ],
-            attrs: { type: "text" },
-            domProps: { value: item.title },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+                on: {
+                  click: function($event) {
+                    return _vm.removeRow(index)
+                  }
                 }
-                _vm.$set(item, "title", $event.target.value)
-              }
-            }
-          })
-        ])
+              },
+              [_vm._v(" Remove")]
+            )
+          ],
+          1
+        )
       }),
       0
-    )
+    ),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.addNew } }, [_vm._v("Add new line")])
   ])
 }
 var staticRenderFns = []
@@ -41051,38 +41061,28 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("Example Component")
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _vm._v(
-              "\n                    Property: " + _vm._s(_vm.propMessage) + " "
-            ),
-            _c("br"),
-            _vm._v(
-              "\n                    Message 1: " +
-                _vm._s(_vm.propMessages[0]) +
-                " "
-            ),
-            _c("br"),
-            _vm._v(
-              "\n                    Message 2: " +
-                _vm._s(_vm.propMessages[1]) +
-                " "
-            ),
-            _c("br"),
-            _vm._v(
-              "\n                    Number: " +
-                _vm._s(_vm.albums[0].title) +
-                " "
-            ),
-            _c("br")
-          ])
-        ])
-      ])
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.formElem.title,
+            expression: "formElem.title"
+          }
+        ],
+        attrs: { type: "text" },
+        domProps: { value: _vm.formElem.title },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.formElem, "title", $event.target.value)
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c("p", [_vm._v(_vm._s(_vm.formElem.title))])
     ])
   ])
 }
