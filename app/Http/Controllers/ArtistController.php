@@ -66,7 +66,7 @@ class ArtistController extends Controller
         foreach($query as $item){
             $ret['id'] = $item->artist_id;
             $ret['name'] = $item->artist_name;
-            $ret['pic_url'] = $item->artist_pic;
+            $ret['pic_url'] = 'transience.jpg';//$item->artist_pic;
             $ret['albums'] = array();
             foreach($query as $albums){
                 if($this->checkElement($ret['albums'],$albums) == true)
@@ -75,7 +75,7 @@ class ArtistController extends Controller
                     'id' => $albums->album_id,
                     'title' => $albums->album_title,
                     'year' => $albums->album_year,
-                    'pic' => $albums->album_pic,
+                    'pic_url' => $albums->album_pic,
                     'songs' => array()
                 ];
                 foreach($query as $item){

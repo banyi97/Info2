@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">           
+        <div class="row justify-content-left">           
             <div class="row">                            
-                <div><img :src="artist.pic_url" width="150" height="150"></div>
+                <div><img :src="'/img/artists/' + artist.pic_url" width="150" height="150"></div>
                 <div><h2>{{artist.name}}</h2></div>
             </div>
         </div> 
@@ -20,7 +20,7 @@ const axios = require('axios');
             }
         },
         mounted() {
-            console.log("run")
+            console.log('start')
         },
         props: 
         {        
@@ -50,6 +50,6 @@ const axios = require('axios');
             testClick(){
                 
             }
-        }    
+        }   
     }
 </script>

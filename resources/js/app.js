@@ -22,6 +22,7 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('album-component', require('./components/AlbumComponent.vue').default);
+Vue.component('albumadmin-component', require('./components/AlbumAdminComponent.vue').default);
 Vue.component('upload-component', require('./components/Upload.vue').default);
 Vue.component('artist-component', require('./components/ArtistComponent.vue').default);
 Vue.component('artistadmin-component', require('./components/ArtistAdminComponent.vue').default);
