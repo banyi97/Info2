@@ -21,7 +21,7 @@ class CreateAlbumsTable extends Migration
             $table->year("release_date");     
             $table->timestamps(); 
 
-            $table->foreign('artist_id')->references('id')->on('artists'); 
+            $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade');
         });
     }
     /**

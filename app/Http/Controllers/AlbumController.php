@@ -199,6 +199,9 @@ class AlbumController extends Controller
     public function destroy($id)
     {
         //
-        return view('artist.show');
+        
+        DB::table('albums')->where('albums.id', '=', $id)->delete();
+        
+        return response()->json(['error' => 'Error'], 200);
     }
 }

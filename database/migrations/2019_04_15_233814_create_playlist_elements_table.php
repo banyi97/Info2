@@ -20,8 +20,8 @@ class CreatePlaylistElementsTable extends Migration
             $table->tinyInteger('number_of');
             $table->timestamps();
 
-            $table->foreign('song_id')->references('id')->on('songs');
-            $table->foreign('playlist_id')->references('id')->on('playlists');
+            $table->foreign('song_id')->references('id')->on('songs')->onDelete('cascade');
+            $table->foreign('playlist_id')->references('id')->on('playlists')->onDelete('cascade');
         });
     }
 

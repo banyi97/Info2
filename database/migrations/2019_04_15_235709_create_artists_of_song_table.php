@@ -19,8 +19,8 @@ class CreateArtistsOfSongTable extends Migration
             $table->unsignedBigInteger('song_id');
             $table->timestamps();
 
-            $table->foreign('artist_id')->references('id')->on('artists');
-            $table->foreign('song_id')->references('id')->on('songs');
+            $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade');
+            $table->foreign('song_id')->references('id')->on('songs')->onDelete('cascade');
         });
     }
 

@@ -30,12 +30,14 @@
             </tbody>                    
         </table>
         <a :href="'/albums/' + album.id + '/edit'">Edit</a>
+        <button @click="deleteAlbum">Delete</button>
     </div>
 </template>
 
 <script>
 //const {Howl, Howler} = require('howler');
-import {Howl, Howler} from 'howler';   
+import {Howl, Howler} from 'howler'; 
+import axios from 'axios';  
     export default {
         data: function () {
             return {
@@ -106,6 +108,13 @@ import {Howl, Howler} from 'howler';
                 });                           
             return this.convertToTime(sec);   
             },
+            deleteAlbum(){
+                axios.delete('/albums/' + this.album.id).then(response => {
+                   if (response.data.success) {
+                     window.location.href = "/albums/" + this.album.artist_id;
+                   }
+                });
+            }
         },
         computed:{
 

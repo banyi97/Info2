@@ -1917,6 +1917,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var howler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! howler */ "./node_modules/howler/dist/howler.js");
 /* harmony import */ var howler__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(howler__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+//
 //
 //
 //
@@ -1953,6 +1956,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //const {Howl, Howler} = require('howler');
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2002,6 +2006,15 @@ __webpack_require__.r(__webpack_exports__);
         sec += element.song_length;
       });
       return this.convertToTime(sec);
+    },
+    deleteAlbum: function deleteAlbum() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]('/albums/' + this.album.id).then(function (response) {
+        if (response.data.success) {
+          window.location.href = "/albums/" + _this.album.artist_id;
+        }
+      });
     }
   },
   computed: {}
@@ -41040,7 +41053,9 @@ var render = function() {
     _vm._v(" "),
     _c("a", { attrs: { href: "/albums/" + _vm.album.id + "/edit" } }, [
       _vm._v("Edit")
-    ])
+    ]),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.deleteAlbum } }, [_vm._v("Delete")])
   ])
 }
 var staticRenderFns = [
