@@ -11,8 +11,6 @@
 |
 */
 
-Route::get('/test','TestController@index');
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -28,5 +26,18 @@ Route::post('/admin/store','AdminController@store');
 Route::get('/admin/albums/?{albumId}', 'AdminController@showalbums');
 Route::get('/admin/artists/?{artistId}', 'AdminController@showartists');
 
-Route::get('/albums/show/{id}','AlbumController@show');
-Route::get('/artists/show/{id}', 'ArtistController@show');
+Route::get('/artists','ArtistController@index');
+Route::get('/artists/create','ArtistController@create');
+Route::post('/artists','ArtistController@store');
+Route::get('/artists/{id}','ArtistController@show');
+Route::get('/artists/{id}/edit','ArtistController@edit');
+Route::put('/artists/{id}','ArtistController@update');
+Route::delete('/artists/{id}','ArtistController@destroy');
+
+Route::get('/albums','AlbumController@index');
+Route::get('/albums/create/{artistid}','AlbumController@create');
+Route::post('/albums','AlbumController@store');
+Route::get('/albums/{id}','AlbumController@show');
+Route::get('/albums/{id}/edit','AlbumController@edit');
+Route::put('/albums/{id}','AlbumController@update');
+Route::delete('/albums/{id}','AlbumController@destroy');

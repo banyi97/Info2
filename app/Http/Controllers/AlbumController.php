@@ -26,9 +26,16 @@ class AlbumController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($artistid)
     {
         //
+        $ret = array();
+        $ret['artistid'] = $artistid; 
+        return view('album.create')->with(
+            [
+                'artist' => json_encode( $ret )
+            ]
+        );
     }
 
     /**
@@ -40,7 +47,20 @@ class AlbumController extends Controller
     public function store(Request $request)
     {
         //
+        $ret = $request->album['songs'][0]['title'];
+        if(isset($request->album)){
+            DB::table('albums')->insert(
+                [
+                    'title' => $request->album['title'],
+                    'release_date' => $request->album['year'],
+                    'artist_id' => $request->album['artistid']
+                ]
+            );
+        }
+        
 
+      //  foreach($request->album->songs as $song){       }   
+        return response()->json(['success' => $ret], 200);
         
     }
 
@@ -53,7 +73,7 @@ class AlbumController extends Controller
     public function show($id)
     {
         $query = DB::table('songs')
-            ->select( 'songs.*', 'albums.title as album_title', 'albums.release_date', 'artists.name', 'albums.pic_url')
+            ->select( 'songs.*', 'albums.title as album_title', 'albums.id as album_id' , 'albums.release_date', 'albums.pic_url', 'artists.name as artist_name', 'artists.id as artist_id')
             ->join('albums', 'songs.album_id', '=', 'albums.id')
             ->join('artists', 'artists.id', '=', 'albums.artist_id')
             ->where('albums.id', $id)
@@ -63,6 +83,8 @@ class AlbumController extends Controller
         $ret = array();
         foreach($query as $item){
             $ret['id'] = $item->album_id;
+            $ret['artist_id'] = $item->artist_id;
+            $ret['artist'] = $item->artist_name;
             $ret['title'] = $item->album_title;
             $ret['year'] = $item->release_date;
             $ret['pic'] = $item->pic_url;
@@ -79,11 +101,10 @@ class AlbumController extends Controller
             }
             break;
         }
-
-        return view('admin')->with(
+        
+        return view('album.show')->with(
             [              
-                'album'=> json_encode( $ret ),
-                'query' => json_encode( $query)
+                'album'=> json_encode( $ret )
             ]
         );
     }
@@ -97,6 +118,7 @@ class AlbumController extends Controller
     public function edit($id)
     {
         //
+        return view('album.edit');
     }
 
     /**
@@ -109,6 +131,7 @@ class AlbumController extends Controller
     public function update(Request $request, $id)
     {
         //
+        return view('album.show');
     }
 
     /**
@@ -120,5 +143,6 @@ class AlbumController extends Controller
     public function destroy($id)
     {
         //
+        return view('artist.show');
     }
 }

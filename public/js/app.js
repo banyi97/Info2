@@ -1763,6 +1763,8 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -1777,18 +1779,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      createid: 0,
-      createform: []
+      album: {
+        title: '',
+        artistid: null,
+        songs: [],
+        pic: '/img/albums/nopic.png',
+        year: null
+      },
+      actualYear: null,
+      createid: 0
     };
+  },
+  created: function created() {
+    var date = new Date();
+    this.actualYear = date.getFullYear();
+    this.album.year = date.getFullYear();
+    this.album.artistid = this.artist.artistid;
   },
   mounted: function mounted() {
     console.log('Component mounted.');
   },
   props: {
-    forms: []
+    artist: {
+      artistid: Number,
+      artistname: String
+    }
   },
   methods: {
     addNew: function addNew() {
@@ -1796,10 +1845,37 @@ __webpack_require__.r(__webpack_exports__);
         id: this.createid++,
         title: ''
       };
-      this.createform.push(q);
+      this.album.songs.push(q);
     },
     removeRow: function removeRow(index) {
-      this.createform.splice(index, 1);
+      this.album.songs.splice(index, 1);
+    },
+    onImageChange: function onImageChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage: function createImage(file) {
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = function (e) {
+        vm.album.pic = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    },
+    returnToArtist: function returnToArtist() {
+      window.location.href = "/artists/" + this.artist.artistid;
+    },
+    createAlbum: function createAlbum() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/albums', {
+        album: this.album
+      }).then(function (response) {
+        if (response.data.success) {
+          alert(response.data.success);
+        }
+      });
     }
   }
 });
@@ -2005,6 +2081,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -40629,44 +40706,184 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      { staticClass: "row justify-content-center" },
-      _vm._l(_vm.createform, function(item, index) {
-        return _c(
-          "div",
-          { key: item.id },
-          [
-            _vm._v(
-              "  \n           Index: " +
-                _vm._s(index) +
-                "           \n           "
-            ),
-            _c("test-component", { attrs: { formElem: item } }),
-            _c("br"),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
+    _c("div", { staticClass: "row justify-content-left" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", [
+          _vm.album.pic
+            ? _c("img", {
+                staticClass: "img-responsive",
+                attrs: { src: _vm.album.pic, height: "200", width: "200" }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _c("input", {
+            attrs: {
+              type: "file",
+              name: "pic",
+              id: "image",
+              accept: "image/jpeg, image/png"
+            },
+            on: { change: _vm.onImageChange }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", [
+          _c("div", [
+            _c("h3", [
+              _vm._v("Title: "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.album.title,
+                    expression: "album.title"
+                  }
+                ],
+                attrs: { type: "text" },
+                domProps: { value: _vm.album.title },
                 on: {
-                  click: function($event) {
-                    return _vm.removeRow(index)
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.album, "title", $event.target.value)
                   }
                 }
-              },
-              [_vm._v(" Remove")]
-            )
-          ],
-          1
+              })
+            ]),
+            _vm._v(" "),
+            _c("h6", [
+              _vm._v("Year: "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.album.year,
+                    expression: "album.year"
+                  }
+                ],
+                attrs: {
+                  type: "number",
+                  min: "1900",
+                  max: _vm.actualYear,
+                  step: "1"
+                },
+                domProps: { value: _vm.album.year },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.album, "year", $event.target.value)
+                  }
+                }
+              })
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.album.songs, function(item, index) {
+            return _c("tr", { key: item.id }, [
+              _c("th", { attrs: { scope: "row" } }, [
+                _vm._v(" " + _vm._s(index + 1) + " ")
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: item.title,
+                      expression: "item.title"
+                    }
+                  ],
+                  attrs: { type: "text" },
+                  domProps: { value: item.title },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(item, "title", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _vm._m(1, true),
+              _vm._v(" "),
+              _c("td", [_vm._v(" Remove ")]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.removeRow(index)
+                      }
+                    }
+                  },
+                  [_vm._v(" Remove ")]
+                )
+              ])
+            ])
+          }),
+          0
         )
-      }),
-      0
-    ),
+      ])
+    ]),
     _vm._v(" "),
-    _c("button", { on: { click: _vm.addNew } }, [_vm._v("Add new line")])
+    _c("button", { on: { click: _vm.addNew } }, [_vm._v("Add new song")]),
+    _vm._v(" "),
+    _c("div", [
+      _c("button", { on: { click: _vm.createAlbum } }, [_vm._v("Create")]),
+      _vm._v(" "),
+      _c("button", { on: { click: _vm.returnToArtist } }, [
+        _vm._v("Return to Artist")
+      ])
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Title")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("File")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Time")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Remove")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("input", { attrs: { type: "file", name: "", id: "" } })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -40695,8 +40912,8 @@ var render = function() {
           _c("img", {
             attrs: {
               src: "/img/albums/" + _vm.album.pic,
-              width: "150",
-              height: "150"
+              width: "200",
+              height: "200"
             }
           })
         ]),
@@ -40704,7 +40921,11 @@ var render = function() {
         _c("div", [
           _c("h6", [_vm._v(_vm._s(_vm.album.year))]),
           _vm._v(" "),
-          _c("h2", [_vm._v(_vm._s(_vm.album.title))]),
+          _c("h2", [
+            _c("a", { attrs: { href: "/albums/" + _vm.album.id } }, [
+              _vm._v(_vm._s(_vm.album.title))
+            ])
+          ]),
           _vm._v(" "),
           _c(
             "div",
@@ -40719,7 +40940,14 @@ var render = function() {
               ]
             },
             [
-              _c("p", [_vm._v("By: " + _vm._s(_vm.album.artist))]),
+              _c("p", [
+                _vm._v("By: "),
+                _c(
+                  "a",
+                  { attrs: { href: "/artists/" + _vm.album.artist_id } },
+                  [_vm._v(_vm._s(_vm.album.artist))]
+                )
+              ]),
               _vm._v(" "),
               _c("p", [
                 _vm._v(
@@ -40985,7 +41213,11 @@ var render = function() {
           [_c("album-component", { attrs: { album: item } })],
           1
         )
-      })
+      }),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "/albums/create/" + _vm.artist.id } }, [
+        _vm._v("Create new Album")
+      ])
     ],
     2
   )

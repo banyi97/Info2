@@ -2,12 +2,12 @@
     <div class="container">
         <div class="row justify-content-left">
             <div class="row">                            
-                <div><img :src="'/img/albums/' + album.pic" width="150" height="150"></div>
+                <div><img :src="'/img/albums/' + album.pic" width="200" height="200"></div>
                 <div>
                     <h6>{{album.year}}</h6>
-                    <h2>{{album.title}}</h2>
+                    <h2><a :href=" '/albums/' + album.id ">{{album.title}}</a></h2>
                     <div v-show="!isInArtist">
-                        <p>By: {{album.artist}}</p>
+                        <p>By: <a :href=" '/artists/' + album.artist_id">{{album.artist}}</a> </p>
                         <p>{{album.year}} * {{album.songs.length}} songs, {{ totalTime(album.songs) }}</p>
                     </div>
                 </div>

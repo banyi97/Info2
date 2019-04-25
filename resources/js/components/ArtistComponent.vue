@@ -9,6 +9,7 @@
         <div v-bind:key="item.id" v-for="item in artist.albums">
             <album-component :album="item"></album-component>   
         </div>
+        <a :href="'/albums/create/' + artist.id ">Create new Album</a>
     </div>
 </template>
 

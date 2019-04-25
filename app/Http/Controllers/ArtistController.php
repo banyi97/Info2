@@ -19,6 +19,8 @@ class ArtistController extends Controller
     public function index()
     {
         //
+
+        return view('artist.index');
     }
 
     /**
@@ -29,7 +31,7 @@ class ArtistController extends Controller
     public function create()
     {
         //
-        return view('');
+        return view('album.create');
     }
 
     /**
@@ -41,7 +43,8 @@ class ArtistController extends Controller
     public function store(Request $request)
     {
         //
-        
+        foreach($request as $song)
+        return view('album.show')->with();
     }
 
     /**
@@ -66,7 +69,7 @@ class ArtistController extends Controller
         foreach($query as $item){
             $ret['id'] = $item->artist_id;
             $ret['name'] = $item->artist_name;
-            $ret['pic_url'] = 'transience.jpg';//$item->artist_pic;
+            $ret['pic_url'] = $item->artist_pic;
             $ret['albums'] = array();
             foreach($query as $albums){
                 if($this->checkElement($ret['albums'],$albums) == true)
@@ -95,14 +98,13 @@ class ArtistController extends Controller
             break;
         }
 
-        return view('admin')->with(
+        return view('artist.show')->with(
             [              
-                'artist'=> json_encode( $ret ),
-                'query' => json_encode( $ret)
+                'artist'=> json_encode( $ret )
             ]
         );
     }
-    public function checkElement($array, $query){
+    private function checkElement($array, $query){
         foreach($array as $check){
             if($check['id'] == $query->album_id)
              return true;
@@ -119,6 +121,7 @@ class ArtistController extends Controller
     public function edit($id)
     {
         //
+        return view('artist.edit');
     }
 
     /**
@@ -131,6 +134,7 @@ class ArtistController extends Controller
     public function update(Request $request, $id)
     {
         //
+        return view('artist.show');
     }
 
     /**
@@ -142,5 +146,6 @@ class ArtistController extends Controller
     public function destroy($id)
     {
         //
+        return view('artist.show');
     }
 }
