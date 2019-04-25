@@ -3,8 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        This is the index page
-        
+        <albumadmin-component :artist="{{$artist}}"></albumadmin-component>
     </div>
 </div>
 <br>

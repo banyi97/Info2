@@ -47,20 +47,37 @@ class AlbumController extends Controller
     public function store(Request $request)
     {
         //
-        $ret = $request->album['songs'][0]['title'];
+       // $ret = $request->album['songs'][0]['title'];
         if(isset($request->album)){
-            DB::table('albums')->insert(
+            if(DB::table('albums')->insert(
                 [
                     'title' => $request->album['title'],
                     'release_date' => $request->album['year'],
                     'artist_id' => $request->album['artistid']
                 ]
-            );
+            )){
+                $id = DB::table('albums')
+                        ->select('id')
+                        ->where([
+                            ['albums.title', '=', $request->album['title']],
+                            ['albums.release_date', '=', $request->album['year']],
+                            ['albums.artist_id', '=', $request->album['artistid']]
+                        ])
+                        ->get();                         
+                foreach($request->album['songs'] as $song){
+                    DB::table('songs')->insert(
+                        [
+                            'title' => $song['title'],
+                            'number_of' => $song['number_of'],
+                            'album_id' => $id[0]->id,
+                            'length' => 555
+                        ]);
+                }       
+            }         
         }
         
-
       //  foreach($request->album->songs as $song){       }   
-        return response()->json(['success' => $ret], 200);
+        return response()->json(['success' => $id[0]->id], 200);
         
     }
 
@@ -118,7 +135,46 @@ class AlbumController extends Controller
     public function edit($id)
     {
         //
-        return view('album.edit');
+        $query = DB::table('songs')
+            ->select( 'songs.*', 'albums.title as album_title', 'albums.id as album_id' , 'albums.release_date', 'albums.pic_url', 'artists.name as artist_name', 'artists.id as artist_id')
+            ->join('albums', 'songs.album_id', '=', 'albums.id')
+            ->join('artists', 'artists.id', '=', 'albums.artist_id')
+            ->where('albums.id', $id)
+            ->orderby('number_of')
+            ->get();     
+
+            $ret = array();
+            foreach($query as $item){
+                $ret['id'] = $item->album_id;
+                $ret['artist_id'] = $item->artist_id;
+                $ret['artist'] = $item->artist_name;
+                $ret['title'] = $item->album_title;
+                $ret['year'] = $item->release_date;
+                $ret['pic'] = $item->pic_url;
+                $ret['songs'] = array();
+                foreach($query as $songs){
+                    $song = [
+                        'id' => $songs->id,
+                        'title' => $songs->title,
+                        'number_of' => $songs->number_of,
+                        'url' => "URL helye",
+                        'song_length' => $songs->length
+                    ];
+                    $ret['songs'][] = $song;
+                }
+                break;
+            }
+
+            $artist = array();
+            $artist['album'] = $ret;
+            $artist['ismodify'] = true;
+            $artist['artistid'] = $ret['artist_id'];
+            
+            return view('album.edit')->with(
+                [              
+                    'artist'=> json_encode( $artist )
+                ]
+            );
     }
 
     /**

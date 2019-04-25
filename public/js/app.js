@@ -1809,6 +1809,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1829,14 +1830,32 @@ __webpack_require__.r(__webpack_exports__);
     this.actualYear = date.getFullYear();
     this.album.year = date.getFullYear();
     this.album.artistid = this.artist.artistid;
+
+    if (this.artist.ismodify) {
+      this.album = this.artist.album;
+    } //    this.album = this.artist.album;
+
   },
   mounted: function mounted() {
     console.log('Component mounted.');
   },
   props: {
     artist: {
+      ismodify: Boolean,
       artistid: Number,
-      artistname: String
+      artistname: String,
+      album: {
+        title: String,
+        artistid: Number,
+        songs: [{
+          id: Number,
+          title: String,
+          number_of: Number,
+          song_length: Number
+        }],
+        pic: String,
+        year: Number
+      }
     }
   },
   methods: {
@@ -1869,14 +1888,19 @@ __webpack_require__.r(__webpack_exports__);
       window.location.href = "/artists/" + this.artist.artistid;
     },
     createAlbum: function createAlbum() {
+      for (var i = 0; i < this.album.songs.length; i++) {
+        this.album.songs[i].number_of = i + 1;
+      }
+
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/albums', {
         album: this.album
       }).then(function (response) {
         if (response.data.success) {
-          alert(response.data.success);
+          window.location.href = "/albums/" + response.data.success;
         }
       });
-    }
+    },
+    editAlbum: function editAlbum() {}
   }
 });
 
@@ -40848,7 +40872,37 @@ var render = function() {
     _c("button", { on: { click: _vm.addNew } }, [_vm._v("Add new song")]),
     _vm._v(" "),
     _c("div", [
-      _c("button", { on: { click: _vm.createAlbum } }, [_vm._v("Create")]),
+      _c(
+        "button",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: !_vm.artist.ismodify,
+              expression: "!artist.ismodify"
+            }
+          ],
+          on: { click: _vm.createAlbum }
+        },
+        [_vm._v("Create")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.artist.ismodify,
+              expression: "artist.ismodify"
+            }
+          ],
+          on: { click: _vm.editAlbum }
+        },
+        [_vm._v("Edit")]
+      ),
       _vm._v(" "),
       _c("button", { on: { click: _vm.returnToArtist } }, [
         _vm._v("Return to Artist")
@@ -40982,6 +41036,10 @@ var render = function() {
         }),
         0
       )
+    ]),
+    _vm._v(" "),
+    _c("a", { attrs: { href: "/albums/" + _vm.album.id + "/edit" } }, [
+      _vm._v("Edit")
     ])
   ])
 }

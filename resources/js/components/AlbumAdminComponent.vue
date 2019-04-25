@@ -36,7 +36,8 @@
         </div>
         <button @click="addNew">Add new song</button>
         <div>
-            <button @click="createAlbum">Create</button>
+            <button v-show="!artist.ismodify" @click="createAlbum">Create</button>
+            <button v-show="artist.ismodify" @click="editAlbum">Edit</button>
             <button @click="returnToArtist">Return to Artist</button>
         </div>
     </div>
@@ -62,15 +63,34 @@ import axios from 'axios';
             let date = new Date();
             this.actualYear = date.getFullYear();
             this.album.year = date.getFullYear();
-            this.album.artistid = this.artist.artistid;
+            this.album.artistid = this.artist.artistid;    
+            
+            if(this.artist.ismodify){
+                this.album = this.artist.album;
+            }
+
+        //    this.album = this.artist.album;
         },
         mounted() {
             console.log('Component mounted.')
         },
         props: {
             artist:{
+                ismodify: Boolean,
                 artistid: Number,
-                artistname: String,
+                artistname: String,            
+                album :{
+                    title : String,
+                    artistid: Number,
+                    songs: [{
+                        id: Number,
+                        title: String,
+                        number_of: Number,
+                        song_length: Number,
+                    }],
+                    pic : String,
+                    year : Number,
+                }
             }
         },
         methods:{
@@ -102,12 +122,19 @@ import axios from 'axios';
                 window.location.href = "/artists/" + this.artist.artistid;
             },
             createAlbum(){
+                for(let i = 0; i < this.album.songs.length; i++){
+                    this.album.songs[i].number_of = i + 1;
+                }
+
                 axios.post('/albums',{album: this.album}).then(response => {
                    if (response.data.success) {
-                     alert(response.data.success);
+                     window.location.href = "/albums/" + response.data.success;
                    }
-                });
-            }
+                });              
+            },
+            editAlbum(){
+                
+            }    
         }
     }
 </script>

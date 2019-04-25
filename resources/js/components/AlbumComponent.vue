@@ -29,7 +29,7 @@
                 </tr>
             </tbody>                    
         </table>
-       
+        <a :href="'/albums/' + album.id + '/edit'">Edit</a>
     </div>
 </template>
 
@@ -105,7 +105,7 @@ import {Howl, Howler} from 'howler';
                     sec += element.song_length;
                 });                           
             return this.convertToTime(sec);   
-            }
+            },
         },
         computed:{
 
