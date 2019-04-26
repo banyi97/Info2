@@ -22,16 +22,5 @@
     </div>
 </div>
 <br>
-{{$name}} <br>
-{{$names}}<br>
-{{$albums}}<br>
-@json($albums)
-<test-component prop-message="{{$name}}" :prop-messages="{{$names}}" :albums="{{$albums}}"></test-component>
-
-<album-component :album="{{$album}}"></album-component>
-
-<album-component :artist="{{$artist}}"></album-component>
-
-<artist-component :artist="{{$artist}}"></artist-component>
 
 @endsection

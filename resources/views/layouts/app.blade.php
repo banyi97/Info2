@@ -20,7 +20,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="app">     
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -72,9 +72,26 @@
             </div>
         </nav>
 
+        @guest
+
         <main class="py-4">
-            @yield('content')
+                @yield('content')
         </main>
+
+        @else
+
+        <div class="row">
+            <div class="col-2">
+                <navmenu-component></navmenu-component>
+            </div>
+            <div class="col-10">
+                <main class="py-4">
+                        @yield('content')
+                </main>
+            </div>
+        </div>
+
+        @endguest
     </div>
 </body>
 </html>

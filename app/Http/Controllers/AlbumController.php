@@ -200,7 +200,9 @@ class AlbumController extends Controller
     {
         //
         
-        DB::table('albums')->where('albums.id', '=', $id)->delete();
+        if(DB::table('albums')->where('albums.id', '=', $id)->delete()){
+            return response()->json(['error' => 'Ok'], 200);
+        }
         
         return response()->json(['error' => 'Error'], 200);
     }

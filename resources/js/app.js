@@ -27,6 +27,8 @@ Vue.component('upload-component', require('./components/Upload.vue').default);
 Vue.component('artist-component', require('./components/ArtistComponent.vue').default);
 Vue.component('artistadmin-component', require('./components/ArtistAdminComponent.vue').default);
 Vue.component('test-component', require('./components/TestComponent.vue').default);
+Vue.component('navmenu-component', require('./components/NavMenuComponent.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
