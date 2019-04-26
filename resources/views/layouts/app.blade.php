@@ -81,7 +81,7 @@
         @else
 
         <div class="row">
-            <div class="col-2">
+            <div class="col-2" >
                 <navmenu-component></navmenu-component>
             </div>
             <div class="col-10">
@@ -90,7 +90,9 @@
                 </main>
             </div>
         </div>
-
+        <footer class="fixed-bottom">
+            <player-component></player-component>
+        </footer>
         @endguest
     </div>
 </body>

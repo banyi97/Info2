@@ -28,6 +28,8 @@ Vue.component('artist-component', require('./components/ArtistComponent.vue').de
 Vue.component('artistadmin-component', require('./components/ArtistAdminComponent.vue').default);
 Vue.component('test-component', require('./components/TestComponent.vue').default);
 Vue.component('navmenu-component', require('./components/NavMenuComponent.vue').default);
+Vue.component('search-component', require('./components/SearchComponent.vue').default);
+Vue.component('player-component', require('./components/PlayerComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
