@@ -35,7 +35,7 @@ Route::put('/artists/{id}','ArtistController@update');
 Route::delete('/artists/{id}','ArtistController@destroy');
 
 Route::get('/albums','AlbumController@index');
-Route::get('/albums/create/{artistid}','AlbumController@create');
+Route::get('/albums/create/{id}','AlbumController@create');
 Route::post('/albums','AlbumController@store');
 Route::get('/albums/{id}','AlbumController@show');
 Route::get('/albums/{id}/edit','AlbumController@edit');

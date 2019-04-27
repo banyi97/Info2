@@ -1818,7 +1818,7 @@ __webpack_require__.r(__webpack_exports__);
         title: '',
         artistid: null,
         songs: [],
-        pic: '/img/albums/nopic.png',
+        pic_url: 'nopic.png',
         year: null
       },
       actualYear: null,
@@ -1829,7 +1829,7 @@ __webpack_require__.r(__webpack_exports__);
     var date = new Date();
     this.actualYear = date.getFullYear();
     this.album.year = date.getFullYear();
-    this.album.artistid = this.artist.artistid;
+    this.album.artistid = this.artist.album.artist_id;
 
     if (this.artist.ismodify) {
       this.album = this.artist.album;
@@ -1837,23 +1837,23 @@ __webpack_require__.r(__webpack_exports__);
 
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    console.log(this.album.pic_url);
+    console.log(this.album.artistid);
   },
   props: {
     artist: {
       ismodify: Boolean,
-      artistid: Number,
-      artistname: String,
       album: {
         title: String,
-        artistid: Number,
+        artist_id: Number,
+        artist_name: String,
         songs: [{
           id: Number,
           title: String,
           number_of: Number,
           song_length: Number
         }],
-        pic: String,
+        pic_url: String,
         year: Number
       }
     }
@@ -1885,7 +1885,7 @@ __webpack_require__.r(__webpack_exports__);
       reader.readAsDataURL(file);
     },
     returnToArtist: function returnToArtist() {
-      window.location.href = "/artists/" + this.artist.artistid;
+      window.location.href = "/artists/" + this.artist.album.artist_id;
     },
     createAlbum: function createAlbum() {
       for (var i = 0; i < this.album.songs.length; i++) {
@@ -1970,7 +1970,7 @@ __webpack_require__.r(__webpack_exports__);
       artist: String,
       title: String,
       year: Number,
-      pic: String,
+      pic_url: String,
       songs: [{
         id: Number,
         title: String,
@@ -2012,7 +2012,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]('/albums/' + this.album.id).then(function (response) {
         if (response.data.success) {
-          window.location.href = "/albums/" + _this.album.artist_id;
+          window.location.href = "/artists/" + _this.album.artist_id;
         }
       });
     }
@@ -2133,6 +2133,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2140,7 +2151,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     return {};
   },
   mounted: function mounted() {
-    console.log('start');
+    console.log(this.artist.id);
   },
   props: {
     artist: {
@@ -41628,10 +41639,14 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-left" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", [
-          _vm.album.pic
+          _vm.album.pic_url
             ? _c("img", {
                 staticClass: "img-responsive",
-                attrs: { src: _vm.album.pic, height: "200", width: "200" }
+                attrs: {
+                  src: "/img/albums/" + _vm.album.pic_url,
+                  height: "200",
+                  width: "200"
+                }
               })
             : _vm._e(),
           _vm._v(" "),
@@ -41796,7 +41811,7 @@ var render = function() {
           ],
           on: { click: _vm.editAlbum }
         },
-        [_vm._v("Edit")]
+        [_vm._v("Save")]
       ),
       _vm._v(" "),
       _c("button", { on: { click: _vm.returnToArtist } }, [
@@ -41860,7 +41875,7 @@ var render = function() {
         _c("div", [
           _c("img", {
             attrs: {
-              src: "/img/albums/" + _vm.album.pic,
+              src: "/img/albums/" + _vm.album.pic_url,
               width: "150",
               height: "150"
             }
@@ -42147,27 +42162,37 @@ var render = function() {
     [
       _c("div", { staticClass: "row justify-content-left" }, [
         _c("div", { staticClass: "row" }, [
-          _c("div", [
-            _c("img", {
-              attrs: {
-                src: "/img/artists/" + _vm.artist.pic_url,
-                width: "150",
-                height: "150"
-              }
-            })
-          ]),
-          _vm._v(" "),
           _c("div", [_c("h2", [_vm._v(_vm._s(_vm.artist.name))])])
         ])
       ]),
       _vm._v(" "),
       _vm._l(_vm.artist.albums, function(item) {
-        return _c(
-          "div",
-          { key: item.id },
-          [_c("album-component", { attrs: { album: item } })],
-          1
-        )
+        return _c("div", { key: item.id }, [
+          _c("div", { staticClass: "row text-center" }, [
+            _c("div", [
+              _c("a", { attrs: { href: "/albums/" + item.id } }, [
+                _c("div", [
+                  _c("div", [
+                    _c("img", {
+                      attrs: {
+                        src: "/img/albums/" + item.pic_url,
+                        alt: "",
+                        width: "200",
+                        height: "200"
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("h5", [_vm._v(_vm._s(item.title))])
+              ]),
+              _vm._v(" "),
+              _c("a", { attrs: { href: "/artists/" + item.artist_id } }, [
+                _vm._v(_vm._s(item.artist_name))
+              ])
+            ])
+          ])
+        ])
       }),
       _vm._v(" "),
       _c("a", { attrs: { href: "/albums/create/" + _vm.artist.id } }, [

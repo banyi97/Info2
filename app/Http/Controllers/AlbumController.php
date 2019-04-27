@@ -26,11 +26,24 @@ class AlbumController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($artistid)
+    public function create($id)
     {
         //
+        $query = DB::table('artists')
+            ->select('*')
+            ->where('artists.id', $id)
+            ->get();   
+
+        $album = array();
+        $album['artist_id'] = isset($query[0]) ? $query[0]->id : abort(404);
+        $album['artist_name'] = isset($query[0]) ?  $query[0]->name : abort(404);
+        
         $ret = array();
-        $ret['artistid'] = $artistid; 
+        $ret['ismodify'] = false; 
+        $ret['album'] = $album;
+
+    //    return response()->json(['success' => $ret], 200);
+
         return view('album.create')->with(
             [
                 'artist' => json_encode( $ret )
@@ -47,7 +60,8 @@ class AlbumController extends Controller
     public function store(Request $request)
     {
         //
-       // $ret = $request->album['songs'][0]['title'];
+       // $ret = $request->album['songs'][0]['title'];    
+
         if(isset($request->album)){
             if(DB::table('albums')->insert(
                 [
@@ -90,23 +104,25 @@ class AlbumController extends Controller
     public function show($id)
     {
         $query = DB::table('songs')
-            ->select( 'songs.*', 'albums.title as album_title', 'albums.id as album_id' , 'albums.release_date', 'albums.pic_url', 'artists.name as artist_name', 'artists.id as artist_id')
-            ->join('albums', 'songs.album_id', '=', 'albums.id')
-            ->join('artists', 'artists.id', '=', 'albums.artist_id')
+            ->select( 'songs.*', 'albums.title as album_title', 'albums.id as album_album_id' , 'albums.release_date', 'albums.pic_url', 'artists.name as artist_name', 'artists.id as artist_id')
+            ->rightJoin('albums', 'songs.album_id', '=', 'albums.id')
+            ->rightJoin('artists', 'artists.id', '=', 'albums.artist_id')
             ->where('albums.id', $id)
             ->orderby('number_of')
             ->get();         
     
         $ret = array();
         foreach($query as $item){
-            $ret['id'] = $item->album_id;
+            $ret['id'] = $item->album_album_id;
             $ret['artist_id'] = $item->artist_id;
             $ret['artist'] = $item->artist_name;
             $ret['title'] = $item->album_title;
             $ret['year'] = $item->release_date;
-            $ret['pic'] = $item->pic_url;
+            $ret['pic_url'] = $item->pic_url;
             $ret['songs'] = array();
             foreach($query as $songs){
+                if($songs->album_id != $ret['id'])
+                        continue;
                 $song = [
                     'id' => $songs->id,
                     'title' => $songs->title,
@@ -118,7 +134,9 @@ class AlbumController extends Controller
             }
             break;
         }
-        
+
+   //     return response()->json(['success' => $query], 200);
+
         return view('album.show')->with(
             [              
                 'album'=> json_encode( $ret )
@@ -136,23 +154,25 @@ class AlbumController extends Controller
     {
         //
         $query = DB::table('songs')
-            ->select( 'songs.*', 'albums.title as album_title', 'albums.id as album_id' , 'albums.release_date', 'albums.pic_url', 'artists.name as artist_name', 'artists.id as artist_id')
-            ->join('albums', 'songs.album_id', '=', 'albums.id')
-            ->join('artists', 'artists.id', '=', 'albums.artist_id')
+            ->select( 'songs.*', 'albums.title as album_title', 'albums.id as album_album_id' , 'albums.release_date', 'albums.pic_url', 'artists.name as artist_name', 'artists.id as artist_id')
+            ->rightJoin('albums', 'songs.album_id', '=', 'albums.id')
+            ->rightJoin('artists', 'artists.id', '=', 'albums.artist_id')
             ->where('albums.id', $id)
             ->orderby('number_of')
             ->get();     
 
             $ret = array();
             foreach($query as $item){
-                $ret['id'] = $item->album_id;
-                $ret['artist_id'] = $item->artist_id;
-                $ret['artist'] = $item->artist_name;
-                $ret['title'] = $item->album_title;
+                $ret['id'] = $item->album_album_id;
+                $ret['title'] = $item->album_title;                
                 $ret['year'] = $item->release_date;
-                $ret['pic'] = $item->pic_url;
+                $ret['pic_url'] = $item->pic_url;
                 $ret['songs'] = array();
+                $ret['artist_id'] = $item->artist_id;
+                $ret['artist_name'] = $item->artist_name;
                 foreach($query as $songs){
+                    if($songs->album_id != $ret['id'])
+                        continue;
                     $song = [
                         'id' => $songs->id,
                         'title' => $songs->title,
@@ -168,8 +188,10 @@ class AlbumController extends Controller
             $artist = array();
             $artist['album'] = $ret;
             $artist['ismodify'] = true;
-            $artist['artistid'] = $ret['artist_id'];
-            
+       //     $artist['artistid'] = $ret['artist_id'];
+
+       //     return response()->json(['success' => $artist], 200);
+
             return view('album.edit')->with(
                 [              
                     'artist'=> json_encode( $artist )
@@ -201,7 +223,7 @@ class AlbumController extends Controller
         //
         
         if(DB::table('albums')->where('albums.id', '=', $id)->delete()){
-            return response()->json(['error' => 'Ok'], 200);
+            return response()->json(['success' => 'Ok'], 200);
         }
         
         return response()->json(['error' => 'Error'], 200);

@@ -56,10 +56,10 @@ class ArtistController extends Controller
     public function show($id)
     {
         //
-        $query = DB::table('artists')
-            ->select( 'songs.*', 'artists.id as artist_id', 'artists.name as artist_name', 'artists.pic_url as artist_pic', 'albums.title as album_title', 'albums.pic_url as album_pic', 'albums.release_date as album_year' )
-            ->join('albums', 'artists.id', '=', 'albums.artist_id')
-            ->join('songs', 'albums.id', '=', 'songs.album_id')
+        $query = DB::table('songs')
+            ->select( 'songs.*', 'artists.id as artist_id', 'artists.name as artist_name', 'artists.pic_url as artist_pic','albums.id as album_album_id' , 'albums.title as album_title', 'albums.pic_url as album_pic', 'albums.release_date as album_year' )
+            ->rightJoin('albums', 'albums.id', '=', 'songs.album_id')
+            ->rightJoin('artists', 'artists.id', '=', 'albums.artist_id')
             ->where('artists.id', $id)
             ->orderby('songs.album_id')
             ->orderby('songs.number_of')
@@ -75,7 +75,7 @@ class ArtistController extends Controller
                 if($this->checkElement($ret['albums'],$albums) == true)
                     continue;
                 $album = [
-                    'id' => $albums->album_id,
+                    'id' => $albums->album_album_id,
                     'title' => $albums->album_title,
                     'year' => $albums->album_year,
                     'pic_url' => $albums->album_pic,
@@ -97,7 +97,7 @@ class ArtistController extends Controller
             }
             break;
         }
-
+    //    return response()->json(['success' => $ret], 200);
         return view('artist.show')->with(
             [              
                 'artist'=> json_encode( $ret )
@@ -106,7 +106,7 @@ class ArtistController extends Controller
     }
     private function checkElement($array, $query){
         foreach($array as $check){
-            if($check['id'] == $query->album_id)
+            if($check['id'] == $query->album_album_id)
              return true;
         }
         return false;

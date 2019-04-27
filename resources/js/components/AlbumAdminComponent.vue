@@ -3,7 +3,7 @@
         <div class="row justify-content-left">         
             <div class="row">
                 <div>
-                    <img v-if="album.pic" :src="album.pic" class="img-responsive" height="200" width="200"> <br>
+                    <img v-if="album.pic_url" :src="'/img/albums/' + album.pic_url" class="img-responsive" height="200" width="200"> <br>
                     <input type="file" name="pic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png" />
                 </div>
                 <div>
@@ -26,7 +26,7 @@
                 <tbody> 
                     <tr v-bind:key="item.id" v-for="(item, index) in album.songs">
                         <th scope="row"> {{index + 1}} </th>
-                        <td><input v-model="item.title" type="text"> </td>                        
+                        <td> <input v-model="item.title" type="text"> </td>                        
                         <td> <input type="file" name="" id=""> </td>
                         <td> Remove </td>
                         <td><button @click="removeRow(index)"> Remove </button> </td>
@@ -37,7 +37,7 @@
         <button @click="addNew">Add new song</button>
         <div>
             <button v-show="!artist.ismodify" @click="createAlbum">Create</button>
-            <button v-show="artist.ismodify" @click="editAlbum">Edit</button>
+            <button v-show="artist.ismodify" @click="editAlbum">Save</button>
             <button @click="returnToArtist">Return to Artist</button>
         </div>
     </div>
@@ -52,7 +52,7 @@ import axios from 'axios';
                     title : '',
                     artistid: null,
                     songs: [],
-                    pic : '/img/albums/nopic.png',
+                    pic_url : 'nopic.png',
                     year : null,
                 },
                 actualYear : null,
@@ -63,8 +63,9 @@ import axios from 'axios';
             let date = new Date();
             this.actualYear = date.getFullYear();
             this.album.year = date.getFullYear();
-            this.album.artistid = this.artist.artistid;    
             
+            this.album.artistid = this.artist.album.artist_id;
+
             if(this.artist.ismodify){
                 this.album = this.artist.album;
             }
@@ -72,23 +73,23 @@ import axios from 'axios';
         //    this.album = this.artist.album;
         },
         mounted() {
-            console.log('Component mounted.')
+            console.log(this.album.pic_url)
+            console.log(this.album.artistid)
         },
         props: {
             artist:{
-                ismodify: Boolean,
-                artistid: Number,
-                artistname: String,            
+                ismodify: Boolean,       
                 album :{
                     title : String,
-                    artistid: Number,
+                    artist_id: Number,
+                    artist_name: String,
                     songs: [{
                         id: Number,
                         title: String,
                         number_of: Number,
                         song_length: Number,
                     }],
-                    pic : String,
+                    pic_url : String,
                     year : Number,
                 }
             }
@@ -119,7 +120,7 @@ import axios from 'axios';
                 reader.readAsDataURL(file);
             },
             returnToArtist(){
-                window.location.href = "/artists/" + this.artist.artistid;
+                window.location.href = "/artists/" + this.artist.album.artist_id;
             },
             createAlbum(){
                 for(let i = 0; i < this.album.songs.length; i++){
