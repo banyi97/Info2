@@ -2305,6 +2305,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {},
   mounted: function mounted() {
@@ -2323,6 +2325,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2331,10 +2335,97 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      param: '',
+      returns: {
+        songs: null,
+        albums: null,
+        artists: null
+      }
+    };
+  },
   props: {},
   mounted: function mounted() {
     console.log('Component mounted.');
+  },
+  methods: {
+    onChange: function onChange() {
+      var _this = this;
+
+      if (this.param.length < 3) {
+        this.returns.songs = null;
+        this.returns.albums = null;
+        this.returns.artists = null;
+        return;
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/search/' + this.param).then(function (response) {
+        if (response.data.success) {
+          _this.returns = response.data.success;
+        }
+      });
+    }
   }
 });
 
@@ -2381,6 +2472,15 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -42239,9 +42339,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _vm._v("\n        This is the footer\n    ")
+    return _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { staticClass: "p-3 mb-2 bg-primary text-white" }, [
+        _c("p", [_vm._v("Footer")])
       ])
     ])
   }
@@ -42267,18 +42367,197 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" })
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "justify-content-center" }, [
+      _c("div", [
+        _c("h4", [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model.trim",
+                value: _vm.param,
+                expression: "param",
+                modifiers: { trim: true }
+              }
+            ],
+            attrs: { type: "text", placeholder: "Start typing" },
+            domProps: { value: _vm.param },
+            on: {
+              keyup: _vm.onChange,
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.param = $event.target.value.trim()
+              },
+              blur: function($event) {
+                return _vm.$forceUpdate()
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", [
+        _c(
+          "ul",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.returns.artists,
+                expression: "returns.artists"
+              }
+            ],
+            staticClass: "list-group"
+          },
+          [
+            _c("h3", [_vm._v("Artists:")]),
+            _vm._v(" "),
+            _vm._l(_vm.returns.artists, function(item) {
+              return _c(
+                "li",
+                { key: item.id, staticClass: "list-group-item" },
+                [
+                  _c("div", { staticClass: "row text-center" }, [
+                    _c("a", { attrs: { href: "/artists/" + item.id } }, [
+                      _c("div", [
+                        _c("div", [
+                          _c("img", {
+                            attrs: {
+                              src: "/img/artists/" + item.pic_url,
+                              alt: "",
+                              width: "200",
+                              height: "200"
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("h5", [_vm._v(_vm._s(item.name))])
+                    ])
+                  ])
+                ]
+              )
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "ul",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.returns.albums,
+                expression: "returns.albums"
+              }
+            ],
+            staticClass: "list-group"
+          },
+          [
+            _c("h3", [_vm._v("Albums:")]),
+            _vm._v(" "),
+            _vm._l(_vm.returns.albums, function(item) {
+              return _c(
+                "li",
+                { key: item.id, staticClass: "list-group-item" },
+                [
+                  _c("div", { staticClass: "row text-center" }, [
+                    _c("div", [
+                      _c("a", { attrs: { href: "/albums/" + item.id } }, [
+                        _c("div", [
+                          _c("div", [
+                            _c("img", {
+                              attrs: {
+                                src: "/img/albums/" + item.pic_url,
+                                alt: "",
+                                width: "200",
+                                height: "200"
+                              }
+                            })
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("h5", [_vm._v(_vm._s(item.title))])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "a",
+                        { attrs: { href: "/artists/" + item.artist_id } },
+                        [_vm._v(_vm._s(item.artist_name))]
+                      )
+                    ])
+                  ])
+                ]
+              )
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "ul",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.returns.songs,
+                expression: "returns.songs"
+              }
+            ],
+            staticClass: "list-group"
+          },
+          [
+            _c("h3", [_vm._v("Songs:")]),
+            _vm._v(" "),
+            _vm._l(_vm.returns.songs, function(item) {
+              return _c(
+                "li",
+                { key: item.id, staticClass: "list-group-item" },
+                [
+                  _c("div", { staticClass: "row text-center" }, [
+                    _c("div", [
+                      _c("a", { attrs: { href: "/albums/" + item.id } }, [
+                        _c("div", [
+                          _c("div", [
+                            _c("img", {
+                              attrs: {
+                                src: "/img/albums/" + item.pic_url,
+                                alt: "",
+                                width: "200",
+                                height: "200"
+                              }
+                            })
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("h5", [_vm._v(_vm._s(item.title))])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "a",
+                        { attrs: { href: "/artists/" + item.artist_id } },
+                        [_vm._v(_vm._s(item.artist_name))]
+                      )
+                    ])
+                  ])
+                ]
+              )
+            })
+          ],
+          2
+        )
+      ])
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -42349,51 +42628,72 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("Example Component")
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "row" }, [
-              _vm.image
-                ? _c("div", { staticClass: "col-md-3" }, [
-                    _c("img", {
-                      staticClass: "img-responsive",
-                      attrs: { src: _vm.image, height: "70", width: "90" }
-                    })
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6" }, [
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { type: "file" },
-                  on: { change: _vm.onImageChange }
-                })
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "main-nav" }, [
+      _c("div", { staticClass: "navbar navbar-inverse" }, [
+        _c("div", { staticClass: "navbar-header" }, [
+          _c(
+            "button",
+            {
+              staticClass: "navbar-toggle",
+              attrs: {
+                type: "button",
+                "data-toggle": "collapse",
+                "data-target": ".navbar-collapse"
+              }
+            },
+            [
+              _c("span", { staticClass: "sr-only" }, [
+                _vm._v("Toggle navigation")
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-3" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-success btn-block",
-                    on: { click: _vm.uploadImage }
-                  },
-                  [_vm._v("Upload Image")]
-                )
+              _c("span", { staticClass: "icon-bar" }),
+              _vm._v(" "),
+              _c("span", { staticClass: "icon-bar" }),
+              _vm._v(" "),
+              _c("span", { staticClass: "icon-bar" })
+            ]
+          ),
+          _vm._v(" "),
+          _c("a", { staticClass: "navbar-brand" }, [_vm._v("WebApplication1")])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "clearfix" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "navbar-collapse collapse" }, [
+          _c("ul", { staticClass: "nav navbar-nav" }, [
+            _c("li", [
+              _c("a", [
+                _c("span", { staticClass: "glyphicon glyphicon-home" }),
+                _vm._v(" Home\n                    ")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("li", [
+              _c("a", [
+                _c("span", { staticClass: "glyphicon glyphicon-education" }),
+                _vm._v(" Counter\n                    ")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("li", [
+              _c("a", [
+                _c("span", { staticClass: "glyphicon glyphicon-th-list" }),
+                _vm._v(" Fetch data\n                    ")
               ])
             ])
           ])
         ])
       ])
     ])
-  ])
-}
-var staticRenderFns = []
+  }
+]
 render._withStripped = true
 
 

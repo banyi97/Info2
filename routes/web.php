@@ -41,3 +41,10 @@ Route::get('/albums/{id}','AlbumController@show');
 Route::get('/albums/{id}/edit','AlbumController@edit');
 Route::put('/albums/{id}','AlbumController@update');
 Route::delete('/albums/{id}','AlbumController@destroy');
+
+Route::get('/search', function(){
+    return view('search');
+});
+Route::post('/search/{key}', 'SearchController@show');
+
+Route::get('/searchtest/{key}', 'SearchController@show');

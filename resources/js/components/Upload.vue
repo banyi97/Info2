@@ -1,28 +1,37 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
-
-                    <div class="card-body">
-                         <div class="row">
-                          <div class="col-md-3" v-if="image">
-                              <img :src="image" class="img-responsive" height="70" width="90">
-                           </div>
-                          <div class="col-md-6">
-                              <input type="file" v-on:change="onImageChange" class="form-control">
-                          </div>
-                          <div class="col-md-3">
-                             <button class="btn btn-success btn-block" @click="uploadImage">Upload Image</button>
-                          </div>
-                       </div>
-                    
-                    </div>
-                </div>
-            </div>
+    <div class='main-nav'>
+    <div class='navbar navbar-inverse'>
+        <div class='navbar-header'>
+            <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
+                <span class='sr-only'>Toggle navigation</span>
+                <span class='icon-bar'></span>
+                <span class='icon-bar'></span>
+                <span class='icon-bar'></span>
+            </button>
+            <a class='navbar-brand'>WebApplication1</a>
+        </div>
+        <div class='clearfix'></div>
+        <div class='navbar-collapse collapse'>
+            <ul class='nav navbar-nav'>
+                <li>
+                    <a>
+                        <span class='glyphicon glyphicon-home'></span> Home
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <span class='glyphicon glyphicon-education'></span> Counter
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <span class='glyphicon glyphicon-th-list'></span> Fetch data
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -55,3 +64,4 @@
         }
     }
 </script>
+

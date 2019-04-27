@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        {{$data}}
+        <search-component></search-component>
     </div>
 </div>
 <br>

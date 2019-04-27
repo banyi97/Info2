@@ -1,8 +1,10 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            This is the footer
-        </div>
+    <div class="container-fluid">
+       
+            <div class="p-3 mb-2 bg-primary text-white">
+                <p>Footer</p>
+            </div>
+
     </div>
 </template>
 
