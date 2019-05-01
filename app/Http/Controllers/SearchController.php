@@ -64,7 +64,7 @@ class SearchController extends Controller
             ->select('songs.id', 'songs.title', 'songs.album_id', 'albums.title as album_title', 'artists.id as artist_id', 'artists.name as artist_name', 'albums.pic_url as pic_url')
             ->join('albums', 'songs.album_id', '=', 'albums.id')
             ->join('artists', 'artists.id', '=', 'albums.artist_id')
-            ->where('songs.title', 'like', $key)
+            ->where('songs.title', 'like', '%'.$key.'%')
             ->take(5)
             ->get(); 
 

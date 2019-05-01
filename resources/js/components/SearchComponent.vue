@@ -84,7 +84,7 @@ import axios from 'axios';
         },
         methods:{
             onChange(){
-                if(this.param.length < 3){
+                if(this.param.length < 1){
                     this.returns.songs = null;
                     this.returns.albums = null;
                     this.returns.artists = null;

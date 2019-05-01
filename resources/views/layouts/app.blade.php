@@ -72,28 +72,26 @@
             </div>
         </nav>
 
-        @guest
+        <div class="container-fluid">
+            <div class="row flex-xl-nowrap">
+                @guest
 
-        <main class="py-4">
-                @yield('content')
-        </main>
-
-        @else
-
-        <div class="row">
-            <div class="col-2" >
-                <navmenu-component></navmenu-component>
-            </div>
-            <div class="col-10">
-                <main class="py-4">
+                <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
                         @yield('content')
                 </main>
+
+                @else
+
+                <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+                    <navmenu-component></navmenu-component>
+                </div>
+                <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+                    @yield('content')
+                </main>
+                
+                @endguest
             </div>
         </div>
-        <footer class="fixed-bottom">
-            <player-component></player-component>
-        </footer>
-        @endguest
     </div>
 </body>
 </html>

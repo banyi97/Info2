@@ -20,13 +20,10 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('album-component', require('./components/AlbumComponent.vue').default);
 Vue.component('albumadmin-component', require('./components/AlbumAdminComponent.vue').default);
-Vue.component('upload-component', require('./components/Upload.vue').default);
 Vue.component('artist-component', require('./components/ArtistComponent.vue').default);
 Vue.component('artistadmin-component', require('./components/ArtistAdminComponent.vue').default);
-Vue.component('test-component', require('./components/TestComponent.vue').default);
 Vue.component('navmenu-component', require('./components/NavMenuComponent.vue').default);
 Vue.component('search-component', require('./components/SearchComponent.vue').default);
 Vue.component('player-component', require('./components/PlayerComponent.vue').default);
