@@ -18,7 +18,8 @@ class CreatePlaylistsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->timestamps();
-
+            $table->string('tags')->nullable();
+            
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
