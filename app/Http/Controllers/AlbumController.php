@@ -60,38 +60,33 @@ class AlbumController extends Controller
     public function store(Request $request)
     {
         //
-       // $ret = $request->album['songs'][0]['title'];    
-
         if(isset($request->album)){
-            if(DB::table('albums')->insert(
+            $datetime = date("Y-m-d H:i:s");
+            $ret = array();
+            $id = DB::table('albums')->insertGetId(
                 [
                     'title' => $request->album['title'],
                     'release_date' => $request->album['year'],
-                    'artist_id' => $request->album['artistid']
-                ]
-            )){
-                $id = DB::table('albums')
-                        ->select('id')
-                        ->where([
-                            ['albums.title', '=', $request->album['title']],
-                            ['albums.release_date', '=', $request->album['year']],
-                            ['albums.artist_id', '=', $request->album['artistid']]
-                        ])
-                        ->get();                         
+                    'artist_id' => $request->album['artistid'],
+                    'created_at' => $datetime,
+                    'updated_at' => $datetime
+                ]);    
+                $ret['album_id'] = $id;                  
                 foreach($request->album['songs'] as $song){
-                    DB::table('songs')->insert(
+                    $songid = DB::table('songs')->insertGetId(
                         [
                             'title' => $song['title'],
                             'number_of' => $song['number_of'],
-                            'album_id' => $id[0]->id,
-                            'length' => 555
+                            'album_id' => $id,
+                            'length' => $song['number_of'],
+                            'created_at' => $datetime,
+                            'updated_at' => $datetime
                         ]);
+                        $ret['song_id'][] = $songid;
                 }       
             }         
-        }
-        
-      //  foreach($request->album->songs as $song){       }   
-        return response()->json(['success' => $id[0]->id], 200);
+             
+        return response()->json(['success' => $ret], 200);
         
     }
 

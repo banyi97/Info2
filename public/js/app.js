@@ -1815,6 +1815,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1823,14 +1824,25 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      file: '',
+      view_pic: null,
       enabled: true,
       dragging: false,
       album: {
         title: '',
         artistid: null,
-        songs: [],
-        pic_url: null,
+        songs: [{
+          title: '',
+          song_file: null,
+          number_of: null,
+          song_length: 0
+        }],
+        pic_file: null,
         year: null
+      },
+      albumfiles: {
+        albumpic: null,
+        albumsongs: []
       },
       actualYear: null,
       createid: 0
@@ -1843,8 +1855,7 @@ __webpack_require__.r(__webpack_exports__);
 
     if (this.artist.ismodify) {
       this.album = this.artist.album;
-    } //    this.album = this.artist.album;
-
+    }
   },
   mounted: function mounted() {},
   props: {
@@ -1883,11 +1894,14 @@ __webpack_require__.r(__webpack_exports__);
       this.createImage(files[0]);
     },
     createImage: function createImage(file) {
+      var _this = this;
+
       var reader = new FileReader();
       var vm = this;
 
       reader.onload = function (e) {
-        vm.album.pic_url = e.target.result;
+        vm.view_pic = e.target.result;
+        _this.albumfiles.albumpic = _this.$refs.albumpic.files[0];
       };
 
       reader.readAsDataURL(file);
@@ -1896,6 +1910,18 @@ __webpack_require__.r(__webpack_exports__);
       window.location.href = "/artists/" + this.artist.album.artist_id;
     },
     createAlbum: function createAlbum() {
+      var _this2 = this;
+
+      if (this.album.title == null || this.album.title == '') {
+        alert('Title is empty');
+        return;
+      }
+
+      if (this.album.songs.length === 0) {
+        alert("Songs");
+        return;
+      }
+
       for (var i = 0; i < this.album.songs.length; i++) {
         this.album.songs[i].number_of = i + 1;
       }
@@ -1904,9 +1930,26 @@ __webpack_require__.r(__webpack_exports__);
         album: this.album
       }).then(function (response) {
         if (response.data.success) {
-          window.location.href = "/albums/" + response.data.success;
+          if (_this2.albumfiles.albumpic === null) return;
+          var fdata = new FormData();
+          fdata.append('photo', _this2.albumfiles.albumpic);
+          console.log(_this2.albumpic);
+          console.log(_this2.album.pic_file);
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }).then(function (resp) {
+            console.log('upload SUCSESS!!');
+          })["catch"](function (error) {
+            console.log('upload FAILURE!!');
+          });
+          ;
         }
+      })["catch"](function (error) {
+        console.log('FAILURE!!');
       });
+      ;
     },
     editAlbum: function editAlbum() {}
   },
@@ -43977,16 +44020,17 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-left" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", [
-          _vm.album.pic_url
+          _vm.view_pic
             ? _c("img", {
                 staticClass: "img-responsive",
-                attrs: { src: _vm.album.pic_url, height: "200", width: "200" }
+                attrs: { src: _vm.view_pic, height: "200", width: "200" }
               })
             : _vm._e(),
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
           _c("input", {
+            ref: "albumpic",
             attrs: {
               type: "file",
               name: "pic",
@@ -44175,7 +44219,13 @@ var render = function() {
       _vm._v(" "),
       _c("button", { on: { click: _vm.returnToArtist } }, [
         _vm._v("Return to Artist")
-      ])
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        ref: "file",
+        attrs: { type: "file", id: "file" },
+        on: { change: _vm.handleFileUpload }
+      })
     ])
   ])
 }

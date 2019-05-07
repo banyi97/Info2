@@ -43,7 +43,7 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         //
-        $path = $request->pic->store('image');
+        $path = $request->photo->store('public');
         return $path;
     }
 
