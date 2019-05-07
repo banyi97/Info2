@@ -84,10 +84,8 @@ class AlbumController extends Controller
                         ]);
                         $ret['song_id'][] = $songid;
                 }       
-            }         
-             
-        return response()->json(['success' => $ret], 200);
-        
+            }               
+        return response()->json(['success' => $ret], 200);  
     }
 
     /**
@@ -113,7 +111,7 @@ class AlbumController extends Controller
             $ret['artist'] = $item->artist_name;
             $ret['title'] = $item->album_title;
             $ret['year'] = $item->release_date;
-            $ret['pic_url'] = $item->pic_url;
+            $ret['pic_url'] = base64_decode($item->pic_url);
             $ret['songs'] = array();
             foreach($query as $songs){
                 if($songs->album_id != $ret['id'])
@@ -161,7 +159,7 @@ class AlbumController extends Controller
                 $ret['id'] = $item->album_album_id;
                 $ret['title'] = $item->album_title;                
                 $ret['year'] = $item->release_date;
-                $ret['pic_url'] = $item->pic_url;
+                $ret['pic_url'] = base64_decode($item->pic_url);
                 $ret['songs'] = array();
                 $ret['artist_id'] = $item->artist_id;
                 $ret['artist_name'] = $item->artist_name;
@@ -182,7 +180,6 @@ class AlbumController extends Controller
 
             $artist = array();
             $artist['album'] = $ret;
-            $artist['ismodify'] = true;
        //     $artist['artistid'] = $ret['artist_id'];
 
        //     return response()->json(['success' => $artist], 200);
@@ -204,7 +201,62 @@ class AlbumController extends Controller
     public function update(Request $request, $id)
     {
         //
-        return view('album.show');
+        if(isset($request->album)){
+            $datetime = date("Y-m-d H:i:s");
+            DB::table('albums')
+                ->where('albums.id', $id)
+                ->update(
+                    [
+                    'title' => $request->album['title'],
+                    'release_date' => $request->album['year'],
+                    'updated_at' => $datetime
+                    ],
+                );
+                
+                    foreach($request->album['songs'] as $song){
+                        DB::table('songs')
+                        ->where([
+                            ['songs.album_id', '=', $id],
+                            ['songs.id', '=', $song['id']]
+                        ])
+                        ->update(
+                            [
+                            'title' => $song['title'],
+                            'number_of' => $song['number_of'],
+                            'updated_at' => $datetime
+                            ],
+                        ); 
+        }
+                
+        }
+        return response()->json(['success' => 'OK'], 200);
+    }
+
+    public function updateSong(Request $request, $id, $number)
+    {
+        //
+        if(isset($request->album)){
+            DB::table('albums')
+                ->where('albums.id', $id)
+                ->update(
+                    ['title' => $request->album['title']],
+                    ['release_date' => $request->album['title']],
+                );
+                if(isset($request->album->songs)){
+                    foreach($songs as $song){
+                        DB::table('songs')
+                        ->where([
+                            ['songs.album_id', '=', $id],
+                            ['songs.id', '=', $song->id]
+                        ])
+                        ->update(
+                            ['title' => $song->title],
+                            ['release_date' => $request->album['title']],
+                        );
+                    }
+                }
+        }
+        return response()->json(['success' => 'OK'], 200);
     }
 
     /**

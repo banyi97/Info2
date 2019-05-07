@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
@@ -20,20 +21,24 @@ class UploadController extends Controller
         if ($request->file('photo')->isValid()) {
             //
             $path = $request->photo->store('public');
-        //    $encoded = base64_encode($path);
-        //    DB::table('albums')
-        //        ->where('id', $id)
-        //        ->update(['pic_url' => $encoded]);
+            $filename = basename($path);
+            $encoded = base64_encode($filename);
+            DB::table('albums')
+                ->where('albums.id', $id)
+                ->update(['pic_url' => $encoded]);
+        return response()->json(['success' => $filename], 200);
         }
     }
 
     public function storeArtistPic(Request $request, $id)
     {
         //
-        if ($request->file('photo')->isValid()) {
-            //
-            $path = $request->photo->store('public');
-        }
+        $path = $request->photo->store('public');
+            $encoded = base64_encode($path);
+            DB::table('artists')
+                ->where('id', $id)
+                ->update(['pic_url' => $encoded]);
+        return response()->json(['success' => basename($path)], 200);
     }
 
     public function storeSongs(Request $request, $id)
@@ -44,5 +49,11 @@ class UploadController extends Controller
             $path = $request->photo->store('public');
         }
     }
-      
+    
+    public function storeTest(Request $request)
+    {
+        
+        return Storage::url();
+        
+    }
 }

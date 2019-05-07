@@ -11,7 +11,7 @@
                     <a :href="'/albums/' + item.id">
                         <div>
                             <div>
-                                <img :src="'/img/albums/' + item.pic_url" alt="" width="200" height="200">
+                                <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
                             </div>
                         </div>
                         <h5>{{item.title}}</h5>

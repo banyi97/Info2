@@ -40,6 +40,7 @@ Route::post('/albums','AlbumController@store');
 Route::get('/albums/{id}','AlbumController@show');
 Route::get('/albums/{id}/edit','AlbumController@edit');
 Route::put('/albums/{id}','AlbumController@update');
+Route::patch('/albums/{id}/{number}','AlbumController@updateSong');
 Route::delete('/albums/{id}','AlbumController@destroy');
 
 Route::get('/search', function(){
@@ -52,3 +53,5 @@ Route::get('/searchtest/{key}', 'SearchController@show');
 Route::post('/upload/albumpic/{id}', 'UploadController@storeAlbumPic');
 Route::post('/upload/artistpic/{id}', 'UploadController@storeArtistPic');
 Route::post('/upload/songs/{id}', 'UploadController@storeSongs');
+
+Route::get('/upload/test','UploadController@storeTest');

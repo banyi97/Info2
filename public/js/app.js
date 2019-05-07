@@ -1815,7 +1815,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1824,7 +1823,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      file: '',
       view_pic: null,
       enabled: true,
       dragging: false,
@@ -1853,15 +1851,18 @@ __webpack_require__.r(__webpack_exports__);
     this.actualYear = this.album.year = date.getFullYear();
     this.album.artistid = this.artist.album.artist_id;
 
-    if (this.artist.ismodify) {
+    if (this.ismodify) {
       this.album = this.artist.album;
     }
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    console.log(this.artist.album.id);
+  },
   props: {
+    ismodify: Boolean,
     artist: {
-      ismodify: Boolean,
       album: {
+        id: Number,
         title: String,
         artist_id: Number,
         artist_name: String,
@@ -1870,7 +1871,9 @@ __webpack_require__.r(__webpack_exports__);
           title: String,
           number_of: Number,
           song_length: Number,
-          song_url: String
+          song_url: String,
+          created_at: String,
+          updated_at: String
         }],
         pic_url: String,
         year: Number
@@ -1924,6 +1927,11 @@ __webpack_require__.r(__webpack_exports__);
 
       for (var i = 0; i < this.album.songs.length; i++) {
         this.album.songs[i].number_of = i + 1;
+
+        if (this.album.songs[i].title == null || this.album.songs[i].title == '') {
+          alert('title is empty');
+          return;
+        }
       }
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/albums', {
@@ -1933,25 +1941,71 @@ __webpack_require__.r(__webpack_exports__);
           if (_this2.albumfiles.albumpic === null) return;
           var fdata = new FormData();
           fdata.append('photo', _this2.albumfiles.albumpic);
-          console.log(_this2.albumpic);
-          console.log(_this2.album.pic_file);
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
             headers: {
               "Content-Type": "multipart/form-data"
             }
           }).then(function (resp) {
-            console.log('upload SUCSESS!!');
+            console.log(resp.data.success);
           })["catch"](function (error) {
             console.log('upload FAILURE!!');
           });
           ;
+          window.location.href = "/albums/" + response.data.success.album_id;
         }
       })["catch"](function (error) {
         console.log('FAILURE!!');
       });
       ;
     },
-    editAlbum: function editAlbum() {}
+    editAlbum: function editAlbum() {
+      var _this3 = this;
+
+      if (this.album.title == null || this.album.title == '') {
+        alert('Title is empty');
+        return;
+      }
+
+      if (this.album.songs.length === 0) {
+        alert("Songs is empty");
+        return;
+      }
+
+      for (var i = 0; i < this.album.songs.length; i++) {
+        this.album.songs[i].number_of = i + 1;
+
+        if (this.album.songs[i].title == null || this.album.songs[i].title == '') {
+          alert('title is empty');
+          return;
+        }
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('/albums/' + this.artist.album.id, {
+        album: this.album
+      }).then(function (resp) {
+        console.log(resp.data.success);
+
+        if (_this3.albumfiles.albumpic === null) {
+          window.location.href = "/albums/" + _this3.artist.album.id;
+          return;
+        }
+
+        console.log(_this3.view_pic);
+        console.log(_this3.albumfiles.albumpic);
+        var fdata = new FormData();
+        fdata.append('photo', _this3.albumfiles.albumpic);
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this3.artist.album.id, fdata, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(function (resp) {
+          console.log(resp.data.success);
+        })["catch"](function (error) {
+          console.log('upload FAILURE!!');
+        });
+        ; // window.location.href = "/albums/" + this.artist.album.id;
+      });
+    }
   },
   computed: {
     draggingInfo: function draggingInfo() {
@@ -2037,7 +2091,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {},
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    console.log(this.album.pic_url);
+  },
   methods: {
     testClick: function testClick() {
       var sound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
@@ -44023,7 +44079,11 @@ var render = function() {
           _vm.view_pic
             ? _c("img", {
                 staticClass: "img-responsive",
-                attrs: { src: _vm.view_pic, height: "200", width: "200" }
+                attrs: {
+                  src: "/storage/" + _vm.view_pic,
+                  height: "200",
+                  width: "200"
+                }
               })
             : _vm._e(),
           _vm._v(" "),
@@ -44134,9 +44194,10 @@ var render = function() {
                       directives: [
                         {
                           name: "model",
-                          rawName: "v-model",
+                          rawName: "v-model.trim",
                           value: element.title,
-                          expression: "element.title"
+                          expression: "element.title",
+                          modifiers: { trim: true }
                         }
                       ],
                       staticClass: "col-4",
@@ -44147,7 +44208,10 @@ var render = function() {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.$set(element, "title", $event.target.value)
+                          _vm.$set(element, "title", $event.target.value.trim())
+                        },
+                        blur: function($event) {
+                          return _vm.$forceUpdate()
                         }
                       }
                     }),
@@ -44192,8 +44256,8 @@ var render = function() {
             {
               name: "show",
               rawName: "v-show",
-              value: !_vm.artist.ismodify,
-              expression: "!artist.ismodify"
+              value: !_vm.ismodify,
+              expression: "!ismodify"
             }
           ],
           on: { click: _vm.createAlbum }
@@ -44208,8 +44272,8 @@ var render = function() {
             {
               name: "show",
               rawName: "v-show",
-              value: _vm.artist.ismodify,
-              expression: "artist.ismodify"
+              value: _vm.ismodify,
+              expression: "ismodify"
             }
           ],
           on: { click: _vm.editAlbum }
@@ -44219,13 +44283,7 @@ var render = function() {
       _vm._v(" "),
       _c("button", { on: { click: _vm.returnToArtist } }, [
         _vm._v("Return to Artist")
-      ]),
-      _vm._v(" "),
-      _c("input", {
-        ref: "file",
-        attrs: { type: "file", id: "file" },
-        on: { change: _vm.handleFileUpload }
-      })
+      ])
     ])
   ])
 }
@@ -44257,7 +44315,7 @@ var render = function() {
         _c("div", [
           _c("img", {
             attrs: {
-              src: "/img/albums/" + _vm.album.pic_url,
+              src: "/storage/" + _vm.album.pic_url,
               width: "150",
               height: "150"
             }
@@ -44557,7 +44615,7 @@ var render = function() {
                   _c("div", [
                     _c("img", {
                       attrs: {
-                        src: "/img/albums/" + item.pic_url,
+                        src: "/storage/" + item.pic_url,
                         alt: "",
                         width: "200",
                         height: "200"
@@ -44787,7 +44845,7 @@ var render = function() {
                         _c("div", [
                           _c("img", {
                             attrs: {
-                              src: "/img/artists/" + item.pic_url,
+                              src: "/storage/" + item.pic_url,
                               alt: "",
                               width: "200",
                               height: "200"
@@ -44834,7 +44892,7 @@ var render = function() {
                           _c("div", [
                             _c("img", {
                               attrs: {
-                                src: "/img/albums/" + item.pic_url,
+                                src: "/storage/" + item.pic_url,
                                 alt: "",
                                 width: "200",
                                 height: "200"
@@ -44888,7 +44946,7 @@ var render = function() {
                           _c("div", [
                             _c("img", {
                               attrs: {
-                                src: "/img/albums/" + item.pic_url,
+                                src: "/storage/" + item.pic_url,
                                 alt: "",
                                 width: "200",
                                 height: "200"

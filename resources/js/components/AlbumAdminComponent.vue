@@ -3,7 +3,7 @@
         <div class="row justify-content-left">         
             <div class="row">
                 <div>
-                    <img v-if="view_pic" :src="view_pic" class="img-responsive" height="200" width="200"> <br>
+                    <img v-if="view_pic" :src="'/storage/'+view_pic" class="img-responsive" height="200" width="200"> <br>
                     <input type="file" name="pic" ref="albumpic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png" />
                 </div>
                 <div>
@@ -28,7 +28,7 @@
                     :key="element.id">
                         <div class="row col-12">
                             <div class="col-1">{{index +1}}</div>
-                            <input class="col-4" v-model="element.title" type="text" placeholder="Title">
+                            <input class="col-4" v-model.trim="element.title" type="text" placeholder="Title">
                             <input class="col-3" type="file" name="" id="">
                             <div class="col-2">Remove</div>
                             <button class="col-2" @click="removeRow(index)"> Remove </button>
@@ -39,10 +39,9 @@
         </div>
         <div>
             <button @click="addNew">Add new song</button>
-            <button v-show="!artist.ismodify" @click="createAlbum">Create</button>
-            <button v-show="artist.ismodify" @click="editAlbum">Save</button>
-            <button @click="returnToArtist">Return to Artist</button>
-             <input type="file" id="file" ref="file" v-on:change="handleFileUpload"/>
+            <button v-show="!ismodify" @click="createAlbum">Create</button>
+            <button v-show="ismodify" @click="editAlbum">Save</button>
+            <button @click="returnToArtist">Return to Artist</button>     
         </div>
     </div>
 </template>
@@ -56,7 +55,6 @@ import draggable from 'vuedraggable';
         },
         data: function () {
             return {
-                file: '',
                 view_pic: null,
                 enabled: true,
                 dragging: false,
@@ -86,16 +84,18 @@ import draggable from 'vuedraggable';
             
             this.album.artistid = this.artist.album.artist_id;
 
-            if(this.artist.ismodify){
+            if(this.ismodify){
                 this.album = this.artist.album;
             }
         },
         mounted() {
+            console.log(this.artist.album.id)
         },
         props: {
-            artist:{
-                ismodify: Boolean,       
+            ismodify: Boolean,   
+            artist:{    
                 album :{
+                    id: Number,
                     title : String,
                     artist_id: Number,
                     artist_name: String,
@@ -105,6 +105,8 @@ import draggable from 'vuedraggable';
                         number_of: Number,
                         song_length: Number,
                         song_url: String,
+                        created_at: String,
+                        updated_at: String,
                     }],
                     pic_url : String,
                     year : Number,
@@ -151,6 +153,10 @@ import draggable from 'vuedraggable';
                 }
                 for(let i = 0; i < this.album.songs.length; i++){
                     this.album.songs[i].number_of = i + 1;
+                    if(this.album.songs[i].title == null || this.album.songs[i].title == ''){
+                        alert('title is empty');
+                        return;
+                    }
                 }
               
                 axios.post('/albums', {album : this.album}).then(response => {             
@@ -159,9 +165,6 @@ import draggable from 'vuedraggable';
                             return;
                         let fdata = new FormData();
                         fdata.append('photo', this.albumfiles.albumpic);
-                
-                        console.log(this.albumpic)
-                        console.log(this.album.pic_file)
                         axios.post(
                             '/upload/albumpic/' + response.data.success.album_id, 
                             fdata,
@@ -169,18 +172,57 @@ import draggable from 'vuedraggable';
                                 headers: { "Content-Type": "multipart/form-data" }
                             })
                         .then(resp => {
-                            console.log('upload SUCSESS!!');    
+                            console.log(resp.data.success);                 
                         })
                         .catch(error => {
-                            console.log('upload FAILURE!!');
-                    });;              
+                            console.log('upload FAILURE!!');                        
+                    });;    
+                     window.location.href = "/albums/" + response.data.success.album_id;      
                    }
                 }).catch(error =>{
                     console.log('FAILURE!!');
                 });;              
             },
             editAlbum(){
-                
+                if(this.album.title == null || this.album.title == ''){
+                    alert('Title is empty')
+                    return;
+                }
+                if(this.album.songs.length === 0){
+                    alert("Songs is empty")
+                    return;
+                }
+                for(let i = 0; i < this.album.songs.length; i++){
+                    this.album.songs[i].number_of = i + 1;
+                    if(this.album.songs[i].title == null || this.album.songs[i].title == ''){
+                        alert('title is empty');
+                        return;
+                    }
+                }
+                axios.put('/albums/'+ this.artist.album.id, {album : this.album}).then(resp =>{
+                    console.log(resp.data.success)
+                    if(this.albumfiles.albumpic === null){
+                            window.location.href = "/albums/" + this.artist.album.id;
+                            return;
+                    }
+                    console.log(this.view_pic);
+                    console.log(this.albumfiles.albumpic)
+                        let fdata = new FormData();
+                        fdata.append('photo', this.albumfiles.albumpic);
+                        axios.post(
+                            '/upload/albumpic/' + this.artist.album.id, 
+                            fdata,
+                            {
+                                headers: { "Content-Type": "multipart/form-data" }
+                            })
+                        .then(resp => {
+                            console.log(resp.data.success);                 
+                        })
+                        .catch(error => {
+                            console.log('upload FAILURE!!');                        
+                    });;    
+                   // window.location.href = "/albums/" + this.artist.album.id;
+                }); 
             },
         },
         computed: {

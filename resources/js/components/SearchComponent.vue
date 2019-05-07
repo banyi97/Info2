@@ -12,7 +12,7 @@
                             <a :href="'/artists/' + item.id">
                                 <div>
                                     <div>
-                                        <img :src="'/img/artists/' + item.pic_url" alt="" width="200" height="200">
+                                        <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
                                     </div>
                                 </div>
                                 <h5>{{item.name}}</h5>
@@ -29,7 +29,7 @@
                                 <a :href="'/albums/' + item.id">
                                 <div>
                                     <div>
-                                        <img :src="'/img/albums/' + item.pic_url" alt="" width="200" height="200">
+                                        <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
                                     </div>
                                 </div>
                                 <h5>{{item.title}}</h5>
@@ -48,7 +48,7 @@
                                 <a :href="'/albums/' + item.id">
                                 <div>
                                     <div>
-                                        <img :src="'/img/albums/' + item.pic_url" alt="" width="200" height="200">
+                                        <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
                                     </div>
                                 </div>
                                 <h5>{{item.title}}</h5>

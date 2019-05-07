@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row justify-content-left">
             <div class="row">                            
-                <div><img :src="'/img/albums/' + album.pic_url" width="150" height="150"></div>
+                <div><img :src="'/storage/' + album.pic_url" width="150" height="150"></div>
                 <div>
                     <h6>{{album.year}}</h6>
                     <h2><a :href=" '/albums/' + album.id ">{{album.title}}</a></h2>
@@ -66,6 +66,7 @@ import axios from 'axios';
         created: function () {
         },
         mounted() {
+            console.log(this.album.pic_url)
         },
         methods: {
             testClick(){
