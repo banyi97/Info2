@@ -3,7 +3,7 @@
         <div class="row justify-content-left">         
             <div class="row">
                 <div>
-                    <img v-if="album.pic_url" :src="'/img/albums/' + album.pic_url" class="img-responsive" height="200" width="200"> <br>
+                    <img v-if="album.pic_url" :src="album.pic_url" class="img-responsive" height="200" width="200"> <br>
                     <input type="file" name="pic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png" />
                 </div>
                 <div>
@@ -13,29 +13,32 @@
                     </div>
                 </div>
             </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">File</th>
-                        <th scope="col">Time</th>
-                        <th scope="col">Remove</th>
-                    </tr>
-                </thead>
-                <tbody> 
-                    <tr v-bind:key="item.id" v-for="(item, index) in album.songs">
-                        <th scope="row"> {{index + 1}} </th>
-                        <td> <input v-model="item.title" type="text"> </td>                        
-                        <td> <input type="file" name="" id=""> </td>
-                        <td> Remove </td>
-                        <td><button @click="removeRow(index)"> Remove </button> </td>
-                    </tr>
-                </tbody>                    
-            </table>
+           <div>           
+               <draggable
+                    :list="album.songs"
+                    :disabled="!enabled"
+                    class="list-group"
+                    ghost-class="ghost"
+                    @start="dragging = true"
+                    @end="dragging = false"
+                    >               
+                    <div 
+                    class="list-group-item"
+                    v-for="(element, index) in album.songs"
+                    :key="element.id">
+                        <div class="row col-12">
+                            <div class="col-1">{{index +1}}</div>
+                            <input class="col-4" v-model="element.title" type="text" placeholder="Title">
+                            <input class="col-3" type="file" name="" id="">
+                            <div class="col-2">Remove</div>
+                            <button class="col-2" @click="removeRow(index)"> Remove </button>
+                        </div>
+                    </div>                  
+                    </draggable>
+           </div>
         </div>
-        <button @click="addNew">Add new song</button>
         <div>
+            <button @click="addNew">Add new song</button>
             <button v-show="!artist.ismodify" @click="createAlbum">Create</button>
             <button v-show="artist.ismodify" @click="editAlbum">Save</button>
             <button @click="returnToArtist">Return to Artist</button>
@@ -45,14 +48,20 @@
 
 <script>
 import axios from 'axios';
+import draggable from 'vuedraggable';
     export default {
+        components: {
+            draggable
+        },
         data: function () {
             return {
+                enabled: true,
+                dragging: false,
                 album :{
                     title : '',
                     artistid: null,
                     songs: [],
-                    pic_url : 'nopic.png',
+                    pic_url : null,
                     year : null,
                 },
                 actualYear : null,
@@ -61,8 +70,7 @@ import axios from 'axios';
         },
         created: function () {
             let date = new Date();
-            this.actualYear = date.getFullYear();
-            this.album.year = date.getFullYear();
+            this.actualYear = this.album.year = date.getFullYear();
             
             this.album.artistid = this.artist.album.artist_id;
 
@@ -73,8 +81,6 @@ import axios from 'axios';
         //    this.album = this.artist.album;
         },
         mounted() {
-            console.log(this.album.pic_url)
-            console.log(this.album.artistid)
         },
         props: {
             artist:{
@@ -88,6 +94,7 @@ import axios from 'axios';
                         title: String,
                         number_of: Number,
                         song_length: Number,
+                        song_url: String,
                     }],
                     pic_url : String,
                     year : Number,
@@ -115,7 +122,7 @@ import axios from 'axios';
                 let reader = new FileReader();
                 let vm = this;
                 reader.onload = (e) => {
-                    vm.album.pic = e.target.result;
+                    vm.album.pic_url = e.target.result;
                 };
                 reader.readAsDataURL(file);
             },
@@ -136,6 +143,11 @@ import axios from 'axios';
             editAlbum(){
                 
             }    
-        }
+        },
+        computed: {
+            draggingInfo() {
+                return this.dragging ? "under drag" : "";
+            }
+        },
     }
 </script>

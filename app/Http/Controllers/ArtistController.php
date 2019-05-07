@@ -31,7 +31,7 @@ class ArtistController extends Controller
     public function create()
     {
         //
-        return view('album.create');
+        return view('artist.create');
     }
 
     /**
@@ -43,8 +43,28 @@ class ArtistController extends Controller
     public function store(Request $request)
     {
         //
-        foreach($request as $song)
-        return view('album.show')->with();
+        if(isset($request->artist)){
+
+            $validator = Validator::make($request->artist->all(), [
+                'name' => 'required'
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator], 200);
+            }
+
+            if(DB::table('artists')->insert(
+                [
+                    'name' => $request->artist['name'],
+                ]
+                ));
+            $id = DB::table('artists')
+                ->select('id')
+                ->where([
+                    ['artists.name', '=', $request->artist['name']]
+                ])
+                ->get();    
+        }
+        return response()->json(['success' => $id[0]->id], 200);
     }
 
     /**
@@ -121,6 +141,10 @@ class ArtistController extends Controller
     public function edit($id)
     {
         //
+        $query = DB::table('artists')
+            ->select( 'artists.*' )
+            ->where('artists.id', $id)
+            ->get(); 
         return view('artist.edit');
     }
 
@@ -146,6 +170,10 @@ class ArtistController extends Controller
     public function destroy($id)
     {
         //
-        return view('artist.show');
+        if(DB::table('albums')->where('albums.id', '=', $id)->delete()){
+            return response()->json(['success' => 'Ok'], 200);
+        }
+        
+        return response()->json(['error' => 'Error'], 200);
     }
 }
