@@ -22,10 +22,9 @@ class UploadController extends Controller
             //
             $path = $request->photo->store('public');
             $filename = basename($path);
-            $encoded = base64_encode($filename);
             DB::table('albums')
                 ->where('albums.id', $id)
-                ->update(['pic_url' => $encoded]);
+                ->update(['pic_url' => $filename]);
         return response()->json(['success' => $filename], 200);
         }
     }
@@ -34,10 +33,9 @@ class UploadController extends Controller
     {
         //
         $path = $request->photo->store('public');
-            $encoded = base64_encode($path);
             DB::table('artists')
                 ->where('id', $id)
-                ->update(['pic_url' => $encoded]);
+                ->update(['pic_url' => $filename]);
         return response()->json(['success' => basename($path)], 200);
     }
 

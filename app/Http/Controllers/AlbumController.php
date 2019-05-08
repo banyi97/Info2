@@ -111,7 +111,7 @@ class AlbumController extends Controller
             $ret['artist'] = $item->artist_name;
             $ret['title'] = $item->album_title;
             $ret['year'] = $item->release_date;
-            $ret['pic_url'] = base64_decode($item->pic_url);
+            $ret['pic_url'] = $item->pic_url;
             $ret['songs'] = array();
             foreach($query as $songs){
                 if($songs->album_id != $ret['id'])
@@ -159,7 +159,7 @@ class AlbumController extends Controller
                 $ret['id'] = $item->album_album_id;
                 $ret['title'] = $item->album_title;                
                 $ret['year'] = $item->release_date;
-                $ret['pic_url'] = base64_decode($item->pic_url);
+                $ret['pic_url'] = $item->pic_url;
                 $ret['songs'] = array();
                 $ret['artist_id'] = $item->artist_id;
                 $ret['artist_name'] = $item->artist_name;

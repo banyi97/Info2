@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-        <albumadmin-component :artist="{{$artist}}"></albumadmin-component>
+    <div class="row justify-content-center">       
+        <albumadmin-component :ismodify=false :artist="{{$artist}}"></albumadmin-component>
     </div>
 </div>
 <br>
