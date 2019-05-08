@@ -1889,7 +1889,15 @@ __webpack_require__.r(__webpack_exports__);
       this.album.songs.push(q);
     },
     removeRow: function removeRow(index) {
-      this.album.songs.splice(index, 1);
+      var _this = this;
+
+      if (this.ismodify) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/albums/song/' + this.album.songs[index].id).then(function (resp) {
+          _this.album.songs.splice(index, 1);
+        })["catch"](function (error) {});
+      } else {
+        this.album.songs.splice(index, 1);
+      }
     },
     onImageChange: function onImageChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -1897,14 +1905,14 @@ __webpack_require__.r(__webpack_exports__);
       this.createImage(files[0]);
     },
     createImage: function createImage(file) {
-      var _this = this;
+      var _this2 = this;
 
       var reader = new FileReader();
       var vm = this;
 
       reader.onload = function (e) {
         vm.view_pic = e.target.result;
-        _this.albumfiles.albumpic = _this.$refs.albumpic.files[0];
+        _this2.albumfiles.albumpic = _this2.$refs.albumpic.files[0];
       };
 
       reader.readAsDataURL(file);
@@ -1913,7 +1921,7 @@ __webpack_require__.r(__webpack_exports__);
       window.location.href = "/artists/" + this.artist.album.artist_id;
     },
     createAlbum: function createAlbum() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.album.title == null || this.album.title == '') {
         alert('Title is empty');
@@ -1938,9 +1946,9 @@ __webpack_require__.r(__webpack_exports__);
         album: this.album
       }).then(function (response) {
         if (response.data.success) {
-          if (_this2.albumfiles.albumpic === null) return;
+          if (_this3.albumfiles.albumpic === null) return;
           var fdata = new FormData();
-          fdata.append('photo', _this2.albumfiles.albumpic);
+          fdata.append('photo', _this3.albumfiles.albumpic);
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
             headers: {
               "Content-Type": "multipart/form-data"
@@ -1959,7 +1967,7 @@ __webpack_require__.r(__webpack_exports__);
       ;
     },
     editAlbum: function editAlbum() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.album.title == null || this.album.title == '') {
         alert('Title is empty');
@@ -1985,16 +1993,16 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (resp) {
         console.log(resp.data.success);
 
-        if (_this3.albumfiles.albumpic === null) {
-          window.location.href = "/albums/" + _this3.artist.album.id;
+        if (_this4.albumfiles.albumpic === null) {
+          window.location.href = "/albums/" + _this4.artist.album.id;
           return;
         }
 
-        console.log(_this3.view_pic);
-        console.log(_this3.albumfiles.albumpic);
+        console.log(_this4.view_pic);
+        console.log(_this4.albumfiles.albumpic);
         var fdata = new FormData();
-        fdata.append('photo', _this3.albumfiles.albumpic);
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this3.artist.album.id, fdata, {
+        fdata.append('photo', _this4.albumfiles.albumpic);
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this4.artist.album.id, fdata, {
           headers: {
             "Content-Type": "multipart/form-data"
           }

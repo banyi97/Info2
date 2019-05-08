@@ -121,8 +121,18 @@ import draggable from 'vuedraggable';
                 }
                 this.album.songs.push(q);
             },
-            removeRow(index){
-                this.album.songs.splice(index, 1);
+            removeRow(index){                
+                if(this.ismodify){
+                    axios.delete('/albums/song/'+ this.album.songs[index].id).then(resp =>{
+                        this.album.songs.splice(index, 1);
+                    })
+                    .catch(error =>{
+
+                    })
+                }
+                else{
+                    this.album.songs.splice(index, 1);
+                }
             },
             onImageChange(e) {
                 let files = e.target.files || e.dataTransfer.files;

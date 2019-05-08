@@ -214,7 +214,7 @@ class AlbumController extends Controller
                 );
                 
                     foreach($request->album['songs'] as $song){
-                        DB::table('songs')
+                        if(DB::table('songs')
                         ->where([
                             ['songs.album_id', '=', $id],
                             ['songs.id', '=', $song['id']]
@@ -225,10 +225,22 @@ class AlbumController extends Controller
                             'number_of' => $song['number_of'],
                             'updated_at' => $datetime
                             ],
-                        ); 
+                        ));
+                        else{
+                            $datetime = date("Y-m-d H:i:s");                                              
+                                DB::table('songs')->insert(
+                                    [
+                                        'title' => $song['title'],
+                                        'number_of' => $song['number_of'],
+                                        'album_id' => $id,
+                                        'length' =>  7,//$song['song_length'],
+                                        'created_at' => $datetime,
+                                        'updated_at' => $datetime
+                                    ]);                         
+                            }       
+                        } 
         }
-                
-        }
+                       
         return response()->json(['success' => 'OK'], 200);
     }
 
@@ -270,6 +282,17 @@ class AlbumController extends Controller
         //
         
         if(DB::table('albums')->where('albums.id', '=', $id)->delete()){
+            return response()->json(['success' => 'Ok'], 200);
+        }
+        
+        return response()->json(['error' => 'Error'], 200);
+    }
+
+    public function destroySong($id)
+    {
+        //
+        
+        if(DB::table('songs')->where('songs.id', '=', $id)->delete()){
             return response()->json(['success' => 'Ok'], 200);
         }
         

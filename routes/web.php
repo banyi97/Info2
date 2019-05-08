@@ -42,6 +42,7 @@ Route::get('/albums/{id}/edit','AlbumController@edit');
 Route::put('/albums/{id}','AlbumController@update');
 Route::patch('/albums/{id}/{number}','AlbumController@updateSong');
 Route::delete('/albums/{id}','AlbumController@destroy');
+Route::delete('/albums/song/{id}','AlbumController@destroySong');
 
 Route::get('/search', function(){
     return view('search');
