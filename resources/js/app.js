@@ -27,6 +27,7 @@ Vue.component('artistadmin-component', require('./components/ArtistAdminComponen
 Vue.component('navmenu-component', require('./components/NavMenuComponent.vue').default);
 Vue.component('search-component', require('./components/SearchComponent.vue').default);
 Vue.component('player-component', require('./components/PlayerComponent.vue').default);
+Vue.component('yourlib-component', require('./components/YourLibComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

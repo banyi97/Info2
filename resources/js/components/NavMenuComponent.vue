@@ -52,12 +52,8 @@ body {
         <a href="/home" class="list-group-item list-group-item-action bg-light">Home</a>
         <a href="/search" class="list-group-item list-group-item-action bg-light">Search</a>
         <a href="/yourlib" class="list-group-item list-group-item-action bg-light">Your library</a>
-      </div>
-      <div class="sidebar-heading">Playlists</div>
-      <div class="list-group list-group-flush" v-bind:key="item.id" v-for="item in playlists">
-        <a :href="'/playlists/' + item.id" class="list-group-item list-group-item-action bg-light">{{item.name}}</a>
-      </div>
-    </div>
+      </div>   
+</div>
 </template>
 
 <script>
