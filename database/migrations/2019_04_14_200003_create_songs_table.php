@@ -19,7 +19,8 @@ class CreateSongsTable extends Migration
             $table->tinyInteger("number_of");
             $table->unsignedBigInteger('plays')->default(0);
             $table->string('title');
-            $table->unsignedSmallInteger("length");
+            $table->string('file_url')->nullable();
+            $table->unsignedSmallInteger("length")->nullable();
             $table->timestamps();
 
             $table->foreign('album_id')->references('id')->on('albums')->onDelete('cascade');

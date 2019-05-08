@@ -54,9 +54,18 @@ class UploadController extends Controller
     public function storeSongs(Request $request, $id)
     {
         //
-        if ($request->file('photo')->isValid()) {
+        $datetime = date("Y-m-d H:i:s");
+        if ($request->file('song')->isValid()) {
             //
-            $path = $request->photo->store('public');
+            $path = $request->song->store('public');
+            $filename = basename($path);
+            DB::table('songs')
+                ->where('songs.id', $id)
+                ->update([
+                    'file_url' => $filename,
+                    'updated_at' => $datetime
+                ]);
+        return response()->json(['success' => $filename], 200);
         }
     }
     

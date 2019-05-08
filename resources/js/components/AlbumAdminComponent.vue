@@ -35,7 +35,7 @@
                         <tr v-for="(item, index) in album.songs" :key="item.id">
                             <td scope="row">{{index +1}}</td>
                             <td><input v-model.trim="item.title" type="text" placeholder="Title"></td>
-                            <td><input type="file" name="" id=""></td>
+                            <td><input type="file" :id="index" v-on:change="onSongChange" ></td>
                             <td><div>Remove</div></td>
                             <td><button @click="removeRow(index)"> Remove </button></td>
                         </tr>
@@ -72,6 +72,7 @@ import draggable from 'vuedraggable';
                         song_file: null,
                         number_of: null,
                         song_length: 0,
+                        file: null,
                     }],
                     pic_url : null,
                     year : null,
@@ -140,23 +141,43 @@ import draggable from 'vuedraggable';
                     this.album.songs.splice(index, 1);
                 }
             },
+            onSongChange(e){
+                let files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                this.album.songs[e.target.id].file = files[0];
+            },
             onImageChange(e) {
                 let files = e.target.files || e.dataTransfer.files;
                 if (!files.length)
-                    return;              
+                    return;
+                this.albumfiles.albumpic = files[0];     
                 this.createImage(files[0]);
             },
             createImage(file) {
                 let reader = new FileReader();
                 let vm = this;
                 reader.onload = (e) => {
-                    vm.view_pic = e.target.result;
-                    this.albumfiles.albumpic = this.$refs.albumpic.files[0];                
+                    vm.view_pic = e.target.result;              
                 };
                 reader.readAsDataURL(file);
             },
             returnToArtist(){
                 window.location.href = "/artists/" + this.artist.album.artist_id;
+            },
+            sendSong(id, file){
+                let fdata = new FormData();
+                fdata.append('song', file);
+                axios.post(
+                    '/upload/songs/'+id,
+                    fdata,
+                    {
+                        headers: { "Content-Type": "multipart/form-data" }
+                    }).then(resp => {
+
+                    }).catch(error =>{
+                        console.log(error)
+                    })
             },
             createAlbum(){
                 if(this.album.title == null || this.album.title == ''){
@@ -181,21 +202,23 @@ import draggable from 'vuedraggable';
                             window.location.href = "/albums/" + response.data.success.album_id;
                             return;
                         }
-                        let fdata = new FormData();
-                        fdata.append('photo', this.albumfiles.albumpic);
-                        axios.post(
-                            '/upload/albumpic/' + response.data.success.album_id, 
-                            fdata,
-                            {
-                                headers: { "Content-Type": "multipart/form-data" }
+                        else{
+                            let fdata = new FormData();
+                            fdata.append('photo', this.albumfiles.albumpic);
+                            axios.post(
+                                '/upload/albumpic/' + response.data.success.album_id, 
+                                fdata,
+                                {
+                                    headers: { "Content-Type": "multipart/form-data" }
+                                })
+                            .then(resp => {
+                                console.log(resp.data.success);                              
+                                window.location.href = "/albums/" + response.data.success.album_id;               
                             })
-                        .then(resp => {
-                            console.log(resp.data.success);  
-                            window.location.href = "/albums/" + response.data.success.album_id;               
-                        })
-                        .catch(error => {
-                            console.log('upload FAILURE!!');                        
-                    });;                          
+                            .catch(error => {
+                                console.log('upload FAILURE!!');                        
+                            });  
+                        }                                      
                    }
                 }).catch(error =>{
                     console.log('FAILURE!!');
@@ -220,9 +243,25 @@ import draggable from 'vuedraggable';
                 axios.put('/albums/'+ this.artist.album.id, {album : this.album}).then(resp =>{
                     console.log(resp.data.success)
                     if(this.albumfiles.albumpic === null){
-                            window.location.href = "/albums/" + this.artist.album.id;
-                            return;
+                            this.album.songs.forEach(element => {
+                                if(element.file != null){
+                                    let fdata = new FormData();
+                                    fdata.append('song', element.file);
+                                    axios.post(
+                                        '/upload/songs/'+element.id,
+                                        fdata,
+                                        {
+                                            headers: { "Content-Type": "multipart/form-data" }
+                                        }).then(resp => {
+
+                                        }).catch(error =>{
+                                            console.log(error)
+                                        })
+                                }
+                            }); 
+                            window.location.href = "/albums/" + this.artist.album.id;  
                     }
+                    else{
                         let fdata = new FormData();
                         fdata.append('photo', this.albumfiles.albumpic);
                         axios.post(
@@ -232,19 +271,36 @@ import draggable from 'vuedraggable';
                                 headers: { "Content-Type": "multipart/form-data" }
                             })
                         .then(resp => {
-                            console.log(resp.data.success);      
+                            this.album.songs.forEach(element => {
+                                if(element.file != null){
+                                    let fdata = new FormData();
+                                    fdata.append('song', element.file);
+                                    axios.post(
+                                        '/upload/songs/'+element.id,
+                                        fdata,
+                                        {
+                                            headers: { "Content-Type": "multipart/form-data" }
+                                        }).then(resp => {
+
+                                        }).catch(error =>{
+                                            console.log(error)
+                                        })
+                                }
+                            });  
                             window.location.href = "/albums/" + this.artist.album.id;           
                         })
                         .catch(error => {
                             console.log('upload FAILURE!!');                        
                     });;   
+                    }
                 }); 
             },
         },
         computed: {
             draggingInfo() {
                 return this.dragging ? "under drag" : "";
-            }
+            },     
+
         },
     }
 </script>

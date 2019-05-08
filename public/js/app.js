@@ -1839,7 +1839,8 @@ __webpack_require__.r(__webpack_exports__);
           title: '',
           song_file: null,
           number_of: null,
-          song_length: 0
+          song_length: 0,
+          file: null
         }],
         pic_url: null,
         year: null
@@ -1905,20 +1906,23 @@ __webpack_require__.r(__webpack_exports__);
         this.album.songs.splice(index, 1);
       }
     },
+    onSongChange: function onSongChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.album.songs[e.target.id].file = files[0];
+    },
     onImageChange: function onImageChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
+      this.albumfiles.albumpic = files[0];
       this.createImage(files[0]);
     },
     createImage: function createImage(file) {
-      var _this2 = this;
-
       var reader = new FileReader();
       var vm = this;
 
       reader.onload = function (e) {
         vm.view_pic = e.target.result;
-        _this2.albumfiles.albumpic = _this2.$refs.albumpic.files[0];
       };
 
       reader.readAsDataURL(file);
@@ -1926,8 +1930,19 @@ __webpack_require__.r(__webpack_exports__);
     returnToArtist: function returnToArtist() {
       window.location.href = "/artists/" + this.artist.album.artist_id;
     },
+    sendSong: function sendSong(id, file) {
+      var fdata = new FormData();
+      fdata.append('song', file);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + id, fdata, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then(function (resp) {})["catch"](function (error) {
+        console.log(error);
+      });
+    },
     createAlbum: function createAlbum() {
-      var _this3 = this;
+      var _this2 = this;
 
       if (this.album.title == null || this.album.title == '') {
         alert('Title is empty');
@@ -1952,24 +1967,23 @@ __webpack_require__.r(__webpack_exports__);
         album: this.album
       }).then(function (response) {
         if (response.data.success) {
-          if (_this3.albumfiles.albumpic === null) {
+          if (_this2.albumfiles.albumpic === null) {
             window.location.href = "/albums/" + response.data.success.album_id;
             return;
+          } else {
+            var fdata = new FormData();
+            fdata.append('photo', _this2.albumfiles.albumpic);
+            axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            }).then(function (resp) {
+              console.log(resp.data.success);
+              window.location.href = "/albums/" + response.data.success.album_id;
+            })["catch"](function (error) {
+              console.log('upload FAILURE!!');
+            });
           }
-
-          var fdata = new FormData();
-          fdata.append('photo', _this3.albumfiles.albumpic);
-          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
-            headers: {
-              "Content-Type": "multipart/form-data"
-            }
-          }).then(function (resp) {
-            console.log(resp.data.success);
-            window.location.href = "/albums/" + response.data.success.album_id;
-          })["catch"](function (error) {
-            console.log('upload FAILURE!!');
-          });
-          ;
         }
       })["catch"](function (error) {
         console.log('FAILURE!!');
@@ -1977,7 +1991,7 @@ __webpack_require__.r(__webpack_exports__);
       ;
     },
     editAlbum: function editAlbum() {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.album.title == null || this.album.title == '') {
         alert('Title is empty');
@@ -2003,24 +2017,52 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (resp) {
         console.log(resp.data.success);
 
-        if (_this4.albumfiles.albumpic === null) {
-          window.location.href = "/albums/" + _this4.artist.album.id;
-          return;
-        }
+        if (_this3.albumfiles.albumpic === null) {
+          _this3.album.songs.forEach(function (element) {
+            if (element.file != null) {
+              var fdata = new FormData();
+              fdata.append('song', element.file);
+              axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + element.id, fdata, {
+                headers: {
+                  "Content-Type": "multipart/form-data"
+                }
+              }).then(function (resp) {})["catch"](function (error) {
+                console.log(error);
+              });
+            }
+          });
 
-        var fdata = new FormData();
-        fdata.append('photo', _this4.albumfiles.albumpic);
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this4.artist.album.id, fdata, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        }).then(function (resp) {
-          console.log(resp.data.success);
-          window.location.href = "/albums/" + _this4.artist.album.id;
-        })["catch"](function (error) {
-          console.log('upload FAILURE!!');
-        });
-        ;
+          window.location.href = "/albums/" + _this3.artist.album.id;
+        } else {
+          var fdata = new FormData();
+          fdata.append('photo', _this3.albumfiles.albumpic);
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this3.artist.album.id, fdata, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }).then(function (resp) {
+            _this3.album.songs.forEach(function (element) {
+              if (element.file != null) {
+                var _fdata = new FormData();
+
+                _fdata.append('song', element.file);
+
+                axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + element.id, _fdata, {
+                  headers: {
+                    "Content-Type": "multipart/form-data"
+                  }
+                }).then(function (resp) {})["catch"](function (error) {
+                  console.log(error);
+                });
+              }
+            });
+
+            window.location.href = "/albums/" + _this3.artist.album.id;
+          })["catch"](function (error) {
+            console.log('upload FAILURE!!');
+          });
+          ;
+        }
       });
     }
   },
@@ -44426,7 +44468,10 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("td", [
-                    _c("input", { attrs: { type: "file", name: "", id: "" } })
+                    _c("input", {
+                      attrs: { type: "file", id: index },
+                      on: { change: _vm.onSongChange }
+                    })
                   ]),
                   _vm._v(" "),
                   _c("td", [_c("div", [_vm._v("Remove")])]),
