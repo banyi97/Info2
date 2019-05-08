@@ -44941,7 +44941,7 @@ var render = function() {
                 [
                   _c("div", { staticClass: "row text-center" }, [
                     _c("div", [
-                      _c("a", { attrs: { href: "/albums/" + item.id } }, [
+                      _c("a", { attrs: { href: "/albums/" + item.album_id } }, [
                         _c("div", [
                           _c("div", [
                             _c("img", {

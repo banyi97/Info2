@@ -45,7 +45,7 @@
                     <li class="list-group-item" v-bind:key="item.id" v-for="item in returns.songs">
                         <div class='row text-center'>       
                             <div>
-                                <a :href="'/albums/' + item.id">
+                                <a :href="'/albums/' + item.album_id">
                                 <div>
                                     <div>
                                         <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
