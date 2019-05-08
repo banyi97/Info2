@@ -173,8 +173,10 @@ import draggable from 'vuedraggable';
               
                 axios.post('/albums', {album : this.album}).then(response => {             
                     if (response.data.success) {                   
-                        if(this.albumfiles.albumpic === null)
+                        if(this.albumfiles.albumpic === null){
+                            window.location.href = "/albums/" + response.data.success.album_id;
                             return;
+                        }
                         let fdata = new FormData();
                         fdata.append('photo', this.albumfiles.albumpic);
                         axios.post(
@@ -184,12 +186,12 @@ import draggable from 'vuedraggable';
                                 headers: { "Content-Type": "multipart/form-data" }
                             })
                         .then(resp => {
-                            console.log(resp.data.success);                 
+                            console.log(resp.data.success);  
+                            window.location.href = "/albums/" + response.data.success.album_id;               
                         })
                         .catch(error => {
                             console.log('upload FAILURE!!');                        
-                    });;    
-                     window.location.href = "/albums/" + response.data.success.album_id;      
+                    });;                          
                    }
                 }).catch(error =>{
                     console.log('FAILURE!!');
@@ -226,12 +228,12 @@ import draggable from 'vuedraggable';
                                 headers: { "Content-Type": "multipart/form-data" }
                             })
                         .then(resp => {
-                            console.log(resp.data.success);                 
+                            console.log(resp.data.success);      
+                            window.location.href = "/albums/" + this.artist.album.id;           
                         })
                         .catch(error => {
                             console.log('upload FAILURE!!');                        
-                    });;    
-                    window.location.href = "/albums/" + this.artist.album.id;
+                    });;   
                 }); 
             },
         },

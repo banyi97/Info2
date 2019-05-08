@@ -64,9 +64,6 @@ import axios from 'axios';
             }           
         },
         mounted() {
-            console.log(this.partist.id)
-            console.log(this.partist.name)
-            console.log(this.partist.pic_url)
         },
         props: {
             met: String,
@@ -97,24 +94,27 @@ import axios from 'axios';
                         window.location.href = "/artists/" + resq.data.success; 
                         return;
                     }  
-                    console.log('file is not null')
-                    const id = resq.data.success;
-                    let fdata = new FormData();
-                    fdata.append('photo', this.pic_file);
-                    axios.post(
-                      '/upload/artistpic/' + id, 
-                        fdata,
-                        {
-                            headers: { "Content-Type": "multipart/form-data" }                          
-                        }).then(res =>{
-                            console.log(res.data.success)
-                      window.location.href = "/artists/" + resq.data.success;
-                  }).catch(error =>{
-                        console.log(error);
-                        this.sended = false;
-                        return;
-                  })
-                    window.location.href = "/artists/" + resq.data.success; 
+                    else{
+                        console.log('file is not null')
+                        const id = resq.data.success;
+                        let fdata = new FormData();
+                        fdata.append('photo', this.pic_file);
+                        axios.post(
+                            '/upload/artistpic/' + id, 
+                            fdata,
+                            {
+                                headers: { "Content-Type": "multipart/form-data" }                          
+                            }).then(res => {
+                                if(res.data.success){
+                                    console.log(res.data.success)
+                                    window.location.href = "/artists/" + resq.data.success;
+                                }
+                            }).catch(error =>{
+                                    console.log(error);
+                                    this.sended = false;
+                                    return;
+                            })
+                    }
                 }).catch(error => {
                     console.log(error)
                     this.sended = false;
@@ -139,19 +139,18 @@ import axios from 'axios';
                     let fdata = new FormData();
                     fdata.append('photo', this.pic_file);
                     axios.post(
-                      '/upload/artistpic/' + this.partist.id, 
+                        '/upload/artistpic/' + this.partist.id, 
                         fdata,
                         {
                             headers: { "Content-Type": "multipart/form-data" }                          
                         }).then(res =>{
                             console.log(res.data.success)
-                      window.location.href = "/artists/" + this.partist.id;
-                  }).catch(error =>{
+                            window.location.href = "/artists/" + this.partist.id;
+                        }).catch(error =>{
                         console.log('File upload error: '+ error);
                         this.sended = false;
                         return;
                   })
-                    window.location.href = "/artists/" + this.partist.id; 
                 }).catch(error => {
                     console.log('Update error '+error)
                     this.sended = false;
@@ -173,6 +172,8 @@ import axios from 'axios';
                 };
                 reader.readAsDataURL(file);
             },
+            
         }    
     }
+    
 </script>

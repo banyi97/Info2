@@ -1948,7 +1948,11 @@ __webpack_require__.r(__webpack_exports__);
         album: this.album
       }).then(function (response) {
         if (response.data.success) {
-          if (_this3.albumfiles.albumpic === null) return;
+          if (_this3.albumfiles.albumpic === null) {
+            window.location.href = "/albums/" + response.data.success.album_id;
+            return;
+          }
+
           var fdata = new FormData();
           fdata.append('photo', _this3.albumfiles.albumpic);
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
@@ -1957,11 +1961,11 @@ __webpack_require__.r(__webpack_exports__);
             }
           }).then(function (resp) {
             console.log(resp.data.success);
+            window.location.href = "/albums/" + response.data.success.album_id;
           })["catch"](function (error) {
             console.log('upload FAILURE!!');
           });
           ;
-          window.location.href = "/albums/" + response.data.success.album_id;
         }
       })["catch"](function (error) {
         console.log('FAILURE!!');
@@ -2008,11 +2012,11 @@ __webpack_require__.r(__webpack_exports__);
           }
         }).then(function (resp) {
           console.log(resp.data.success);
+          window.location.href = "/albums/" + _this4.artist.album.id;
         })["catch"](function (error) {
           console.log('upload FAILURE!!');
         });
         ;
-        window.location.href = "/albums/" + _this4.artist.album.id;
       });
     }
   },
@@ -2218,11 +2222,7 @@ __webpack_require__.r(__webpack_exports__);
       sended: false
     };
   },
-  mounted: function mounted() {
-    console.log(this.partist.id);
-    console.log(this.partist.name);
-    console.log(this.partist.pic_url);
-  },
+  mounted: function mounted() {},
   props: {
     met: String,
     partist: {
@@ -2259,25 +2259,26 @@ __webpack_require__.r(__webpack_exports__);
         if (_this.pic_file == null) {
           window.location.href = "/artists/" + resq.data.success;
           return;
+        } else {
+          console.log('file is not null');
+          var id = resq.data.success;
+          var fdata = new FormData();
+          fdata.append('photo', _this.pic_file);
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/artistpic/' + id, fdata, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }).then(function (res) {
+            if (res.data.success) {
+              console.log(res.data.success);
+              window.location.href = "/artists/" + resq.data.success;
+            }
+          })["catch"](function (error) {
+            console.log(error);
+            _this.sended = false;
+            return;
+          });
         }
-
-        console.log('file is not null');
-        var id = resq.data.success;
-        var fdata = new FormData();
-        fdata.append('photo', _this.pic_file);
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/artistpic/' + id, fdata, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        }).then(function (res) {
-          console.log(res.data.success);
-          window.location.href = "/artists/" + resq.data.success;
-        })["catch"](function (error) {
-          console.log(error);
-          _this.sended = false;
-          return;
-        });
-        window.location.href = "/artists/" + resq.data.success;
       })["catch"](function (error) {
         console.log(error);
         _this.sended = false;
@@ -2322,7 +2323,6 @@ __webpack_require__.r(__webpack_exports__);
           _this2.sended = false;
           return;
         });
-        window.location.href = "/artists/" + _this2.partist.id;
       })["catch"](function (error) {
         console.log('Update error ' + error);
         _this2.sended = false;
