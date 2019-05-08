@@ -1,34 +1,32 @@
 <template>
     <div class="container">
-        <div class="row justify-content-left">
+        <div class="justify-content-left">
             <div class="row">                            
-                <div><img :src="'/storage/' + album.pic_url" width="150" height="150"></div>
-                <div>
+                <div class="mt-2 mx-2"><img :src="'/storage/' + album.pic_url" width="150" height="150"></div>
+                <div class="mt-2 ">
                     <h6>{{album.year}}</h6>
-                    <h2><a :href=" '/albums/' + album.id ">{{album.title}}</a></h2>
-                    <div v-show="!isInArtist">
-                        <p>By: <a :href=" '/artists/' + album.artist_id">{{album.artist}}</a> </p>
-                        <p>{{album.year}} * {{album.songs.length}} songs, {{ totalTime(album.songs) }}</p>
-                    </div>
+                    <h2>{{album.title}}</h2>
+                    <p>By: <a :href=" '/artists/' + album.artist_id">{{album.artist}}</a> </p>
+                    <p>{{album.year}} * {{album.songs.length}} songs, {{ totalTime(album.songs) }}</p>
                 </div>
             </div>
-        </div> 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Time</th>
-                </tr>
-            </thead>
-                <tbody>
-                    <tr v-bind:key="item.id" v-for="item in album.songs">
-                    <th scope="row"> <a href="">{{item.number_of}}</a> </th>
-                    <td>{{item.title}}</td>
-                    <td>{{convertToTime(item.song_length)}}</td>
-                </tr>
-            </tbody>                    
-        </table>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                        <tr v-bind:key="item.id" v-for="item in album.songs">
+                        <th scope="row"> <a href="">{{item.number_of}}</a> </th>
+                        <td>{{item.title}}</td>
+                        <td>{{convertToTime(item.song_length)}}</td>
+                    </tr>
+                </tbody>                    
+            </table>
+        </div>
         <a :href="'/albums/' + album.id + '/edit'">Edit</a>
         <button @click="deleteAlbum">Delete</button>
     </div>

@@ -75,19 +75,19 @@
         </nav>
 
         <div class="container-fluid">
-            <div class="row flex-xl-nowrap">
+            <div class="row">
                 @guest
 
-                <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+                <main class="col-12 col-md-10 col-xl-9 py-md-3 pl-md-5 bd-content">
                         @yield('content')
                 </main>
 
                 @else
 
-                <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+                <div class="col-1 bd-sidebar">
                     <navmenu-component></navmenu-component>
                 </div>
-                <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+                <main class="col-11 bd-content">
                     @yield('content')
                 </main>
                 

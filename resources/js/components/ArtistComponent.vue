@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row justify-content-left">           
+        <div class="justify-content-left">           
             <div class="row">  
                 <div>
                     <img :src="'/storage/'+artist.pic_url" class="img-responsive" height="200" width="200">    
@@ -12,22 +12,27 @@
                 </div>
             </div>
         </div> 
-        <div v-bind:key="item.id" v-for="item in artist.albums">
-            <div class='row text-center'>       
-                <div>
-                    <a :href="'/albums/' + item.id">
-                        <div>
+        <div>
+            <h2 class='mt-2 mx-2'>Albums</h2>
+                <div class="row"> 
+                    <div v-bind:key="item.id" v-for="item in artist.albums">
+                        <div class='mt-2 mx-2 text-center'>       
                             <div>
-                                <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
+                                <a :href="'/albums/' + item.id">
+                                    <div>
+                                        <div>
+                                            <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
+                                        </div>
+                                    </div>
+                                    <h5>{{item.title}}</h5>
+                                </a>
+                                <a :href="'/artists/' + item.artist_id">{{item.artist_name}}</a>
                             </div>
-                        </div>
-                        <h5>{{item.title}}</h5>
-                    </a>
-                    <a :href="'/artists/' + item.artist_id">{{item.artist_name}}</a>
+                        </div>  
+                    </div>
                 </div>
-            </div>  
         </div>
-        <a :href="'/albums/create/' + artist.id ">Create new Album</a>
+        <a :href="'/albums/create/' + artist.id ">Create new Album</a>  
     </div>
 </template>
 

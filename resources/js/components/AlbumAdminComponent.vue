@@ -15,28 +15,32 @@
                     </div>
                 </div>
             </div>
-           <div>           
-               <draggable
-                    :list="album.songs"
-                    :disabled="!enabled"
-                    class="list-group"
-                    ghost-class="ghost"
-                    @start="dragging = true"
-                    @end="dragging = false"
-                    >               
-                    <div 
-                    class="list-group-item"
-                    v-for="(element, index) in album.songs"
-                    :key="element.id">
-                        <div class="row col-12">
-                            <div class="col-1">{{index +1}}</div>
-                            <input class="col-4" v-model.trim="element.title" type="text" placeholder="Title">
-                            <input class="col-3" type="file" name="" id="">
-                            <div class="col-2">Remove</div>
-                            <button class="col-2" @click="removeRow(index)"> Remove </button>
-                        </div>
-                    </div>                  
-                    </draggable>
+           <div> 
+               <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">File</th>
+                            <th scope="col">Length</th>
+                            <th scope="col">Remove</th>
+                        </tr>
+                    </thead>       
+                    <draggable 
+                        v-model="album.songs" 
+                        tag="tbody" 
+                        :disabled="!enabled" 
+                        @start="dragging = true"
+                        @end="dragging = false">
+                        <tr v-for="(item, index) in album.songs" :key="item.id">
+                            <td scope="row">{{index +1}}</td>
+                            <td><input v-model.trim="item.title" type="text" placeholder="Title"></td>
+                            <td><input type="file" name="" id=""></td>
+                            <td><div>Remove</div></td>
+                            <td><button @click="removeRow(index)"> Remove </button></td>
+                        </tr>
+                    </draggable>                
+                </table>          
            </div>
         </div>
         <div>
@@ -147,7 +151,7 @@ import draggable from 'vuedraggable';
                 let vm = this;
                 reader.onload = (e) => {
                     vm.view_pic = e.target.result;
-                    this.albumfiles.albumpic = this.$refs.albumpic.files[0];
+                    this.albumfiles.albumpic = this.$refs.albumpic.files[0];                
                 };
                 reader.readAsDataURL(file);
             },
