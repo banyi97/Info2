@@ -31,7 +31,9 @@ class ArtistController extends Controller
     public function create()
     {
         //
-        return view('artist.create');
+        return view('artist.create')->with([              
+            'mode'=> 'create'
+        ]);
     }
 
     /**
@@ -44,27 +46,24 @@ class ArtistController extends Controller
     {
         //
         if(isset($request->artist)){
-
+/*
             $validator = Validator::make($request->artist->all(), [
                 'name' => 'required'
-            ]);
+            ]); 
             if ($validator->fails()) {
                 return response()->json(['error' => $validator], 200);
-            }
-
-            if(DB::table('artists')->insert(
+            }*/
+            $datetime = date("Y-m-d H:i:s");
+            $id = DB::table('artists')->insertGetId(
                 [
                     'name' => $request->artist['name'],
+                    'created_at' => $datetime,
+                    'updated_at' => $datetime
                 ]
-                ));
-            $id = DB::table('artists')
-                ->select('id')
-                ->where([
-                    ['artists.name', '=', $request->artist['name']]
-                ])
-                ->get();    
+                );
+            
         }
-        return response()->json(['success' => $id[0]->id], 200);
+        return response()->json(['success' => $id], 200);
     }
 
     /**
@@ -145,7 +144,19 @@ class ArtistController extends Controller
             ->select( 'artists.*' )
             ->where('artists.id', $id)
             ->get(); 
-        return view('artist.edit');
+        $ret = array();
+
+        if($query){
+            $ret['id'] = $query[0]->id;
+            $ret['name'] = $query[0]->name;
+            $ret['pic_url'] = $query[0]->pic_url;
+        }
+    
+            return view('artist.edit')->with(
+                [              
+                    'artist'=> json_encode( $ret )
+                ]
+            );
     }
 
     /**
@@ -158,7 +169,19 @@ class ArtistController extends Controller
     public function update(Request $request, $id)
     {
         //
-        return view('artist.show');
+        if(isset($request->artist)){
+            $datetime = date("Y-m-d H:i:s");
+            DB::table('artists')
+                ->where('artists.id', $id)
+                ->update(
+                    [
+                    'name' => $request->artist['name'],
+                    'updated_at' => $datetime,
+                    ],
+                );
+        }
+                       
+        return response()->json(['success' => 'OK'], 200);
     }
 
     /**
@@ -170,7 +193,7 @@ class ArtistController extends Controller
     public function destroy($id)
     {
         //
-        if(DB::table('albums')->where('albums.id', '=', $id)->delete()){
+        if(DB::table('artists')->where('artists.id', $id)->delete()){
             return response()->json(['success' => 'Ok'], 200);
         }
         

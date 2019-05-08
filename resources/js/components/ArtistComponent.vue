@@ -1,8 +1,15 @@
 <template>
     <div class="container">
         <div class="row justify-content-left">           
-            <div class="row">                            
-                <div><h2>{{artist.name}}</h2></div>
+            <div class="row">  
+                <div>
+                    <img :src="'/storage/'+artist.pic_url" class="img-responsive" height="200" width="200">    
+                </div>                          
+                <div>
+                    <h2>{{artist.name}}</h2>
+                    <a :href="'/artists/' + artist.id + '/edit'">Edit</a>
+                    <button @click="deleteAlbum">Delete</button>
+                </div>
             </div>
         </div> 
         <div v-bind:key="item.id" v-for="item in artist.albums">
@@ -25,7 +32,7 @@
 </template>
 
 <script>
-const axios = require('axios');
+import axios from 'axios';
     export default {
         data: function () {
             return{           
@@ -59,8 +66,12 @@ const axios = require('axios');
             }
         },
         methods: {
-            testClick(){
-                
+            deleteAlbum(){
+                axios.delete('/artists/' + this.artist.id).then(resq =>{
+                    window.location.href = "/home";
+                }).catch(error => {
+                    console.log(error)
+                })
             }
         }   
     }

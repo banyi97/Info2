@@ -3,7 +3,9 @@
         <div class="row justify-content-left">         
             <div class="row">
                 <div>
-                    <img v-if="view_pic" :src="'/storage/'+view_pic" class="img-responsive" height="200" width="200"> <br>
+                    <img v-if="view_pic && !ismodify" :src="view_pic" class="img-responsive" height="200" width="200"> <br>
+                    <img v-if="!view_pic && ismodify" :src="'/storage/'+album.pic_url" class="img-responsive" height="200" width="200"> <br>
+                    <img v-if="view_pic && ismodify" :src="view_pic" class="img-responsive" height="200" width="200"> <br>
                     <input type="file" name="pic" ref="albumpic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png" />
                 </div>
                 <div>
@@ -67,7 +69,7 @@ import draggable from 'vuedraggable';
                         number_of: null,
                         song_length: 0,
                     }],
-                    pic_file : null,
+                    pic_url : null,
                     year : null,
                 },
                 albumfiles:{
@@ -215,8 +217,6 @@ import draggable from 'vuedraggable';
                             window.location.href = "/albums/" + this.artist.album.id;
                             return;
                     }
-                    console.log(this.view_pic);
-                    console.log(this.albumfiles.albumpic)
                         let fdata = new FormData();
                         fdata.append('photo', this.albumfiles.albumpic);
                         axios.post(
@@ -231,7 +231,7 @@ import draggable from 'vuedraggable';
                         .catch(error => {
                             console.log('upload FAILURE!!');                        
                     });;    
-                   // window.location.href = "/albums/" + this.artist.album.id;
+                    window.location.href = "/albums/" + this.artist.album.id;
                 }); 
             },
         },

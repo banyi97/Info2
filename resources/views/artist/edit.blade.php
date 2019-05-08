@@ -3,8 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        This is the index page
-        
+        <artistadmin-component met='modify' :partist='{{$artist}}'></artistadmin-component>
     </div>
 </div>
 <br>

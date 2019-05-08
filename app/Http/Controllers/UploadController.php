@@ -18,13 +18,17 @@ class UploadController extends Controller
     public function storeAlbumPic(Request $request, $id)
     {
         //
+        $datetime = date("Y-m-d H:i:s");
         if ($request->file('photo')->isValid()) {
             //
             $path = $request->photo->store('public');
             $filename = basename($path);
             DB::table('albums')
                 ->where('albums.id', $id)
-                ->update(['pic_url' => $filename]);
+                ->update([
+                    'pic_url' => $filename,
+                    'updated_at' => $datetime
+                ]);
         return response()->json(['success' => $filename], 200);
         }
     }
@@ -32,11 +36,19 @@ class UploadController extends Controller
     public function storeArtistPic(Request $request, $id)
     {
         //
-        $path = $request->photo->store('public');
+        $datetime = date("Y-m-d H:i:s");
+        if ($request->file('photo')->isValid()) {
+            //
+            $path = $request->photo->store('public');
+            $filename = basename($path);
             DB::table('artists')
-                ->where('id', $id)
-                ->update(['pic_url' => $filename]);
-        return response()->json(['success' => basename($path)], 200);
+                ->where('artists.id', $id)
+                ->update([
+                    'pic_url' => $filename,
+                    'updated_at' => $datetime
+                ]);
+        return response()->json(['success' => $filename], 200);
+        }
     }
 
     public function storeSongs(Request $request, $id)

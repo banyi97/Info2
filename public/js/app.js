@@ -1815,6 +1815,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1835,7 +1837,7 @@ __webpack_require__.r(__webpack_exports__);
           number_of: null,
           song_length: 0
         }],
-        pic_file: null,
+        pic_url: null,
         year: null
       },
       albumfiles: {
@@ -1998,8 +2000,6 @@ __webpack_require__.r(__webpack_exports__);
           return;
         }
 
-        console.log(_this4.view_pic);
-        console.log(_this4.albumfiles.albumpic);
         var fdata = new FormData();
         fdata.append('photo', _this4.albumfiles.albumpic);
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this4.artist.album.id, fdata, {
@@ -2011,7 +2011,8 @@ __webpack_require__.r(__webpack_exports__);
         })["catch"](function (error) {
           console.log('upload FAILURE!!');
         });
-        ; // window.location.href = "/albums/" + this.artist.album.id;
+        ;
+        window.location.href = "/albums/" + _this4.artist.album.id;
       });
     }
   },
@@ -2151,6 +2152,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2203,27 +2206,147 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {},
+  data: function data() {
+    return {
+      view_pic: null,
+      pic_file: null,
+      artist: {
+        name: ''
+      },
+      sended: false
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    console.log(this.partist.id);
+    console.log(this.partist.name);
+    console.log(this.partist.pic_url);
   },
   props: {
     met: String,
-    albums: {
-      id: String,
-      title: String,
-      "long": Number,
-      songs: [{
-        title: String,
-        number_of: Number,
-        url: String,
-        "long": Number
-      }]
+    partist: {
+      id: Number,
+      name: String,
+      pic_url: String
+    }
+  },
+  created: function created() {
+    if (this.met === 'modify') {
+      this.artist.name = this.partist.name;
+      this.view_pic = '/storage/' + this.partist.pic_url;
     }
   },
   methods: {
-    testClick: function testClick() {}
+    create: function create() {
+      var _this = this;
+
+      if (this.sended == true) {
+        return;
+      }
+
+      if (this.artist.name == null || this.artist.name == '') {
+        return;
+      }
+
+      this.sended = true;
+      console.log('start');
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/artists/', {
+        artist: this.artist
+      }).then(function (resq) {
+        console.log('res ' + resq.data.success);
+
+        if (_this.pic_file == null) {
+          window.location.href = "/artists/" + resq.data.success;
+          return;
+        }
+
+        console.log('file is not null');
+        var id = resq.data.success;
+        var fdata = new FormData();
+        fdata.append('photo', _this.pic_file);
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/artistpic/' + id, fdata, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(function (res) {
+          console.log(res.data.success);
+          window.location.href = "/artists/" + resq.data.success;
+        })["catch"](function (error) {
+          console.log(error);
+          _this.sended = false;
+          return;
+        });
+        window.location.href = "/artists/" + resq.data.success;
+      })["catch"](function (error) {
+        console.log(error);
+        _this.sended = false;
+        return;
+      });
+    },
+    modify: function modify() {
+      var _this2 = this;
+
+      if (this.sended == true) {
+        return;
+      }
+
+      if (this.artist.name == null || this.artist.name == '') {
+        return;
+      }
+
+      this.sended = true;
+      console.log('start');
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('/artists/' + this.partist.id, {
+        artist: this.artist
+      }).then(function (resq) {
+        console.log('res ' + resq.data.success);
+
+        if (_this2.pic_file == null) {
+          window.location.href = "/artists/" + _this2.partist.id;
+          return;
+        }
+
+        console.log('file is not null');
+        var fdata = new FormData();
+        fdata.append('photo', _this2.pic_file);
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/artistpic/' + _this2.partist.id, fdata, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(function (res) {
+          console.log(res.data.success);
+          window.location.href = "/artists/" + _this2.partist.id;
+        })["catch"](function (error) {
+          console.log('File upload error: ' + error);
+          _this2.sended = false;
+          return;
+        });
+        window.location.href = "/artists/" + _this2.partist.id;
+      })["catch"](function (error) {
+        console.log('Update error ' + error);
+        _this2.sended = false;
+        return;
+      });
+    },
+    onImageChange: function onImageChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage: function createImage(file) {
+      var _this3 = this;
+
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = function (e) {
+        vm.view_pic = e.target.result;
+        _this3.pic_file = _this3.$refs.artistpic.files[0];
+      };
+
+      reader.readAsDataURL(file);
+    }
   }
 });
 
@@ -2238,6 +2361,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2264,7 +2389,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2295,7 +2426,13 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     }
   },
   methods: {
-    testClick: function testClick() {}
+    deleteAlbum: function deleteAlbum() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/artists/' + this.artist.id).then(function (resq) {
+        window.location.href = "/home";
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
   }
 });
 
@@ -44084,14 +44221,32 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-left" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", [
-          _vm.view_pic
+          _vm.view_pic && !_vm.ismodify
+            ? _c("img", {
+                staticClass: "img-responsive",
+                attrs: { src: _vm.view_pic, height: "200", width: "200" }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          !_vm.view_pic && _vm.ismodify
             ? _c("img", {
                 staticClass: "img-responsive",
                 attrs: {
-                  src: "/storage/" + _vm.view_pic,
+                  src: "/storage/" + _vm.album.pic_url,
                   height: "200",
                   width: "200"
                 }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _vm.view_pic && _vm.ismodify
+            ? _c("img", {
+                staticClass: "img-responsive",
+                attrs: { src: _vm.view_pic, height: "200", width: "200" }
               })
             : _vm._e(),
           _vm._v(" "),
@@ -44450,19 +44605,235 @@ var render = function() {
                   _vm._v("Create new artist")
                 ]),
                 _vm._v(" "),
-                _vm._m(0)
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.create($event)
+                        }
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "artistName" } }, [
+                          _vm._v("Artist name")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model.trim",
+                              value: _vm.artist.name,
+                              expression: "artist.name",
+                              modifiers: { trim: true }
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            id: "artistName",
+                            placeholder: "Name of artist"
+                          },
+                          domProps: { value: _vm.artist.name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.artist,
+                                "name",
+                                $event.target.value.trim()
+                              )
+                            },
+                            blur: function($event) {
+                              return _vm.$forceUpdate()
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "small",
+                          {
+                            staticClass: "form-text text-muted",
+                            attrs: { id: "emailHelp" }
+                          },
+                          [
+                            _vm._v(
+                              "We'll never share your email with anyone else."
+                            )
+                          ]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "pic" } }, [
+                          _vm._v("Image")
+                        ]),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("img", {
+                          staticClass: "img-responsive",
+                          attrs: {
+                            src: _vm.view_pic,
+                            alt: "",
+                            height: "200",
+                            width: "200"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("input", {
+                          ref: "artistpic",
+                          attrs: {
+                            type: "file",
+                            name: "pic",
+                            id: "image",
+                            accept: "image/jpeg, image/png"
+                          },
+                          on: { change: _vm.onImageChange }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          on: { click: _vm.create }
+                        },
+                        [_vm._v("Create")]
+                      ),
+                      _vm._v(" "),
+                      _c("a", { attrs: { href: "/home" } }, [
+                        _vm._v("Home page")
+                      ])
+                    ]
+                  )
+                ])
               ])
             : _vm._e(),
           _vm._v(" "),
           _vm.met == "modify"
             ? _c("div", [
-                _vm.met == "modify"
-                  ? _c("div", { staticClass: "card-header" }, [
-                      _vm._v("Modify artist")
-                    ])
-                  : _vm._e(),
+                _c("div", { staticClass: "card-header" }, [
+                  _vm._v("Modify artist")
+                ]),
                 _vm._v(" "),
-                _vm._m(1)
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.modify($event)
+                        }
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "artistName" } }, [
+                          _vm._v("Artist name")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model.trim",
+                              value: _vm.artist.name,
+                              expression: "artist.name",
+                              modifiers: { trim: true }
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            id: "artistName",
+                            "aria-describedby": "emailHelp",
+                            placeholder: "Artist name"
+                          },
+                          domProps: { value: _vm.artist.name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.artist,
+                                "name",
+                                $event.target.value.trim()
+                              )
+                            },
+                            blur: function($event) {
+                              return _vm.$forceUpdate()
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "small",
+                          {
+                            staticClass: "form-text text-muted",
+                            attrs: { id: "emailHelp" }
+                          },
+                          [
+                            _vm._v(
+                              "We'll never share your email with anyone else."
+                            )
+                          ]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "pic" } }, [
+                          _vm._v("Image")
+                        ]),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("img", {
+                          staticClass: "img-responsive",
+                          attrs: {
+                            src: _vm.view_pic,
+                            alt: "",
+                            height: "200",
+                            width: "200"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("input", {
+                          ref: "artistpic",
+                          attrs: {
+                            type: "file",
+                            name: "pic",
+                            id: "image",
+                            accept: "image/jpeg, image/png"
+                          },
+                          on: { change: _vm.onImageChange }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "submit" },
+                          on: { click: _vm.modify }
+                        },
+                        [_vm._v("Submit")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "a",
+                        { attrs: { href: "/artists/" + _vm.partist.id } },
+                        [_vm._v("Back to artist page")]
+                      )
+                    ]
+                  )
+                ])
               ])
             : _vm._e()
         ])
@@ -44470,119 +44841,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _c("form", [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "artistName" } }, [
-            _vm._v("Artist name")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: {
-              type: "email",
-              id: "artistName",
-              placeholder: "Name of artist"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "small",
-            { staticClass: "form-text text-muted", attrs: { id: "emailHelp" } },
-            [_vm._v("We'll never share your email with anyone else.")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "pic" } }, [_vm._v("Picture")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: { type: "file", id: "pic" }
-          })
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-          [_vm._v("Create")]
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _c("form", [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "artistName" } }, [
-            _vm._v("Artist name")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: {
-              type: "email",
-              id: "artistName",
-              "aria-describedby": "emailHelp",
-              placeholder: "Enter email"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "small",
-            { staticClass: "form-text text-muted", attrs: { id: "emailHelp" } },
-            [_vm._v("We'll never share your email with anyone else.")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "exampleInputPassword1" } }, [
-            _vm._v("Password")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: {
-              type: "password",
-              id: "exampleInputPassword1",
-              placeholder: "Password"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group form-check" }, [
-          _c("input", {
-            staticClass: "form-check-input",
-            attrs: { type: "checkbox", id: "exampleCheck1" }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            {
-              staticClass: "form-check-label",
-              attrs: { for: "exampleCheck1" }
-            },
-            [_vm._v("Check me out")]
-          )
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-          [_vm._v("Submit")]
-        )
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -44610,7 +44869,28 @@ var render = function() {
     [
       _c("div", { staticClass: "row justify-content-left" }, [
         _c("div", { staticClass: "row" }, [
-          _c("div", [_c("h2", [_vm._v(_vm._s(_vm.artist.name))])])
+          _c("div", [
+            _c("img", {
+              staticClass: "img-responsive",
+              attrs: {
+                src: "/storage/" + _vm.artist.pic_url,
+                height: "200",
+                width: "200"
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", [
+            _c("h2", [_vm._v(_vm._s(_vm.artist.name))]),
+            _vm._v(" "),
+            _c(
+              "a",
+              { attrs: { href: "/artists/" + _vm.artist.id + "/edit" } },
+              [_vm._v("Edit")]
+            ),
+            _vm._v(" "),
+            _c("button", { on: { click: _vm.deleteAlbum } }, [_vm._v("Delete")])
+          ])
         ])
       ]),
       _vm._v(" "),
