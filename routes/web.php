@@ -56,3 +56,5 @@ Route::post('/upload/artistpic/{id}', 'UploadController@storeArtistPic');
 Route::post('/upload/songs/{id}', 'UploadController@storeSongs');
 
 Route::get('/upload/test','UploadController@storeTest');
+
+Route::get('/yourlib', 'YourLibController@index');
