@@ -27,7 +27,7 @@ class UploadController extends Controller
                 ->where('albums.id', $id)
                 ->update([
                     'pic_url' => $filename,
-                    'updated_at' => $datetime
+                    'updated_at' => date("Y-m-d H:i:s"),
                 ]);
         return response()->json(['success' => $filename], 200);
         }
@@ -45,7 +45,7 @@ class UploadController extends Controller
                 ->where('artists.id', $id)
                 ->update([
                     'pic_url' => $filename,
-                    'updated_at' => $datetime
+                    'updated_at' => date("Y-m-d H:i:s"),
                 ]);
         return response()->json(['success' => $filename], 200);
         }
@@ -53,20 +53,21 @@ class UploadController extends Controller
 
     public function storeSongs(Request $request, $id)
     {
-        //
+        //     
         $datetime = date("Y-m-d H:i:s");
-        if ($request->file('song')->isValid()) {
-            //
+        if ($request->song->isValid()) {
+            //   
             $path = $request->song->store('public');
             $filename = basename($path);
             DB::table('songs')
                 ->where('songs.id', $id)
                 ->update([
                     'file_url' => $filename,
-                    'updated_at' => $datetime
+                    'updated_at' => date("Y-m-d H:i:s"),
                 ]);
         return response()->json(['success' => $filename], 200);
         }
+        return response()->json(['success' => 'error'], 400);
     }
     
     public function storeTest(Request $request)

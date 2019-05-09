@@ -22,6 +22,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Title</th>
                             <th scope="col">File</th>
+                            <th v-if="ismodify" scope="col">Upload file</th>
                             <th scope="col">Length</th>
                             <th scope="col">Remove</th>
                         </tr>
@@ -36,6 +37,7 @@
                             <td scope="row">{{index +1}}</td>
                             <td><input v-model.trim="item.title" type="text" placeholder="Title"></td>
                             <td><input type="file" :id="index" v-on:change="onSongChange" ></td>
+                            <td v-if="ismodify"><button @click="uploadSong(index)">Upload</button></td>
                             <td><div>Remove</div></td>
                             <td><button @click="removeRow(index)"> Remove </button></td>
                         </tr>
@@ -165,19 +167,24 @@ import draggable from 'vuedraggable';
             returnToArtist(){
                 window.location.href = "/artists/" + this.artist.album.artist_id;
             },
-            sendSong(id, file){
+            uploadSong(index){
+                if(this.album.songs[index].file == null){
+                    return;
+                }
                 let fdata = new FormData();
-                fdata.append('song', file);
+                fdata.append('photo', 'hello');
+                console.log(fdata)
                 axios.post(
-                    '/upload/songs/'+id,
-                    fdata,
+                    '/upload/songs/'+this.album.songs[index].id,
+                    null,
                     {
                         headers: { "Content-Type": "multipart/form-data" }
                     }).then(resp => {
-
+                        console.log(resp.data.success);
+                        console.log('uploaded')
                     }).catch(error =>{
                         console.log(error)
-                    })
+                    }) 
             },
             createAlbum(){
                 if(this.album.title == null || this.album.title == ''){
@@ -205,6 +212,7 @@ import draggable from 'vuedraggable';
                         else{
                             let fdata = new FormData();
                             fdata.append('photo', this.albumfiles.albumpic);
+                            
                             axios.post(
                                 '/upload/albumpic/' + response.data.success.album_id, 
                                 fdata,

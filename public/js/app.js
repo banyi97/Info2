@@ -1821,6 +1821,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1930,14 +1932,22 @@ __webpack_require__.r(__webpack_exports__);
     returnToArtist: function returnToArtist() {
       window.location.href = "/artists/" + this.artist.album.artist_id;
     },
-    sendSong: function sendSong(id, file) {
+    uploadSong: function uploadSong(index) {
+      if (this.album.songs[index].file == null) {
+        return;
+      }
+
       var fdata = new FormData();
-      fdata.append('song', file);
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + id, fdata, {
+      fdata.append('photo', 'hello');
+      console.log(fdata);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + this.album.songs[index].id, null, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
-      }).then(function (resp) {})["catch"](function (error) {
+      }).then(function (resp) {
+        console.log(resp.data.success);
+        console.log('uploaded');
+      })["catch"](function (error) {
         console.log(error);
       });
     },
@@ -44412,7 +44422,25 @@ var render = function() {
           "table",
           { staticClass: "table" },
           [
-            _vm._m(0),
+            _c("thead", [
+              _c("tr", [
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+                _vm._v(" "),
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("Title")]),
+                _vm._v(" "),
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("File")]),
+                _vm._v(" "),
+                _vm.ismodify
+                  ? _c("th", { attrs: { scope: "col" } }, [
+                      _vm._v("Upload file")
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("Length")]),
+                _vm._v(" "),
+                _c("th", { attrs: { scope: "col" } }, [_vm._v("Remove")])
+              ])
+            ]),
             _vm._v(" "),
             _c(
               "draggable",
@@ -44473,6 +44501,22 @@ var render = function() {
                       on: { change: _vm.onSongChange }
                     })
                   ]),
+                  _vm._v(" "),
+                  _vm.ismodify
+                    ? _c("td", [
+                        _c(
+                          "button",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.uploadSong(index)
+                              }
+                            }
+                          },
+                          [_vm._v("Upload")]
+                        )
+                      ])
+                    : _vm._e(),
                   _vm._v(" "),
                   _c("td", [_c("div", [_vm._v("Remove")])]),
                   _vm._v(" "),
@@ -44540,26 +44584,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Title")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("File")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Length")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Remove")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
