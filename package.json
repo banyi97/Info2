@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "howler": "^2.1.1",
+        "vue-upload-component": "^2.8.20",
         "vuedraggable": "^2.20.0"
     }
 }

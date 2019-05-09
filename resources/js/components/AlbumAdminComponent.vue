@@ -57,9 +57,11 @@
 <script>
 import axios from 'axios';
 import draggable from 'vuedraggable';
+import FileUpload  from 'vue-upload-component'
     export default {
         components: {
-            draggable
+            draggable,
+            FileUpload
         },
         data: function () {
             return {
@@ -95,6 +97,12 @@ import draggable from 'vuedraggable';
 
             if(this.ismodify){
                 this.album = this.artist.album;
+                this.createid = 0;
+                this.album.songs.forEach(numb =>{
+                    if(numb > this.createid){
+                        this.createid = numb;
+                    }
+                })
             }
         },
         mounted() {
