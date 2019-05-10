@@ -61,6 +61,6 @@ Route::get('/yourlib', 'YourLibController@index');
 
 Route::get('/profile/me', 'UserController@me');
 Route::get('/profile/{id}','UserController@show');
-Route::patch('/profile/{id}','UserController@changePassword');
+Route::patch('/profile','UserController@changePassword');
 Route::delete('/profile/me','UserController@destroyMe');
 Route::delete('/profile/{id}','UserController@destroy');

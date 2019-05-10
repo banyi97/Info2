@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -56,7 +60,11 @@ class UserController extends Controller
     public function me()
     {
         //
-        return view('user');
+        $user = Auth::user();
+        
+        return view('user')->with([
+            'user'=> json_encode( $user )
+        ]);
     }
 
     /**
@@ -82,9 +90,21 @@ class UserController extends Controller
         //
     }
 
-    public function changePassword(Request $request, $id)
+    public function changePassword(Request $request)
     {
         //
+        //  'password' => ['required', 'string', 'min:8', 'confirmed'],
+        $user = Auth::user();
+
+        if(true){
+
+            $user->password = Hash::make($request->newpassword);
+            $user->save();
+        
+            return response()->json(['success' => 'Ok'], 200);
+        }
+
+        return response()->json(['error' => 'error'], 400);
     }
 
     /**
@@ -96,11 +116,22 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+        if(DB::table('users')->where('users.id', '=', $id)->delete()){
+            return response()->json(['success' => 'Ok'], 200);
+        }
+        
+        return response()->json(['error' => 'Error'], 400);
     }
 
     public function destroyMe()
     {
         //
+        $user = Auth::user();
+
+        if(DB::table('users')->where('users.id', '=', $user->id)->delete()){
+            return response()->json(['success' => 'Ok'], 200);
+        }
         
+        return response()->json(['error' => 'Error'], 400);
     }
 }

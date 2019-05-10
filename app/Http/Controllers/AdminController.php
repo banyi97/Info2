@@ -20,7 +20,21 @@ class AdminController extends Controller
     public function index()
     {
         //
-        return view('admin');
+        $query = DB::table('users')
+            ->select('users.id', 'users.email', 'users.name', 'users.created_at')      
+            ->get();  
+        $users = array();
+        foreach($query as $user){
+            $data = array();
+            $data['id'] = $user->id;
+            $data['name'] = $user->name;
+            $data['email'] = $user->email;
+            $data['created_at'] = $user->created_at;
+            $users['user'][] = $data;
+        }
+        return view('admin')->with([
+            'users'=> json_encode( $users )
+        ]);
     }
 
     /**
@@ -43,8 +57,6 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         //
-        $path = $request->photo->store('public');
-        return $path;
     }
 
     /**

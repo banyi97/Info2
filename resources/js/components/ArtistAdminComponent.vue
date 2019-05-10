@@ -38,7 +38,7 @@
                                     <img :src="view_pic" alt="" class="img-responsive" height="200" width="200">
                                     <input type="file" name="pic" ref="artistpic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png">
                                 </div>                
-                                    <button type="submit" @click="modify" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
                                     <a :href="'/artists/'+partist.id">Back to artist page</a>
                                 </form>
                         </div>
