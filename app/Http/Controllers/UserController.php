@@ -95,16 +95,23 @@ class UserController extends Controller
         //
         //  'password' => ['required', 'string', 'min:8', 'confirmed'],
         $user = Auth::user();
-
-        if(true){
+        /*
+        if(Hash::check($user->password, Hash::make($request->oldpassword))){
 
             $user->password = Hash::make($request->newpassword);
             $user->save();
         
             return response()->json(['success' => 'Ok'], 200);
-        }
+        } */
 
-        return response()->json(['error' => 'error'], 400);
+        if(!Hash::check($request->oldpassword, $user->password)){
+            return response()->json(['error' => 'error'], 400);
+        }else{
+            $user->password = Hash::make($request->newpassword);
+            $user->save();
+        
+            return response()->json(['success' => 'Ok'], 200);
+        }
     }
 
     /**

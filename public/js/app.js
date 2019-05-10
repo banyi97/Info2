@@ -2919,6 +2919,8 @@ __webpack_require__.r(__webpack_exports__);
         this.ispassed = true;
       }
 
+      console.log(this.old_password);
+      console.log(this.new_password);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.patch('/profile', {
         newpassword: this.new_password,
         oldpassword: this.old_password
