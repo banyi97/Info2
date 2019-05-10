@@ -28,7 +28,7 @@ Vue.component('navmenu-component', require('./components/NavMenuComponent.vue').
 Vue.component('search-component', require('./components/SearchComponent.vue').default);
 Vue.component('player-component', require('./components/PlayerComponent.vue').default);
 Vue.component('yourlib-component', require('./components/YourLibComponent.vue').default);
-
+Vue.component('user-component', require('./components/UserComponent.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

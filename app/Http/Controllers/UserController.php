@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class YourLibController extends Controller
+class UserController extends Controller
 {
     public function __construct()
     {
@@ -19,8 +19,6 @@ class YourLibController extends Controller
     public function index()
     {
         //
-
-        return view('yourlib');
     }
 
     /**
@@ -55,6 +53,12 @@ class YourLibController extends Controller
         //
     }
 
+    public function me()
+    {
+        //
+        return view('user');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -78,6 +82,11 @@ class YourLibController extends Controller
         //
     }
 
+    public function changePassword(Request $request, $id)
+    {
+        //
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -87,5 +96,11 @@ class YourLibController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function destroyMe()
+    {
+        //
+        
     }
 }

@@ -29,6 +29,8 @@
         </div>
         <a :href="'/albums/' + album.id + '/edit'">Edit</a>
         <button @click="deleteAlbum">Delete</button>
+        <button @click="startClick">Start</button>
+        <button @click="stopClick">Stop</button>
     </div>
 </template>
 
@@ -39,6 +41,7 @@ import axios from 'axios';
     export default {
         data: function () {
             return {
+                sound: null,
             }           
         },
         props: {
@@ -63,15 +66,23 @@ import axios from 'axios';
         },
         created: function () {
         },
-        mounted() {
-            console.log(this.album.pic_url)
+        mounted() {           
+            this.sound = new Howl({
+                    src: ['/storage/a.mp3','/storage/b.mp3'],
+                    autoplay: false,
+                    html5: true,
+                });
+            Howler.volume(0.5);   
+            this.album.songs.forEach(song => {
+            })
         },
         methods: {
-            testClick(){
-                var sound = new Howl({
-                    src: ['/sound/sound.mp3']
-                });
-                sound.play();
+            startClick(){
+                this.sound.play();
+                console.log(this.sound.duration())
+            },
+            stopClick(){
+                this.sound.pause();
             },
             convertToTime(length){
                 const hour = Math.floor(length/3600);
@@ -113,6 +124,9 @@ import axios from 'axios';
                      window.location.href = "/artists/" + this.album.artist_id;
                    }
                 });
+            },
+            play(){
+
             }
         },
         computed:{

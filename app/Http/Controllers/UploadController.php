@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -73,7 +78,7 @@ class UploadController extends Controller
     public function storeTest(Request $request)
     {
         
-        return Storage::url();
+        return response()->json(['status' => 'success'], 200);
         
     }
 }
