@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AlbumController extends Controller
 {
@@ -95,7 +96,7 @@ class AlbumController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    {       
         $query = DB::table('songs')
             ->select( 'songs.*', 'albums.title as album_title', 'albums.id as album_album_id' , 'albums.release_date', 'albums.pic_url', 'artists.name as artist_name', 'artists.id as artist_id')
             ->rightJoin('albums', 'songs.album_id', '=', 'albums.id')

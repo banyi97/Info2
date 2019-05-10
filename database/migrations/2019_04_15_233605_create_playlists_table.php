@@ -17,6 +17,7 @@ class CreatePlaylistsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->string('name');
+            $table->string("pic_url")->default('nopic.png');
             $table->timestamps();
             $table->string('tags')->nullable();
             

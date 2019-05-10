@@ -40,7 +40,7 @@
                                 </div>                
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                     <a :href="'/artists/'+partist.id">Back to artist page</a>
-                                </form>
+                            </form>
                         </div>
                     </div>                   
 

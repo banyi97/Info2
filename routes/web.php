@@ -58,9 +58,12 @@ Route::post('/upload/songs/{id}', 'UploadController@storeSongs');
 Route::get('/upload/test','UploadController@storeTest');
 
 Route::get('/yourlib', 'YourLibController@index');
+Route::get('/playlists/{id}','YourLibController@show');
+Route::post('/playlists','YourLibController@store');
 
 Route::get('/profile/me', 'UserController@me');
 Route::get('/profile/{id}','UserController@show');
 Route::patch('/profile','UserController@changePassword');
 Route::delete('/profile/me','UserController@destroyMe');
 Route::delete('/profile/{id}','UserController@destroy');
+

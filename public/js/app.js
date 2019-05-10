@@ -2228,17 +2228,116 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //const {Howl, Howler} = require('howler');
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      sound: null
+      sound: null,
+      isPlayListView: false,
+      playlists: [],
+      createPlaylist: {
+        name: '',
+        view_pic: '',
+        pic_file: null,
+        isResult: null
+      }
     };
   },
   props: {
-    isInArtist: Boolean,
+    playlistview: Boolean,
     album: {
       id: Number,
       artist_id: Number,
@@ -2251,12 +2350,23 @@ __webpack_require__.r(__webpack_exports__);
         title: String,
         number_of: Number,
         url: String,
-        song_length: String
+        song_length: String,
+        artist_name: String,
+        album_title: String,
+        artist_id: Number,
+        album_id: Number,
+        element_created: String
       }]
     }
   },
   created: function created() {},
   mounted: function mounted() {
+    if (this.playlistview === true) {
+      this.isPlayListView = true;
+      console.log(this.album);
+    } else {//    this.playlists_data = this.playlists;
+    }
+
     this.sound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
       src: ['/storage/a.mp3', '/storage/b.mp3'],
       autoplay: false,
@@ -2264,8 +2374,12 @@ __webpack_require__.r(__webpack_exports__);
     });
     howler__WEBPACK_IMPORTED_MODULE_0__["Howler"].volume(0.5);
     this.album.songs.forEach(function (song) {});
+    $(this.$refs.vuemodal).on("hidden.bs.modal", this.resetModal);
   },
   methods: {
+    resetModal: function resetModal() {
+      this.createPlaylist = [];
+    },
     startClick: function startClick() {
       this.sound.play();
       console.log(this.sound.duration());
@@ -2273,6 +2387,57 @@ __webpack_require__.r(__webpack_exports__);
     stopClick: function stopClick() {
       this.sound.pause();
     },
+    onImageChange: function onImageChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage: function createImage(file) {
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = function (e) {
+        vm.createPlaylist.view_pic = e.target.result; //    this.createPlaylist.pic_file = this.$refs.artistpic.files[0];
+      };
+
+      reader.readAsDataURL(file);
+    },
+    createNewPlaylist: function createNewPlaylist() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/playlists/', {
+        playlist: this.createPlaylist.name
+      }).then(function (resq) {
+        _this.createPlaylist.isResult = true;
+
+        _this.playlists.push({
+          id: resq.data.id,
+          name: resq.data.name
+        });
+
+        if (_this.createPlaylist.pic_file == null) {
+          return;
+        }
+
+        var fdata = new FormData();
+        fdata.append('photo', _this.pic_file);
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/upload/playlists/' + _this.partist.id, fdata, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(function (res) {
+          console.log(res.data);
+        })["catch"](function (error) {
+          console.log('File upload error: ' + error);
+          return;
+        });
+      })["catch"](function (error) {
+        console.log('Update error ' + error);
+        _this.createPlaylist.isResult = false;
+        return;
+      });
+    },
+    addToPlaylist: function addToPlaylist(playlistId, songId) {},
     convertToTime: function convertToTime(length) {
       var hour = Math.floor(length / 3600);
       var min = Math.floor((length - hour * 3600) / 60);
@@ -2292,11 +2457,11 @@ __webpack_require__.r(__webpack_exports__);
       return this.convertToTime(sec);
     },
     deleteAlbum: function deleteAlbum() {
-      var _this = this;
+      var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]('/albums/' + this.album.id).then(function (response) {
         if (response.data.success) {
-          window.location.href = "/artists/" + _this.album.artist_id;
+          window.location.href = "/artists/" + _this2.album.artist_id;
         }
       });
     },
@@ -2973,19 +3138,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {},
+  props: {
+    playlists: {
+      playlist: [{
+        id: Number,
+        name: String,
+        pic_url: String
+      }]
+    }
+  },
   data: function data() {
     return {
-      newPlaylist: {
-        name: '',
-        view_pic: null,
-        disc: ''
-      }
+      playlistdatas: []
     };
   },
   mounted: function mounted() {
+    var _this = this;
+
     console.log('Component mounted.');
+    this.playlists.playlist.forEach(function (element) {
+      _this.playlistdatas.push(element);
+    });
   },
   methods: {
     createPlaylist: function createPlaylist() {
@@ -44932,74 +45123,403 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "justify-content-left" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "mt-2 mx-2" }, [
-          _c("img", {
-            attrs: {
-              src: "/storage/" + _vm.album.pic_url,
-              width: "150",
-              height: "150"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "mt-2 " }, [
-          _c("h6", [_vm._v(_vm._s(_vm.album.year))]),
-          _vm._v(" "),
-          _c("h2", [_vm._v(_vm._s(_vm.album.title))]),
-          _vm._v(" "),
-          _c("p", [
-            _vm._v("By: "),
-            _c("a", { attrs: { href: "/artists/" + _vm.album.artist_id } }, [
-              _vm._v(_vm._s(_vm.album.artist))
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: !_vm.isPlayListView,
+            expression: "!isPlayListView"
+          }
+        ]
+      },
+      [
+        _c("div", { staticClass: "justify-content-left" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "mt-2 mx-2" }, [
+              _c("img", {
+                attrs: {
+                  src: "/storage/" + _vm.album.pic_url,
+                  width: "150",
+                  height: "150"
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "mt-2 " }, [
+              _c("h6", [_vm._v(_vm._s(_vm.album.year))]),
+              _vm._v(" "),
+              _c("h2", [_vm._v(_vm._s(_vm.album.title))]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v("By: "),
+                _c(
+                  "a",
+                  { attrs: { href: "/artists/" + _vm.album.artist_id } },
+                  [_vm._v(_vm._s(_vm.album.artist))]
+                )
+              ]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  _vm._s(_vm.album.year) +
+                    " * " +
+                    _vm._s(_vm.album.songs.length) +
+                    " songs, " +
+                    _vm._s(_vm.totalTime(_vm.album.songs))
+                )
+              ])
             ])
           ]),
           _vm._v(" "),
-          _c("p", [
-            _vm._v(
-              _vm._s(_vm.album.year) +
-                " * " +
-                _vm._s(_vm.album.songs.length) +
-                " songs, " +
-                _vm._s(_vm.totalTime(_vm.album.songs))
+          _c("table", { staticClass: "table" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.album.songs, function(item) {
+                return _c("tr", { key: item.id }, [
+                  _c("th", { attrs: { scope: "row" } }, [
+                    _c("a", { attrs: { href: "" } }, [
+                      _vm._v(_vm._s(item.number_of))
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(item.title))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("div", { staticClass: "dropdown" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary dropdown-toggle",
+                          attrs: {
+                            type: "button",
+                            id: "dropdownMenu2",
+                            "data-toggle": "dropdown",
+                            "aria-haspopup": "true",
+                            "aria-expanded": "false"
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                                ...\n                            "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "dropdown-menu",
+                          attrs: { "aria-labelledby": "dropdownMenu2" }
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "dropdown-item",
+                              attrs: {
+                                "data-toggle": "modal",
+                                "data-target": "#exampleModal",
+                                type: "button"
+                              }
+                            },
+                            [_vm._v("New playlist")]
+                          ),
+                          _vm._v(" "),
+                          _c("hr"),
+                          _vm._v(" "),
+                          _vm._l(_vm.playlists, function(playlist) {
+                            return _c("div", { key: playlist.id }, [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "dropdown-item",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.addToPlaylist(
+                                        playlist.id,
+                                        item.id
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v(_vm._s(playlist.name))]
+                              )
+                            ])
+                          })
+                        ],
+                        2
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.convertToTime(item.song_length)))
+                  ])
+                ])
+              }),
+              0
             )
           ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
-        _vm._m(0),
+        ]),
         _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.album.songs, function(item) {
-            return _c("tr", { key: item.id }, [
-              _c("th", { attrs: { scope: "row" } }, [
-                _c("a", { attrs: { href: "" } }, [
-                  _vm._v(_vm._s(item.number_of))
+        _c("a", { attrs: { href: "/albums/" + _vm.album.id + "/edit" } }, [
+          _vm._v("Edit")
+        ]),
+        _vm._v(" "),
+        _c("button", { on: { click: _vm.deleteAlbum } }, [_vm._v("Delete")]),
+        _vm._v(" "),
+        _c("button", { on: { click: _vm.startClick } }, [_vm._v("Start")]),
+        _vm._v(" "),
+        _c("button", { on: { click: _vm.stopClick } }, [_vm._v("Stop")])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.isPlayListView,
+            expression: "isPlayListView"
+          }
+        ]
+      },
+      [
+        _c("div", { staticClass: "justify-content-left" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "mt-2 mx-2" }, [
+              _c("img", {
+                attrs: {
+                  src: "/storage/" + _vm.album.pic_url,
+                  width: "150",
+                  height: "150"
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "mt-2 " }, [
+              _c("h2", [_vm._v(_vm._s(_vm.album.title))]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  " " +
+                    _vm._s(_vm.album.songs.length) +
+                    " songs, " +
+                    _vm._s(_vm.totalTime(_vm.album.songs))
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("table", { staticClass: "table" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.album.songs, function(item) {
+                return _c("tr", { key: item.id }, [
+                  _c("th", { attrs: { scope: "row" } }, [
+                    _c("a", { attrs: { href: "" } }, [
+                      _vm._v(_vm._s(item.number_of))
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(item.title))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("a", { attrs: { href: "/artists/" + item.artist_id } }, [
+                      _vm._v(_vm._s(item.artist_name))
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("a", { attrs: { href: "/albums/" + item.album_id } }, [
+                      _vm._v(_vm._s(item.album_title))
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(item.element_created))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.convertToTime(item.song_length)))
+                  ])
                 ])
+              }),
+              0
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("button", { on: { click: _vm.startClick } }, [_vm._v("Start")]),
+        _vm._v(" "),
+        _c("button", { on: { click: _vm.stopClick } }, [_vm._v("Stop")])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        ref: "vuemodal",
+        staticClass: "modal fade",
+        attrs: {
+          id: "exampleModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "exampleModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.createNewPlaylist($event)
+                      }
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "artistName" } }, [
+                        _vm._v("Playlist name")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model.trim",
+                            value: _vm.createPlaylist.name,
+                            expression: "createPlaylist.name",
+                            modifiers: { trim: true }
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          id: "artistName",
+                          "aria-describedby": "emailHelp",
+                          placeholder: "Playlist name"
+                        },
+                        domProps: { value: _vm.createPlaylist.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.createPlaylist,
+                              "name",
+                              $event.target.value.trim()
+                            )
+                          },
+                          blur: function($event) {
+                            return _vm.$forceUpdate()
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "pic" } }, [_vm._v("Image")]),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("img", {
+                        staticClass: "img-responsive",
+                        attrs: {
+                          src: _vm.createPlaylist.view_pic,
+                          alt: "",
+                          height: "200",
+                          width: "200"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("input", {
+                        ref: "artistpic",
+                        attrs: {
+                          type: "file",
+                          name: "pic",
+                          id: "image",
+                          accept: "image/jpeg, image/png"
+                        },
+                        on: { change: _vm.onImageChange }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Submit")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.createPlaylist.isResult === true,
+                            expression: "createPlaylist.isResult === true"
+                          }
+                        ],
+                        staticClass: "alert alert-success",
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                    Created\n                "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.createPlaylist.isResult === false,
+                            expression: "createPlaylist.isResult === false"
+                          }
+                        ],
+                        staticClass: "alert alert-danger",
+                        attrs: { role: "alert" }
+                      },
+                      [_vm._v("\n                    ERROR\n                ")]
+                    )
+                  ]
+                )
               ]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(item.title))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.convertToTime(item.song_length)))])
+              _vm._m(3)
             ])
-          }),
-          0
+          ]
         )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("a", { attrs: { href: "/albums/" + _vm.album.id + "/edit" } }, [
-      _vm._v("Edit")
-    ]),
-    _vm._v(" "),
-    _c("button", { on: { click: _vm.deleteAlbum } }, [_vm._v("Delete")]),
-    _vm._v(" "),
-    _c("button", { on: { click: _vm.startClick } }, [_vm._v("Start")]),
-    _vm._v(" "),
-    _c("button", { on: { click: _vm.stopClick } }, [_vm._v("Stop")])
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -45013,8 +45533,76 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Title")]),
         _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }),
+        _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Time")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Title")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Artist")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Album")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Added date")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Time")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Create new playlist")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "button" } },
+        [_vm._v("Save changes")]
+      )
     ])
   }
 ]
@@ -46016,7 +46604,39 @@ var render = function() {
       _c("button", { on: { click: _vm.createPlaylist } }, [
         _vm._v("Create new")
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c("h2", { staticClass: "mt-2 mx-2" }, [_vm._v("My playlists")]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      _vm._l(_vm.playlistdatas, function(item) {
+        return _c("div", { key: item.id }, [
+          _c("div", { staticClass: "mt-2 mx-2 text-center" }, [
+            _c("div", [
+              _c("a", { attrs: { href: "/playlists/" + item.id } }, [
+                _c("div", [
+                  _c("div", [
+                    _c("img", {
+                      attrs: {
+                        src: "/storage/" + item.pic_url,
+                        alt: "",
+                        width: "200",
+                        height: "200"
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("h5", [_vm._v(_vm._s(item.name))])
+              ])
+            ])
+          ])
+        ])
+      }),
+      0
+    )
   ])
 }
 var staticRenderFns = []

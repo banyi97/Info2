@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="container">
     <div class="row justify-content-center">
-    <album-component :album="{{$album}}"></album-component>
+        <album-component :playlistview=true :album='{{$playlist}}'></album-component>
     </div>
 </div>
 <br>
