@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
        <div>
-           <button @click="newPlaylist">Create new</button>
+           <button @click="createPlaylist">Create new</button>
        </div>
     </div>
 </template>
@@ -23,7 +23,7 @@
             console.log('Component mounted.')
         },
         methods:{
-            newPlaylist(){
+            createPlaylist(){
                 alert("hejj")
             }
         },

@@ -13,7 +13,9 @@
                                     <li class="list-group-item">Email: {{user.email}}</li>
                                 </ul>
                             </div>
-                            <br>
+                        </div>
+                        <div class="card-header">Password change</div>
+                        <div class="card-body">              
                             <div>
                                 <form @submit.prevent="chancePassword">
                                     <div class="form-group">
@@ -30,12 +32,23 @@
                                         <label for="newpassconf">Confirm new password</label><br>
                                         <input v-model.trim="new_pass_confirm" required id="newpassconf" class="form-control" type="password">
                                         <small v-show="!ispassed" class="form-text text-muted">Password is not equal with Confirm password</small>
-                                    </div>                
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div> 
+                                    <div v-show="ret_succ" class="alert alert-success" role="alert">
+                                        Password change is success!
+                                    </div> 
+                                    <div v-show="ret_error" class="alert alert-danger" role="alert">
+                                        ERROR
+                                    </div>              
+                                        <button type="submit" class="btn btn-primary">Submit</button>           
                                 </form>
+                            </div>                      
+                        </div> 
+                        <div class="card-header">Remove your profile</div>
+                        <div class="card-body">
+                            <div>
+                                <button class="btn btn-danger" @click="deleteMy">Delete this profile</button>
                             </div>
-                            <button @click="deleteMy">Delete this profile</button>                
-                        </div>                       
+                        </div>                   
                     </div>              
                 </div>
             </div>
@@ -52,6 +65,8 @@ import axios from 'axios'
                 new_password : '',
                 new_pass_confirm : '',
                 ispassed : true,
+                ret_error: false,
+                ret_succ: false,
             }
         },
         props:{
@@ -85,8 +100,11 @@ import axios from 'axios'
                 console.log(this.new_password)
                 axios.patch('/profile', {newpassword : this.new_password, oldpassword : this.old_password }).then(resp => {
                     console.log(resp.data)
+                    this.ret_succ = true;
+                    this.old_password = this.new_password = this.new_pass_confirm = '';
                 }).catch(error => {
                     console.log(error);
+                    this.ret_error = true;
                 });
             }
         }

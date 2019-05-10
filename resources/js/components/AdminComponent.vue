@@ -1,9 +1,10 @@
 <template>
     <div class="container-fluid">
        <div class="row justify-content-center">
-           <h4>Users</h4>
+           <br>
+           <h2>Users</h2>
            <table class="table">
-                <thead>
+                <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">ID</th>
@@ -20,7 +21,7 @@
                             <td>{{item.name}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.created_at}}</td>
-                            <td><button @click="remove(index)" >Remove</button></td>
+                            <td><button @click="remove(index)" class="btn btn-danger" >Remove</button></td>
                         </tr>
                 </tbody>                    
             </table>    

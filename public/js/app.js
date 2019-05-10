@@ -1795,6 +1795,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2882,6 +2883,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2889,7 +2903,9 @@ __webpack_require__.r(__webpack_exports__);
       old_password: '',
       new_password: '',
       new_pass_confirm: '',
-      ispassed: true
+      ispassed: true,
+      ret_error: false,
+      ret_succ: false
     };
   },
   props: {
@@ -2912,6 +2928,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     chancePassword: function chancePassword() {
+      var _this = this;
+
       if (this.new_password !== this.new_pass_confirm) {
         this.ispassed = false;
         return;
@@ -2926,8 +2944,11 @@ __webpack_require__.r(__webpack_exports__);
         oldpassword: this.old_password
       }).then(function (resp) {
         console.log(resp.data);
+        _this.ret_succ = true;
+        _this.old_password = _this.new_password = _this.new_pass_confirm = '';
       })["catch"](function (error) {
         console.log(error);
+        _this.ret_error = true;
       });
     }
   }
@@ -2967,7 +2988,7 @@ __webpack_require__.r(__webpack_exports__);
     console.log('Component mounted.');
   },
   methods: {
-    newPlaylist: function newPlaylist() {
+    createPlaylist: function createPlaylist() {
       alert("hejj");
     }
   }
@@ -44528,7 +44549,9 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container-fluid" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
-      _c("h4", [_vm._v("Users")]),
+      _c("br"),
+      _vm._v(" "),
+      _c("h2", [_vm._v("Users")]),
       _vm._v(" "),
       _c("table", { staticClass: "table" }, [
         _vm._m(0),
@@ -44553,6 +44576,7 @@ var render = function() {
                 _c(
                   "button",
                   {
+                    staticClass: "btn btn-danger",
                     on: {
                       click: function($event) {
                         return _vm.remove(index)
@@ -44575,7 +44599,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
+    return _c("thead", { staticClass: "thead-dark" }, [
       _c("tr", [
         _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
         _vm._v(" "),
@@ -45477,9 +45501,9 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container-fluid" }, [
     _c("div", { staticClass: "justify-content-center" }, [
-      _c("div", [
+      _c("div", { staticClass: "mt-2 mx-2" }, [
         _c("h4", [
           _c("input", {
             directives: [
@@ -45711,10 +45735,14 @@ var render = function() {
                     _vm._v("Email: " + _vm._s(_vm.user.email))
                   ])
                 ])
-              ]),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-header" }, [
+              _vm._v("Password change")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body" }, [
               _c("div", [
                 _c(
                   "form",
@@ -45885,6 +45913,48 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.ret_succ,
+                            expression: "ret_succ"
+                          }
+                        ],
+                        staticClass: "alert alert-success",
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                                    Password change is success!\n                                "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.ret_error,
+                            expression: "ret_error"
+                          }
+                        ],
+                        staticClass: "alert alert-danger",
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                                    ERROR\n                                "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
                       "button",
                       {
                         staticClass: "btn btn-primary",
@@ -45894,10 +45964,23 @@ var render = function() {
                     )
                   ]
                 )
-              ]),
-              _vm._v(" "),
-              _c("button", { on: { click: _vm.deleteMy } }, [
-                _vm._v("Delete this profile")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-header" }, [
+              _vm._v("Remove your profile")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    on: { click: _vm.deleteMy }
+                  },
+                  [_vm._v("Delete this profile")]
+                )
               ])
             ])
           ])
@@ -45930,7 +46013,9 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container-fluid" }, [
     _c("div", [
-      _c("button", { on: { click: _vm.newPlaylist } }, [_vm._v("Create new")])
+      _c("button", { on: { click: _vm.createPlaylist } }, [
+        _vm._v("Create new")
+      ])
     ])
   ])
 }

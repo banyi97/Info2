@@ -80,7 +80,7 @@
             <div class="row">
                 @guest
 
-                <main class="col-12 col-md-10 col-xl-9 py-md-3 pl-md-5 bd-content">
+                <main class="col-12 bd-content">
                         @yield('content')
                 </main>
 
