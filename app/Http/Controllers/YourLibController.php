@@ -66,7 +66,7 @@ class YourLibController extends Controller
                     'updated_at' => date("Y-m-d H:i:s")
                 ]
             );    
-            return response()->json(['id' => $id, 'name' => $request->playlist], 200);                
+            return response()->json(['id' => $id, 'name' => $request->playlist, 'pic_url' => 'nopic.png'], 200);                
         }
         return response()->json(['error' => 'ERROR'], 400);
     }

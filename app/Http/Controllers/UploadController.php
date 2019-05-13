@@ -23,7 +23,6 @@ class UploadController extends Controller
     public function storeAlbumPic(Request $request, $id)
     {
         //
-        $datetime = date("Y-m-d H:i:s");
         if ($request->file('photo')->isValid()) {
             //
             $path = $request->photo->store('public');
@@ -41,7 +40,6 @@ class UploadController extends Controller
     public function storeArtistPic(Request $request, $id)
     {
         //
-        $datetime = date("Y-m-d H:i:s");
         if ($request->file('photo')->isValid()) {
             //
             $path = $request->photo->store('public');
@@ -59,7 +57,6 @@ class UploadController extends Controller
     public function storeSongs(Request $request, $id)
     {
         //     
-        $datetime = date("Y-m-d H:i:s");
         if ($request->song->isValid()) {
             //   
             $path = $request->song->store('public');
@@ -68,6 +65,24 @@ class UploadController extends Controller
                 ->where('songs.id', $id)
                 ->update([
                     'file_url' => $filename,
+                    'updated_at' => date("Y-m-d H:i:s"),
+                ]);
+        return response()->json(['success' => $filename], 200);
+        }
+        return response()->json(['success' => 'error'], 400);
+    }
+
+    public function storePlaylist(Request $request, $id)
+    {
+        //     
+        if ($request->photo->isValid()) {
+            //   
+            $path = $request->photo->store('public');
+            $filename = basename($path);
+            DB::table('playlists')
+                ->where('playlists.id', $id)
+                ->update([
+                    'pic_url' => $filename,
                     'updated_at' => date("Y-m-d H:i:s"),
                 ]);
         return response()->json(['success' => $filename], 200);

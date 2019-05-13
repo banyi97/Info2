@@ -54,6 +54,7 @@ Route::get('/searchtest/{key}', 'SearchController@show');
 Route::post('/upload/albumpic/{id}', 'UploadController@storeAlbumPic');
 Route::post('/upload/artistpic/{id}', 'UploadController@storeArtistPic');
 Route::post('/upload/songs/{id}', 'UploadController@storeSongs');
+Route::post('/upload/playlists/{id}', 'UploadController@storePlaylist');
 
 Route::post('/upload/test','UploadController@storeTest');
 

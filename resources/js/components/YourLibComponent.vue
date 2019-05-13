@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
        <div>
-           <button @click="createPlaylist">Create new</button>
+           <button data-toggle="modal" data-target="#exampleModal" type="button">Create new</button>
        </div>
        <h2 class='mt-2 mx-2'>My playlists</h2>
                 <div class="row"> 
@@ -19,7 +19,8 @@
                             </div>
                         </div>  
                     </div>
-                </div>
+                </div>      
+        <createplaylist-component :playlists='playlists'></createplaylist-component>
     </div>
 </template>
 
@@ -30,21 +31,19 @@
         },
         data: function(){
             return{
-                playlists : []
+                playlists : [],
             }
         },
-        mounted() {
+        mounted() {          
             axios.get('/yourlib').then(resp =>{
                     console.log(resp.data)
                     this.playlists = resp.data.playlists;
                 }).catch(error => {
                     console.log(error)
-                });                
+                });     
         },
         methods:{
-            createPlaylist(){
-                alert("hejj")
-            }
+            
         },
     }
 </script>

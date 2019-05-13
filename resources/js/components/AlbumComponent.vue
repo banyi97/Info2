@@ -96,43 +96,7 @@
         <button @click="stopClick">Stop</button>
         </div>
 
-        <!-- Modals -->
-        <div ref="vuemodal" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create new playlist</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form @submit.prevent="createNewPlaylist">
-                    <div class="form-group">
-                        <label for="artistName">Playlist name</label>
-                        <input v-model.trim="createPlaylist.name" type="text" class="form-control" id="artistName" aria-describedby="emailHelp" placeholder="Playlist name">
-                    </div>
-                    <div class="form-group">
-                        <label for="pic">Image</label><br>
-                        <img :src="createPlaylist.view_pic" alt="" class="img-responsive" height="200" width="200">
-                        <input type="file" name="pic" ref="artistpic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png">
-                    </div>                
-                    <button type="submit" class="btn btn-primary">Submit</button> 
-                    <div v-show="createPlaylist.isResult === true" class="alert alert-success" role="alert">
-                        Created
-                    </div> 
-                    <div v-show="createPlaylist.isResult === false" class="alert alert-danger" role="alert">
-                        ERROR
-                    </div>   
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Ok</button>
-            </div>
-            </div>
-        </div>
-        </div>
+        <createplaylist-component :playlists='playlists'></createplaylist-component>
     </div>
 </template>
 
@@ -146,12 +110,6 @@ import axios from 'axios';
                 sound: null,
                 isPlayListView: false,
                 playlists: [],
-                createPlaylist:{
-                    name: '',
-                    view_pic: '',
-                    pic_file: null,
-                    isResult: null,
-                },
                 album : null
             }           
         },
@@ -205,12 +163,9 @@ import axios from 'axios';
             this.album.songs.forEach(song => {
             });
 
-            $(this.$refs.vuemodal).on("hidden.bs.modal", this.resetModal)
+            
         },
         methods: {
-            resetModal(){
-                this.createPlaylist = [];
-            },
             startClick(){
                 this.sound.play();
                 console.log(this.sound.duration())
@@ -232,33 +187,6 @@ import axios from 'axios';
                 //    this.createPlaylist.pic_file = this.$refs.artistpic.files[0];
                 };
                 reader.readAsDataURL(file);
-            },
-            createNewPlaylist(){
-                axios.post('/playlists/', {playlist: this.createPlaylist.name}).then(resq => {       
-                    this.createPlaylist.isResult = true;
-                    this.playlists.push({id:resq.data.id, name:resq.data.name})
-                    
-                    if(this.createPlaylist.pic_file == null){
-                        return;
-                    }  
-                    let fdata = new FormData();
-                    fdata.append('photo', this.pic_file);
-                    axios.post(
-                        '/upload/playlists/' + this.partist.id, 
-                        fdata,
-                        {
-                            headers: { "Content-Type": "multipart/form-data" }                          
-                        }).then(res =>{
-                            console.log(res.data)        
-                        }).catch(error =>{
-                        console.log('File upload error: '+ error);          
-                        return;
-                  })
-                }).catch(error => {
-                    console.log('Update error '+error)
-                    this.createPlaylist.isResult = false;
-                    return;
-                })          
             },
             addToPlaylist(playlistId, songId){             
                 axios.post('/playlists/element',{playlistElement:
