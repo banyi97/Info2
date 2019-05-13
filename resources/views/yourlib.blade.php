@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-    <yourlib-component  :playlists='{{$playlists}}'></yourlib-component>
+    <yourlib-component ></yourlib-component>
     </div>
 </div>
 <br>

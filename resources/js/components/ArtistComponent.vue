@@ -44,7 +44,7 @@ import axios from 'axios';
             }
         },
         mounted() {
-            console.log(this.artist.id)
+            console.log(this.artist.albums)
         },
         props: 
         {        

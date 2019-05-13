@@ -22,22 +22,19 @@ class YourLibController extends Controller
     {
         //
         $playlists = array();
-
+        $user = Auth::user();
         $query = DB::table('playlists')
-            ->select('playlists.id', 'playlists.user_id', 'playlists.name', 'playlists.pic_url')      
+            ->select('playlists.id', 'playlists.name', 'playlists.pic_url')      
+            ->where('playlists.user_id', $user->id)
             ->get();  
         foreach($query as $playlist){
             $element = array();
             $element['id'] = $playlist->id;
-            $element['user_id'] = $playlist->user_id;
             $element['name'] = $playlist->name;
             $element['pic_url'] = $playlist->pic_url;
             $playlists['playlist'][] = $element; 
         }
-        
-        return view('yourlib')->with([
-            'playlists'=> json_encode( $playlists )
-        ]);
+        return response()->json(['playlists' => $playlists], 200);      
     }
 
     /**
@@ -73,6 +70,32 @@ class YourLibController extends Controller
         }
         return response()->json(['error' => 'ERROR'], 400);
     }
+    public function storeElemtent(Request $request)
+    {
+        //
+        if(isset($request->playlistElement)){   
+                $elements = DB::table('playlist_elements')->select('playlist_elements.number_of')
+                    ->where('playlist_elements.playlist_id',$request->playlistElement['playlistId'])
+                    ->get();
+                $numer_of = 1;
+                foreach($elements as $element){
+                    if($numer_of < $element->number_of){
+                        $numer_of = $element->number_of + 1;
+                    }
+                }
+                $id = DB::table('playlist_elements')->insertGetId(
+                [
+                    'playlist_id' => $request->playlistElement['playlistId'],
+                    'song_id' => $request->playlistElement['songId'],
+                    'number_of' => $numer_of,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s")
+                ]
+            );    
+            return response()->json(['success' => 'ok'], 200);                
+        }
+        return response()->json(['error' => 'ERROR'], 400);
+    }
 
     /**
      * Display the specified resource.
@@ -93,10 +116,10 @@ class YourLibController extends Controller
                 'albums.title as album_title', 'albums.id as album_id',
                 'artists.name as artist_name', 'artists.id as artist_id'
                 )      
-            ->rightJoin('playlist_elements', 'playlist_elements.playlist_id', '=', 'playlists.id')
-            ->rightJoin('songs', 'playlist_elements.song_id', '=', 'songs.id')
-            ->rightJoin('albums', 'songs.album_id', '=', 'albums.id')
-            ->rightJoin('artists', 'albums.artist_id', '=', 'artists.id')
+            ->leftJoin('playlist_elements', 'playlist_elements.playlist_id', '=', 'playlists.id')
+            ->leftJoin('songs', 'playlist_elements.song_id', '=', 'songs.id')
+            ->leftJoin('albums', 'songs.album_id', '=', 'albums.id')
+            ->leftJoin('artists', 'albums.artist_id', '=', 'artists.id')
             ->where('playlists.id', $id)
             ->orderby('playlist_elements.playlist_id')
             ->orderby('playlist_elements.number_of')
@@ -107,7 +130,11 @@ class YourLibController extends Controller
             $playlist['id'] = $datas->id;
             $playlist['title'] = $datas->name; //name
             $playlist['pic_url'] = $datas->pic_url; 
+            $playlist['songs'] = array();
             foreach($query as $songs){
+                if(!$songs->element_id){
+                    continue;
+                }
                 $song = array();
                 $song['id'] = $songs->element_id;
                 $song['number_of'] = $songs->element_number_of;
@@ -123,7 +150,7 @@ class YourLibController extends Controller
             }
             break;
         }
-        
+    //    return response()->json(['success' => $playlist], 200); 
         return view('playlist')->with([
             'playlist'=> json_encode( $playlist )
         ]);
@@ -150,6 +177,7 @@ class YourLibController extends Controller
     public function update(Request $request, $id)
     {
         //
+       
     }
 
     /**
@@ -161,5 +189,20 @@ class YourLibController extends Controller
     public function destroy($id)
     {
         //
+        if(DB::table('playlists')->where('playlists.id', $id)->delete()){
+            return response()->json(['success' => 'Ok'], 200);
+        }
+        
+        return response()->json(['error' => 'Error'], 400);
+    }
+
+    public function destroyElement($id)
+    {
+        //
+        if(DB::table('playlist_elements')->where('playlist_elements.id', $id)->delete()){
+            return response()->json(['success' => 'Ok'], 200);
+        }
+        
+        return response()->json(['error' => 'Error'], 400);
     }
 }

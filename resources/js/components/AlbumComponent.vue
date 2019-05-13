@@ -32,7 +32,7 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                     <button class="dropdown-item" data-toggle="modal" data-target="#exampleModal" type="button">New playlist</button>
                                     <hr>
-                                    <div v-bind:key="playlist.id" v-for="playlist in playlists">
+                                    <div v-bind:key="playlist.id" v-for="playlist in playlists.playlist">
                                         <button @click="addToPlaylist(playlist.id, item.id)" class="dropdown-item" type="button">{{playlist.name}}</button>
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                         <th scope="col">Time</th>
                     </tr>
                 </thead>
-                    <tbody>
+                    <tbody v-show="album.songs">
                         <tr v-bind:key="item.id" v-for="item in album.songs">
                         <th scope="row"> <a href="">{{item.number_of}}</a> </th>
                         <td>{{item.title}}</td>
@@ -85,7 +85,7 @@
         <button @click="stopClick">Stop</button>
         </div>
 
-        <!-- Modal -->
+        <!-- Modals -->
         <div ref="vuemodal" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -117,7 +117,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary">Ok</button>
             </div>
             </div>
         </div>
@@ -176,8 +176,14 @@ import axios from 'axios';
                 console.log(this.album)
             }
             else{
-            //    this.playlists_data = this.playlists;
+                
             }  
+            axios.get('/yourlib').then(resp =>{
+                    console.log(resp.data)
+                    this.playlists = resp.data.playlists;
+                }).catch(error => {
+                    console.log(error)
+                });
             this.sound = new Howl({
                     src: ['/storage/a.mp3','/storage/b.mp3'],
                     autoplay: false,
@@ -242,8 +248,13 @@ import axios from 'axios';
                     return;
                 })          
             },
-            addToPlaylist(playlistId, songId){
-
+            addToPlaylist(playlistId, songId){             
+                axios.post('/playlists/element',{playlistElement:
+                    {playlistId:playlistId, songId: songId}}).then(resp =>{
+                        console.log(resp.data)
+                }).catch(error => {
+                    console.log(error)
+                });
             },
             convertToTime(length){
                 const hour = Math.floor(length/3600);

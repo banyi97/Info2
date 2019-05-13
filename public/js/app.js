@@ -2361,12 +2361,19 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {},
   mounted: function mounted() {
+    var _this = this;
+
     if (this.playlistview === true) {
       this.isPlayListView = true;
       console.log(this.album);
-    } else {//    this.playlists_data = this.playlists;
-    }
+    } else {}
 
+    axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/yourlib').then(function (resp) {
+      console.log(resp.data);
+      _this.playlists = resp.data.playlists;
+    })["catch"](function (error) {
+      console.log(error);
+    });
     this.sound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
       src: ['/storage/a.mp3', '/storage/b.mp3'],
       autoplay: false,
@@ -2403,25 +2410,25 @@ __webpack_require__.r(__webpack_exports__);
       reader.readAsDataURL(file);
     },
     createNewPlaylist: function createNewPlaylist() {
-      var _this = this;
+      var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/playlists/', {
         playlist: this.createPlaylist.name
       }).then(function (resq) {
-        _this.createPlaylist.isResult = true;
+        _this2.createPlaylist.isResult = true;
 
-        _this.playlists.push({
+        _this2.playlists.push({
           id: resq.data.id,
           name: resq.data.name
         });
 
-        if (_this.createPlaylist.pic_file == null) {
+        if (_this2.createPlaylist.pic_file == null) {
           return;
         }
 
         var fdata = new FormData();
-        fdata.append('photo', _this.pic_file);
-        axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/upload/playlists/' + _this.partist.id, fdata, {
+        fdata.append('photo', _this2.pic_file);
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/upload/playlists/' + _this2.partist.id, fdata, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -2433,11 +2440,22 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (error) {
         console.log('Update error ' + error);
-        _this.createPlaylist.isResult = false;
+        _this2.createPlaylist.isResult = false;
         return;
       });
     },
-    addToPlaylist: function addToPlaylist(playlistId, songId) {},
+    addToPlaylist: function addToPlaylist(playlistId, songId) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/playlists/element', {
+        playlistElement: {
+          playlistId: playlistId,
+          songId: songId
+        }
+      }).then(function (resp) {
+        console.log(resp.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     convertToTime: function convertToTime(length) {
       var hour = Math.floor(length / 3600);
       var min = Math.floor((length - hour * 3600) / 60);
@@ -2457,11 +2475,11 @@ __webpack_require__.r(__webpack_exports__);
       return this.convertToTime(sec);
     },
     deleteAlbum: function deleteAlbum() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]('/albums/' + this.album.id).then(function (response) {
         if (response.data.success) {
-          window.location.href = "/artists/" + _this2.album.artist_id;
+          window.location.href = "/artists/" + _this3.album.artist_id;
         }
       });
     },
@@ -2732,7 +2750,7 @@ __webpack_require__.r(__webpack_exports__);
     return {};
   },
   mounted: function mounted() {
-    console.log(this.artist.id);
+    console.log(this.artist.albums);
   },
   props: {
     artist: {
@@ -3156,26 +3174,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    playlists: {
-      playlist: [{
-        id: Number,
-        name: String,
-        pic_url: String
-      }]
-    }
-  },
+  props: {},
   data: function data() {
     return {
-      playlistdatas: []
+      playlists: []
     };
   },
   mounted: function mounted() {
     var _this = this;
 
-    console.log('Component mounted.');
-    this.playlists.playlist.forEach(function (element) {
-      _this.playlistdatas.push(element);
+    axios.get('/yourlib').then(function (resp) {
+      console.log(resp.data);
+      _this.playlists = resp.data.playlists;
+    })["catch"](function (error) {
+      console.log(error);
     });
   },
   methods: {
@@ -45232,7 +45244,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("hr"),
                           _vm._v(" "),
-                          _vm._l(_vm.playlists, function(playlist) {
+                          _vm._l(_vm.playlists.playlist, function(playlist) {
                             return _c("div", { key: playlist.id }, [
                               _c(
                                 "button",
@@ -45324,6 +45336,16 @@ var render = function() {
             _vm._v(" "),
             _c(
               "tbody",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.album.songs,
+                    expression: "album.songs"
+                  }
+                ]
+              },
               _vm._l(_vm.album.songs, function(item) {
                 return _c("tr", { key: item.id }, [
                   _c("th", { attrs: { scope: "row" } }, [
@@ -45601,7 +45623,7 @@ var staticRenderFns = [
       _c(
         "button",
         { staticClass: "btn btn-primary", attrs: { type: "button" } },
-        [_vm._v("Save changes")]
+        [_vm._v("Ok")]
       )
     ])
   }
@@ -46024,7 +46046,7 @@ var staticRenderFns = [
             "a",
             {
               staticClass: "list-group-item list-group-item-action bg-light",
-              attrs: { href: "/yourlib" }
+              attrs: { href: "/mylib" }
             },
             [_vm._v("Your library")]
           )
@@ -46611,7 +46633,7 @@ var render = function() {
     _c(
       "div",
       { staticClass: "row" },
-      _vm._l(_vm.playlistdatas, function(item) {
+      _vm._l(_vm.playlists.playlist, function(item) {
         return _c("div", { key: item.id }, [
           _c("div", { staticClass: "mt-2 mx-2 text-center" }, [
             _c("div", [

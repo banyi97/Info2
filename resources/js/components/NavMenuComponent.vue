@@ -51,7 +51,7 @@ body {
       <div class="list-group list-group-flush">
         <a href="/home" class="list-group-item list-group-item-action bg-light">Home</a>
         <a href="/search" class="list-group-item list-group-item-action bg-light">Search</a>
-        <a href="/yourlib" class="list-group-item list-group-item-action bg-light">Your library</a>
+        <a href="/mylib" class="list-group-item list-group-item-action bg-light">Your library</a>
       </div>   
 </div>
 </template>

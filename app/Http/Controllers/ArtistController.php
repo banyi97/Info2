@@ -93,6 +93,9 @@ class ArtistController extends Controller
             foreach($query as $albums){
                 if($this->checkElement($ret['albums'],$albums) == true)
                     continue;
+                if(!$albums->album_album_id){
+                    continue;
+                }
                 $album = [
                     'id' => $albums->album_album_id,
                     'title' => $albums->album_title,

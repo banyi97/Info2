@@ -57,9 +57,16 @@ Route::post('/upload/songs/{id}', 'UploadController@storeSongs');
 
 Route::get('/upload/test','UploadController@storeTest');
 
+Route::get('/mylib', function(){
+    return view('yourlib');
+});
 Route::get('/yourlib', 'YourLibController@index');
 Route::get('/playlists/{id}','YourLibController@show');
 Route::post('/playlists','YourLibController@store');
+Route::post('/playlists/element','YourLibController@storeElemtent');
+Route::put('/playlists/{id}','YourLibController@update');
+Route::delete('/playlists/{id}','YourLibController@destroy');
+Route::delete('/playlists/element/{id}','YourLibController@destroyElement');
 
 Route::get('/profile/me', 'UserController@me');
 Route::get('/profile/{id}','UserController@show');

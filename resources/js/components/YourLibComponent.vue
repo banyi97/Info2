@@ -5,7 +5,7 @@
        </div>
        <h2 class='mt-2 mx-2'>My playlists</h2>
                 <div class="row"> 
-                    <div v-bind:key="item.id" v-for="item in playlistdatas">
+                    <div v-bind:key="item.id" v-for="item in playlists.playlist">
                         <div class='mt-2 mx-2 text-center'>       
                             <div>
                                 <a :href="'/playlists/' + item.id">
@@ -25,25 +25,21 @@
 
 <script>
     export default {
-        props:{
-            playlists:{
-                playlist : [{
-                    id : Number,
-                    name : String,
-                    pic_url: String,
-                }]
-            }
+        props:{          
+            
         },
         data: function(){
             return{
-                playlistdatas : []
+                playlists : []
             }
         },
         mounted() {
-            console.log('Component mounted.')
-            this.playlists.playlist.forEach(element => {
-                this.playlistdatas.push(element);
-            });
+            axios.get('/yourlib').then(resp =>{
+                    console.log(resp.data)
+                    this.playlists = resp.data.playlists;
+                }).catch(error => {
+                    console.log(error)
+                });                
         },
         methods:{
             createPlaylist(){
