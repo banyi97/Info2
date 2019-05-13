@@ -96,8 +96,6 @@ import axios from 'axios'
                 else{
                     this.ispassed = true; 
                 }
-                console.log(this.old_password)
-                console.log(this.new_password)
                 axios.patch('/profile', {newpassword : this.new_password, oldpassword : this.old_password }).then(resp => {
                     console.log(resp.data)
                     this.ret_succ = true;

@@ -31,6 +31,7 @@ Vue.component('yourlib-component', require('./components/YourLibComponent.vue').
 Vue.component('user-component', require('./components/UserComponent.vue').default);
 Vue.component('admin-component', require('./components/AdminComponent.vue').default);
 Vue.component('createplaylist-component', require('./components/CreatePlaylistComponent.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

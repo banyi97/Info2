@@ -3,9 +3,8 @@
         <div class="row justify-content-left">         
             <div class="row">
                 <div>
-                    <img v-if="view_pic && !ismodify" :src="view_pic" class="img-responsive" height="200" width="200"> <br>
+                    <img v-if="(view_pic && !ismodify) || (view_pic && ismodify)" :src="view_pic" class="img-responsive" height="200" width="200"> <br>
                     <img v-if="!view_pic && ismodify" :src="'/storage/'+album.pic_url" class="img-responsive" height="200" width="200"> <br>
-                    <img v-if="view_pic && ismodify" :src="view_pic" class="img-responsive" height="200" width="200"> <br>
                     <input type="file" name="pic" ref="albumpic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png" />
                 </div>
                 <div>

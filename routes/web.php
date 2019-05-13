@@ -74,4 +74,3 @@ Route::get('/profile/{id}','UserController@show');
 Route::patch('/profile','UserController@changePassword');
 Route::delete('/profile/me','UserController@destroyMe');
 Route::delete('/profile/{id}','UserController@destroy');
-

@@ -104,6 +104,7 @@
 //const {Howl, Howler} = require('howler');
 import {Howl, Howler} from 'howler'; 
 import axios from 'axios';  
+import draggable from 'vuedraggable';
     export default {
         data: function () {
             return {
@@ -161,9 +162,7 @@ import axios from 'axios';
                 });
             Howler.volume(0.5);   
             this.album.songs.forEach(song => {
-            });
-
-            
+            }); 
         },
         methods: {
             startClick(){
@@ -172,21 +171,6 @@ import axios from 'axios';
             },       
             stopClick(){
                 this.sound.pause();
-            },
-            onImageChange(e) {
-                let files = e.target.files || e.dataTransfer.files;
-                if (!files.length)
-                    return;              
-                this.createImage(files[0]);
-            },
-            createImage(file) {
-                let reader = new FileReader();
-                let vm = this;
-                reader.onload = (e) => {
-                    vm.createPlaylist.view_pic = e.target.result;
-                //    this.createPlaylist.pic_file = this.$refs.artistpic.files[0];
-                };
-                reader.readAsDataURL(file);
             },
             addToPlaylist(playlistId, songId){             
                 axios.post('/playlists/element',{playlistElement:

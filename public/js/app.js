@@ -1906,7 +1906,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -2192,6 +2191,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var howler__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(howler__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.umd.min.js");
+/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_2__);
 //
 //
 //
@@ -2297,6 +2298,7 @@ __webpack_require__.r(__webpack_exports__);
 //const {Howl, Howler} = require('howler');
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2360,21 +2362,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     stopClick: function stopClick() {
       this.sound.pause();
-    },
-    onImageChange: function onImageChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage: function createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = function (e) {
-        vm.createPlaylist.view_pic = e.target.result; //    this.createPlaylist.pic_file = this.$refs.artistpic.files[0];
-      };
-
-      reader.readAsDataURL(file);
     },
     addToPlaylist: function addToPlaylist(playlistId, songId) {
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/playlists/element', {
@@ -3200,8 +3187,6 @@ __webpack_require__.r(__webpack_exports__);
         this.ispassed = true;
       }
 
-      console.log(this.old_password);
-      console.log(this.new_password);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.patch('/profile', {
         newpassword: this.new_password,
         oldpassword: this.old_password
@@ -44921,7 +44906,7 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-left" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", [
-          _vm.view_pic && !_vm.ismodify
+          (_vm.view_pic && !_vm.ismodify) || (_vm.view_pic && _vm.ismodify)
             ? _c("img", {
                 staticClass: "img-responsive",
                 attrs: { src: _vm.view_pic, height: "200", width: "200" }
@@ -44938,15 +44923,6 @@ var render = function() {
                   height: "200",
                   width: "200"
                 }
-              })
-            : _vm._e(),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _vm.view_pic && _vm.ismodify
-            ? _c("img", {
-                staticClass: "img-responsive",
-                attrs: { src: _vm.view_pic, height: "200", width: "200" }
               })
             : _vm._e(),
           _vm._v(" "),
