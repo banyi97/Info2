@@ -67,16 +67,27 @@
                         <th scope="col">Album</th>
                         <th scope="col">Added date</th>
                         <th scope="col">Time</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                     <tbody v-show="album.songs">
-                        <tr v-bind:key="item.id" v-for="item in album.songs">
+                        <tr v-bind:key="item.id" v-for="(item,index) in album.songs">
                         <th scope="row"> <a href="">{{item.number_of}}</a> </th>
                         <td>{{item.title}}</td>
                         <td><a :href="'/artists/'+item.artist_id">{{item.artist_name}}</a></td>
                         <td><a :href="'/albums/'+item.album_id">{{item.album_title}}</a></td>
                         <td>{{item.element_created}}</td>
                         <td>{{convertToTime(item.song_length)}}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    ...
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <button @click="removeToPlaylist(item.id, index)" class="dropdown-item" type="button">Remove</button>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>                    
             </table>
@@ -141,11 +152,12 @@ import axios from 'axios';
                     pic_file: null,
                     isResult: null,
                 },
+                album : null
             }           
         },
         props: {
             playlistview: Boolean,
-            album : {
+            palbum : {
                 id: Number,
                 artist_id: Number,
                 artist: String,
@@ -169,11 +181,11 @@ import axios from 'axios';
             },
         },
         created: function () {
+            this.album = this.palbum;
         },
         mounted() {
             if(this.playlistview === true){
                 this.isPlayListView = true;
-                console.log(this.album)
             }
             else{
                 
@@ -253,6 +265,13 @@ import axios from 'axios';
                     {playlistId:playlistId, songId: songId}}).then(resp =>{
                         console.log(resp.data)
                 }).catch(error => {
+                    console.log(error)
+                });
+            },
+            removeToPlaylist(id,index){
+                axios.delete('/playlists/element/'+id).then(resp=>{
+                    this.album.songs.splice(index, 1);
+                }).catch(error =>{
                     console.log(error)
                 });
             },

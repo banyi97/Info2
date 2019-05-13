@@ -210,7 +210,7 @@ import FileUpload  from 'vue-upload-component'
                         return;
                     }
                 }
-              
+                
                 axios.post('/albums', {album : this.album}).then(response => {             
                     if (response.data.success) {                   
                         if(this.albumfiles.albumpic === null){

@@ -77,8 +77,16 @@ class UploadController extends Controller
     
     public function storeTest(Request $request)
     {
-        
-        return response()->json(['status' => 'success'], 200);
+        return response()->json(['status' => $request->album], 200);
+        if(isset($request->album)){
+            try{
+                $path = $request->album->picurl->store('public');
+            }
+            catch(Exception $e){
+                return response()->json(['status' => $e], 200);
+            }
+        }
+        return response()->json(['status' => 'ok'], 200);
         
     }
 }

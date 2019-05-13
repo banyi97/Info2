@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-    <album-component :album="{{$album}}"></album-component>
+    <album-component :palbum="{{$album}}"></album-component>
     </div>
 </div>
 <br>

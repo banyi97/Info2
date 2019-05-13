@@ -2319,6 +2319,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //const {Howl, Howler} = require('howler');
 
 
@@ -2333,12 +2344,13 @@ __webpack_require__.r(__webpack_exports__);
         view_pic: '',
         pic_file: null,
         isResult: null
-      }
+      },
+      album: null
     };
   },
   props: {
     playlistview: Boolean,
-    album: {
+    palbum: {
       id: Number,
       artist_id: Number,
       artist: String,
@@ -2359,13 +2371,14 @@ __webpack_require__.r(__webpack_exports__);
       }]
     }
   },
-  created: function created() {},
+  created: function created() {
+    this.album = this.palbum;
+  },
   mounted: function mounted() {
     var _this = this;
 
     if (this.playlistview === true) {
       this.isPlayListView = true;
-      console.log(this.album);
     } else {}
 
     axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/yourlib').then(function (resp) {
@@ -2456,6 +2469,15 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    removeToPlaylist: function removeToPlaylist(id, index) {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]('/playlists/element/' + id).then(function (resp) {
+        _this3.album.songs.splice(index, 1);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     convertToTime: function convertToTime(length) {
       var hour = Math.floor(length / 3600);
       var min = Math.floor((length - hour * 3600) / 60);
@@ -2475,11 +2497,11 @@ __webpack_require__.r(__webpack_exports__);
       return this.convertToTime(sec);
     },
     deleteAlbum: function deleteAlbum() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]('/albums/' + this.album.id).then(function (response) {
         if (response.data.success) {
-          window.location.href = "/artists/" + _this3.album.artist_id;
+          window.location.href = "/artists/" + _this4.album.artist_id;
         }
       });
     },
@@ -45346,7 +45368,7 @@ var render = function() {
                   }
                 ]
               },
-              _vm._l(_vm.album.songs, function(item) {
+              _vm._l(_vm.album.songs, function(item, index) {
                 return _c("tr", { key: item.id }, [
                   _c("th", { attrs: { scope: "row" } }, [
                     _c("a", { attrs: { href: "" } }, [
@@ -45372,6 +45394,52 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _vm._v(_vm._s(_vm.convertToTime(item.song_length)))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("div", { staticClass: "dropdown" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary dropdown-toggle",
+                          attrs: {
+                            type: "button",
+                            id: "dropdownMenu2",
+                            "data-toggle": "dropdown",
+                            "aria-haspopup": "true",
+                            "aria-expanded": "false"
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                                ...\n                            "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "dropdown-menu",
+                          attrs: { "aria-labelledby": "dropdownMenu2" }
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "dropdown-item",
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.removeToPlaylist(item.id, index)
+                                }
+                              }
+                            },
+                            [_vm._v("Remove")]
+                          )
+                        ]
+                      )
+                    ])
                   ])
                 ])
               }),
@@ -45577,7 +45645,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Added date")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Time")])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Time")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } })
       ])
     ])
   },
