@@ -9,9 +9,9 @@ return [
         
             'encryption' => 'tls', 
         
-        'username' => '',
+        'username' => env('MAIL_USERNAME', null),
         
-        'password' => '',
+        'password' => env('MAIL_PASSWORD', null),
         
         'sendmail' => '/usr/sbin/sendmail -bs' ,
 
