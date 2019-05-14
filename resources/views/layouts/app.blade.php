@@ -55,7 +55,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="/admin">Users</a>
+                                    <a class="dropdown-item" href="/admin">Admin page</a>
                                     <a class="dropdown-item" href="/profile/me">My profile</a>
                                     <a class="dropdown-item" href="/artists/create">Create artist</a>
                                     
