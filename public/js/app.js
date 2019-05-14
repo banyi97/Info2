@@ -2043,7 +2043,8 @@ __webpack_require__.r(__webpack_exports__);
         albumsongs: []
       },
       actualYear: null,
-      createid: 0
+      createid: 0,
+      ismodify: false
     };
   },
   created: function created() {
@@ -2053,9 +2054,10 @@ __webpack_require__.r(__webpack_exports__);
     this.actualYear = this.album.year = date.getFullYear();
     this.album.artistid = this.artist.album.artist_id;
 
-    if (this.ismodify) {
+    if (this.pismodify) {
       this.album = this.artist.album;
       this.createid = 0;
+      this.ismodify = true;
       this.album.songs.forEach(function (numb) {
         if (numb > _this.createid) {
           _this.createid = numb;
@@ -2067,7 +2069,7 @@ __webpack_require__.r(__webpack_exports__);
     console.log(this.artist.album.id);
   },
   props: {
-    ismodify: Boolean,
+    pismodify: Boolean,
     artist: {
       album: {
         id: Number,
@@ -2092,7 +2094,8 @@ __webpack_require__.r(__webpack_exports__);
     addNew: function addNew() {
       var q = {
         id: this.createid++,
-        title: ''
+        title: '',
+        file: null
       };
       this.album.songs.push(q);
     },
@@ -2158,7 +2161,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (this.album.songs.length === 0) {
-        alert("Songs");
+        alert("Songs is empty");
         return;
       }
 
@@ -2166,7 +2169,7 @@ __webpack_require__.r(__webpack_exports__);
         this.album.songs[i].number_of = i + 1;
 
         if (this.album.songs[i].title == null || this.album.songs[i].title == '') {
-          alert('title is empty');
+          alert('Song title is empty');
           return;
         }
       }
@@ -2174,27 +2177,46 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/albums', {
         album: this.album
       }).then(function (response) {
-        if (response.data.success) {
-          if (_this3.albumfiles.albumpic === null) {
-            window.location.href = "/albums/" + response.data.success.album_id;
-            return;
-          } else {
-            var fdata = new FormData();
-            fdata.append('photo', _this3.albumfiles.albumpic);
-            axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
+        if (_this3.albumfiles.albumpic !== null) {
+          var fdata = new FormData();
+          fdata.append('photo', _this3.albumfiles.albumpic);
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }).then(function (resp) {
+            _this3.view_pic = resp.data.success;
+            console.log('pic uploaded!!');
+            window.location.href = "/albums/" + response.data.album_id;
+          })["catch"](function (error) {
+            console.log('pic upload FAILURE!!');
+          });
+        }
+
+        for (var _i = 0; _i < _this3.album.songs.length; _i++) {
+          if (_this3.album.songs[_i].file) {
+            var _fdata = new FormData();
+
+            _fdata.append('songfile', _this3.album.songs[_i].file);
+
+            console.log(_fdata.get('songfile'));
+            axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + response.data.success.song_id[_i], _fdata, {
               headers: {
                 "Content-Type": "multipart/form-data"
               }
             }).then(function (resp) {
-              console.log(resp.data.success);
-              window.location.href = "/albums/" + response.data.success.album_id;
+              /*    axios.patch('/albums/songs/'+response.data.success.song_id[i], {length:666}).then(res => {
+                      console.log('long '+res.data.successq)
+                  }).catch(error => {
+                      console.log(error)
+                  }) */
             })["catch"](function (error) {
-              console.log('upload FAILURE!!');
+              console.log("songupload fail " + error);
             });
           }
         }
       })["catch"](function (error) {
-        console.log('FAILURE!!');
+        console.log(error);
       });
       ;
     },
@@ -2251,11 +2273,11 @@ __webpack_require__.r(__webpack_exports__);
           }).then(function (resp) {
             _this4.album.songs.forEach(function (element) {
               if (element.file != null) {
-                var _fdata = new FormData();
+                var _fdata2 = new FormData();
 
-                _fdata.append('song', element.file);
+                _fdata2.append('song', element.file);
 
-                axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + element.id, _fdata, {
+                axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + element.id, _fdata2, {
                   headers: {
                     "Content-Type": "multipart/form-data"
                   }
@@ -45441,7 +45463,11 @@ var render = function() {
                           modifiers: { trim: true }
                         }
                       ],
-                      attrs: { type: "text", placeholder: "Title" },
+                      attrs: {
+                        required: "",
+                        type: "text",
+                        placeholder: "Title"
+                      },
                       domProps: { value: item.title },
                       on: {
                         input: function($event) {

@@ -79,7 +79,7 @@ class AlbumController extends Controller
                             'title' => $song['title'],
                             'number_of' => $song['number_of'],
                             'album_id' => $id,
-                            'length' => $song['number_of'],
+                            'length' => 0,
                             'created_at' => $datetime,
                             'updated_at' => $datetime
                         ]);
@@ -89,6 +89,24 @@ class AlbumController extends Controller
         return response()->json(['success' => $ret], 200);  
     }
 
+    public function updateSongLength(Request $request, $id)
+    {
+        //
+        if(isset($request->length)){
+            DB::table('songs')
+                ->where('songs.id', $id)
+                ->update(
+                    [
+                    'length' => $request->length,
+                    'updated_at' => date("Y-m-d H:i:s")
+                    ],
+                );  
+                return response()->json(['success' => $request->length], 200);  
+        }           
+        return response()->json(['error' => 'error'], 400);  
+    }
+
+    
     /**
      * Display the specified resource.
      *

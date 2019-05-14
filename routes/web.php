@@ -36,11 +36,12 @@ Route::delete('/artists/{id}','ArtistController@destroy');
 
 Route::get('/albums','AlbumController@index');
 Route::get('/albums/create/{id}','AlbumController@create');
-Route::post('/albums','AlbumController@store');
+Route::post('/albums','AlbumController@store'); 
 Route::get('/albums/{id}','AlbumController@show');
 Route::get('/albums/{id}/edit','AlbumController@edit');
 Route::put('/albums/{id}','AlbumController@update');
 Route::patch('/albums/{id}/{number}','AlbumController@updateSong');
+Route::patch('/albums/songs/{id}','AlbumController@updateSongLength');
 Route::delete('/albums/{id}','AlbumController@destroy');
 Route::delete('/albums/song/{id}','AlbumController@destroySong');
 

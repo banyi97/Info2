@@ -34,7 +34,7 @@
                         @end="dragging = false">
                         <tr v-for="(item, index) in album.songs" :key="item.id">
                             <td scope="row">{{index +1}}</td>
-                            <td><input v-model.trim="item.title" type="text" placeholder="Title"></td>
+                            <td><input v-model.trim="item.title" required type="text" placeholder="Title"></td>
                             <td><input type="file" :id="index" v-on:change="onSongChange" ></td>
                             <td v-if="ismodify"><button @click="uploadSong(index)">Upload</button></td>
                             <td><div></div></td>
@@ -86,6 +86,7 @@ import FileUpload  from 'vue-upload-component'
                 },
                 actualYear : null,
                 createid : 0,
+                ismodify : false,
             }           
         },
         created: function () {
@@ -94,9 +95,10 @@ import FileUpload  from 'vue-upload-component'
             
             this.album.artistid = this.artist.album.artist_id;
 
-            if(this.ismodify){
+            if(this.pismodify){
                 this.album = this.artist.album;
                 this.createid = 0;
+                this.ismodify = true;
                 this.album.songs.forEach(numb =>{
                     if(numb > this.createid){
                         this.createid = numb;
@@ -108,7 +110,7 @@ import FileUpload  from 'vue-upload-component'
             console.log(this.artist.album.id)
         },
         props: {
-            ismodify: Boolean,   
+            pismodify: Boolean,   
             artist:{    
                 album :{
                     id: Number,
@@ -133,7 +135,8 @@ import FileUpload  from 'vue-upload-component'
             addNew(){
                 let q = {
                     id : this.createid++,
-                    title : ''
+                    title : '',
+                    file : null,
                 }
                 this.album.songs.push(q);
             },
@@ -199,27 +202,21 @@ import FileUpload  from 'vue-upload-component'
                     return;
                 }
                 if(this.album.songs.length === 0){
-                    alert("Songs")
+                    alert("Songs is empty")
                     return;
                 }
                 for(let i = 0; i < this.album.songs.length; i++){
                     this.album.songs[i].number_of = i + 1;
                     if(this.album.songs[i].title == null || this.album.songs[i].title == ''){
-                        alert('title is empty');
+                        alert('Song title is empty');
                         return;
                     }
-                }
-                
-                axios.post('/albums', {album : this.album}).then(response => {             
-                    if (response.data.success) {                   
-                        if(this.albumfiles.albumpic === null){
-                            window.location.href = "/albums/" + response.data.success.album_id;
-                            return;
-                        }
-                        else{
+                }              
+                axios.post('/albums', {album : this.album}).then(response => {      
+                              
+                        if(this.albumfiles.albumpic !== null){
                             let fdata = new FormData();
-                            fdata.append('photo', this.albumfiles.albumpic);
-                            
+                            fdata.append('photo', this.albumfiles.albumpic);                       
                             axios.post(
                                 '/upload/albumpic/' + response.data.success.album_id, 
                                 fdata,
@@ -227,16 +224,37 @@ import FileUpload  from 'vue-upload-component'
                                     headers: { "Content-Type": "multipart/form-data" }
                                 })
                             .then(resp => {
-                                console.log(resp.data.success);                              
-                                window.location.href = "/albums/" + response.data.success.album_id;               
+                                this.view_pic = resp.data.success;
+                                console.log('pic uploaded!!'); 
+                                window.location.href = "/albums/" + response.data.album_id;                            
                             })
                             .catch(error => {
-                                console.log('upload FAILURE!!');                        
+                                console.log('pic upload FAILURE!!');                        
                             });  
-                        }                                      
-                   }
+                        }      
+                    for(let i = 0; i < this.album.songs.length; i++){
+                        if(this.album.songs[i].file){
+                            let fdata = new FormData();
+                            fdata.append('songfile', this.album.songs[i].file);
+                            console.log(fdata.get('songfile'))
+                            axios.post(
+                                '/upload/songs/'+response.data.success.song_id[i],
+                                fdata,
+                                {
+                                    headers: { "Content-Type": "multipart/form-data" }
+                                }).then(resp => {                     
+                                /*    axios.patch('/albums/songs/'+response.data.success.song_id[i], {length:666}).then(res => {
+                                        console.log('long '+res.data.successq)
+                                    }).catch(error => {
+                                        console.log(error)
+                                    }) */
+                                }).catch(error =>{
+                                    console.log("songupload fail "+error)
+                                });                           
+                        }                  
+                    }                                                              
                 }).catch(error =>{
-                    console.log('FAILURE!!');
+                    console.log(error);
                 });;              
             },
             editAlbum(){

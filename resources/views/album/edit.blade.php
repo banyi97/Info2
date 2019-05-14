@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <albumadmin-component :ismodify=true :artist="{{$artist}}"></albumadmin-component>
+        <albumadmin-component :pismodify=true :artist="{{$artist}}"></albumadmin-component>
     </div>
 </div>
 <br>
