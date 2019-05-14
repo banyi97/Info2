@@ -58,9 +58,7 @@ import axios from 'axios'
             }
         },
         mounted() {
-            $(this.$refs.vuemodal).on("hidden.bs.modal", this.resetModal) 
-            console.log('playlists:')
-            console.log(this.playlists)             
+            $(this.$refs.vuemodal).on("hidden.bs.modal", this.resetModal)         
         },
         methods:{           
             resetModal(){

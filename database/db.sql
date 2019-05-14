@@ -4,7 +4,7 @@ insert into artists (name) values('Ayreon');
 insert into artists (name) values('Rammstein');
 insert into artists (name) values('Freedom Call');
 insert into artists (name) values('Shylamgognar');
-insert into artists (name) values('Ana');
+insert into artists (name) values('Powerwolf');
 
 insert into albums (title, release_date, artist_id, pic_url) values('The Source', 2017, 1, 'the_source.jpg');
 insert into albums (title, release_date, artist_id) values('The Human Equeation', 2004, 1);

@@ -58,9 +58,12 @@ Route::post('/upload/playlists/{id}', 'UploadController@storePlaylist');
 
 Route::post('/upload/test','UploadController@storeTest');
 
-Route::get('/mylib', function(){
-    return view('yourlib');
+Route::middleware('auth')->group(function () {
+    Route::get('/mylib', function(){
+        return view('yourlib');
+    });
 });
+
 Route::get('/yourlib', 'YourLibController@index');
 Route::get('/playlists/{id}','YourLibController@show');
 Route::post('/playlists','YourLibController@store');

@@ -2783,8 +2783,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     $(this.$refs.vuemodal).on("hidden.bs.modal", this.resetModal);
-    console.log('playlists:');
-    console.log(this.playlists);
   },
   methods: {
     resetModal: function resetModal() {
