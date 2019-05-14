@@ -35,7 +35,7 @@
                         <tr v-for="(item, index) in album.songs" :key="item.id">
                             <td scope="row">{{index +1}}</td>
                             <td><input v-model.trim="item.title" type="text" placeholder="Title"></td>
-                            <td><input type="file" accept="audio/*" :id="index" v-on:change="onSongChange" ></td>
+                            <td><input type="file" :id="index" v-on:change="onSongChange" ></td>
                             <td v-if="ismodify"><button @click="uploadSong(index)">Upload</button></td>
                             <td><div></div></td>
                             <td><button @click="removeRow(index)"> Remove </button></td>
@@ -180,8 +180,8 @@ import FileUpload  from 'vue-upload-component'
                 }
                 
                 let fdata = new FormData();
-                fdata.append('song', this.album.songs[index].file);
-                
+                fdata.append('songfile', this.album.songs[index].file);
+                console.log(fdata.get('songfile'))
                 axios.post(
                     '/upload/songs/'+this.album.songs[index].id,
                     fdata,

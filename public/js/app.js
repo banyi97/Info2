@@ -2137,7 +2137,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var fdata = new FormData();
-      fdata.append('song', this.album.songs[index].file);
+      fdata.append('songfile', this.album.songs[index].file);
+      console.log(fdata.get('songfile'));
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + this.album.songs[index].id, fdata, {
         headers: {
           "Content-Type": "multipart/form-data"
@@ -45458,7 +45459,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _c("input", {
-                      attrs: { type: "file", accept: "audio/*", id: index },
+                      attrs: { type: "file", id: index },
                       on: { change: _vm.onSongChange }
                     })
                   ]),

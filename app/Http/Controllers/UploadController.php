@@ -57,9 +57,9 @@ class UploadController extends Controller
     public function storeSongs(Request $request, $id)
     {
         //     
-        if ($request->song->isValid()) {
+        if (true) {
             //   
-            $path = $request->song->store('public');
+            $path = $request->songfile->store('public');
             $filename = basename($path);
             DB::table('songs')
                 ->where('songs.id', $id)
