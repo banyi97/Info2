@@ -35,13 +35,13 @@
                         <tr v-for="(item, index) in album.songs" :key="item.id">
                             <td scope="row">{{index +1}}</td>
                             <td><input v-model.trim="item.title" type="text" placeholder="Title"></td>
-                            <td><input type="file" :id="index" v-on:change="onSongChange" ></td>
+                            <td><input type="file" accept="audio/*" :id="index" v-on:change="onSongChange" ></td>
                             <td v-if="ismodify"><button @click="uploadSong(index)">Upload</button></td>
-                            <td><div>Remove</div></td>
+                            <td><div></div></td>
                             <td><button @click="removeRow(index)"> Remove </button></td>
                         </tr>
                     </draggable>                
-                </table>          
+                </table>       
            </div>
         </div>
         <div>
@@ -85,7 +85,7 @@ import FileUpload  from 'vue-upload-component'
                     albumsongs: [],
                 },
                 actualYear : null,
-                createid : 0
+                createid : 0,
             }           
         },
         created: function () {
@@ -178,19 +178,19 @@ import FileUpload  from 'vue-upload-component'
                 if(this.album.songs[index].file == null){
                     return;
                 }
+                
                 let fdata = new FormData();
-                fdata.append('photo', 'hello');
-                console.log(fdata)
+                fdata.append('song', this.album.songs[index].file);
+                
                 axios.post(
                     '/upload/songs/'+this.album.songs[index].id,
-                    null,
+                    fdata,
                     {
                         headers: { "Content-Type": "multipart/form-data" }
                     }).then(resp => {
                         console.log(resp.data.success);
-                        console.log('uploaded')
                     }).catch(error =>{
-                        console.log(error)
+                        console.log(error.data)
                     }) 
             },
             createAlbum(){

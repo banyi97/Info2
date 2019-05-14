@@ -2137,17 +2137,15 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var fdata = new FormData();
-      fdata.append('photo', 'hello');
-      console.log(fdata);
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + this.album.songs[index].id, null, {
+      fdata.append('song', this.album.songs[index].file);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + this.album.songs[index].id, fdata, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
       }).then(function (resp) {
         console.log(resp.data.success);
-        console.log('uploaded');
       })["catch"](function (error) {
-        console.log(error);
+        console.log(error.data);
       });
     },
     createAlbum: function createAlbum() {
@@ -45460,7 +45458,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _c("input", {
-                      attrs: { type: "file", id: index },
+                      attrs: { type: "file", accept: "audio/*", id: index },
                       on: { change: _vm.onSongChange }
                     })
                   ]),
@@ -45481,7 +45479,7 @@ var render = function() {
                       ])
                     : _vm._e(),
                   _vm._v(" "),
-                  _c("td", [_c("div", [_vm._v("Remove")])]),
+                  _c("td", [_c("div")]),
                   _vm._v(" "),
                   _c("td", [
                     _c(

@@ -69,7 +69,7 @@ class UploadController extends Controller
                 ]);
         return response()->json(['success' => $filename], 200);
         }
-        return response()->json(['success' => 'error'], 400);
+        return response()->json(['success' => $request->song->isValid()], 200);
     }
 
     public function storePlaylist(Request $request, $id)
