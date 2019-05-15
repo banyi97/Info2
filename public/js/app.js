@@ -2028,6 +2028,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2155,6 +2156,8 @@ __webpack_require__.r(__webpack_exports__);
       window.location.href = "/artists/" + this.artist.album.artist_id;
     },
     uploadSong: function uploadSong(index) {
+      var _this3 = this;
+
       if (this.album.songs[index].file == null) {
         return;
       }
@@ -2167,13 +2170,23 @@ __webpack_require__.r(__webpack_exports__);
           "Content-Type": "multipart/form-data"
         }
       }).then(function (resp) {
+        _this3.album.songs[index].is_success = true;
+
+        _this3.album.songs.push({
+          id: _this3.createid++,
+          title: ''
+        });
+
+        _this3.album.songs.splice(_this3.album.songs.length - 1, 1);
+
         console.log(resp.data.success);
       })["catch"](function (error) {
+        _this3.album.songs[index].is_success = false;
         console.log(error.data);
       });
     },
     createAlbum: function createAlbum() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.send == true) {
         alert('Sended');
@@ -2203,18 +2216,18 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/albums', {
         album: this.album
       }).then(function (response) {
-        _this3.album.id = response.data.success.album_id;
-        _this3.create_successed = true;
+        _this4.album.id = response.data.success.album_id;
+        _this4.create_successed = true;
 
-        if (_this3.albumfiles.albumpic !== null) {
+        if (_this4.albumfiles.albumpic !== null) {
           var fdata = new FormData();
-          fdata.append('photo', _this3.albumfiles.albumpic);
+          fdata.append('photo', _this4.albumfiles.albumpic);
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + response.data.success.album_id, fdata, {
             headers: {
               "Content-Type": "multipart/form-data"
             }
           }).then(function (resp) {
-            _this3.view_pic = resp.data.success;
+            _this4.view_pic = resp.data.success;
             console.log(response.data);
           })["catch"](function (error) {
             console.log('pic upload FAILURE!!');
@@ -2222,10 +2235,10 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         var _loop = function _loop(_i) {
-          if (_this3.album.songs[_i].file) {
+          if (_this4.album.songs[_i].file) {
             var _fdata = new FormData();
 
-            _fdata.append('songfile', _this3.album.songs[_i].file);
+            _fdata.append('songfile', _this4.album.songs[_i].file);
 
             console.log(_fdata.get('songfile'));
             axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/songs/' + response.data.success.song_id[_i], _fdata, {
@@ -2233,7 +2246,7 @@ __webpack_require__.r(__webpack_exports__);
                 "Content-Type": "multipart/form-data"
               }
             }).then(function (resp) {
-              _this3.album.songs[_i].is_success = true;
+              _this4.album.songs[_i].is_success = true;
               /*    axios.patch('/albums/songs/'+response.data.success.song_id[i], {length:666}).then(res => {
                       console.log('long '+res.data.successq)
                   }).catch(error => {
@@ -2241,23 +2254,23 @@ __webpack_require__.r(__webpack_exports__);
                   }) */
             })["catch"](function (error) {
               console.log("songupload fail " + error);
-              _this3.album.songs[_i].is_success = false;
+              _this4.album.songs[_i].is_success = false;
             });
           }
         };
 
-        for (var _i = 0; _i < _this3.album.songs.length; _i++) {
+        for (var _i = 0; _i < _this4.album.songs.length; _i++) {
           _loop(_i);
         }
       })["catch"](function (error) {
-        _this3.create_successed = false;
+        _this4.create_successed = false;
         console.log(error);
-        _this3.send = false;
+        _this4.send = false;
       });
       ;
     },
     editAlbum: function editAlbum() {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.album.title == null || this.album.title == '') {
         alert('Title is empty');
@@ -2281,11 +2294,11 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('/albums/' + this.artist.album.id, {
         album: this.album
       }).then(function (resp) {
-        _this4.edit_successed = true;
+        _this5.edit_successed = true;
         console.log(resp.data.success);
 
-        if (_this4.albumfiles.albumpic === null) {
-          _this4.album.songs.forEach(function (element) {
+        if (_this5.albumfiles.albumpic === null) {
+          _this5.album.songs.forEach(function (element) {
             if (element.file != null) {
               var fdata = new FormData();
               fdata.append('song', element.file);
@@ -2298,17 +2311,15 @@ __webpack_require__.r(__webpack_exports__);
               });
             }
           });
-
-          window.location.href = "/albums/" + _this4.artist.album.id;
         } else {
           var fdata = new FormData();
-          fdata.append('photo', _this4.albumfiles.albumpic);
-          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this4.artist.album.id, fdata, {
+          fdata.append('photo', _this5.albumfiles.albumpic);
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/upload/albumpic/' + _this5.artist.album.id, fdata, {
             headers: {
               "Content-Type": "multipart/form-data"
             }
           }).then(function (resp) {
-            _this4.album.songs.forEach(function (element) {
+            _this5.album.songs.forEach(function (element) {
               if (element.file != null) {
                 var _fdata2 = new FormData();
 
@@ -2323,23 +2334,26 @@ __webpack_require__.r(__webpack_exports__);
                 });
               }
             });
-
-            window.location.href = "/albums/" + _this4.artist.album.id;
           })["catch"](function (error) {
             console.log('upload FAILURE!!');
-            _this4.edit_successed = false;
+            _this5.edit_successed = false;
           });
           ;
         }
       });
     },
     classObjectv2: function classObjectv2(index) {
+      console.log('call: ' + index);
+
       if (this.album.songs[index].is_success) {
+        console.log('returned');
         return {
           'alert alert-success': this.album.songs[index].is_success,
           'alert alert-warning': !this.album.songs[index].is_success
         };
       }
+
+      console.log('not success');
     }
   },
   computed: {
@@ -46341,93 +46355,101 @@ var render = function() {
                 )
               }),
               0
-            ),
-            _vm._v(" "),
-            _c("div", [
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.create_successed === true,
-                      expression: "create_successed === true"
-                    }
-                  ],
-                  staticClass: "alert alert-success",
-                  attrs: { role: "alert" }
-                },
-                [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { href: "/albums/" + this.album.id }
-                    },
-                    [_vm._v("Created - go to album")]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.create_successed === false,
-                      expression: "create_successed === false"
-                    }
-                  ],
-                  staticClass: "alert alert-warning",
-                  attrs: { role: "alert" }
-                },
-                [_vm._v("\n                    Error!!!\n                    ")]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.edit_successed === true,
-                      expression: "edit_successed === true"
-                    }
-                  ],
-                  staticClass: "alert alert-success",
-                  attrs: { role: "alert" }
-                },
-                [
-                  _vm._v(
-                    "\n                    Modify is success!!!\n                    "
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.edit_successed === false,
-                      expression: "edit_successed === false"
-                    }
-                  ],
-                  staticClass: "alert alert-warning",
-                  attrs: { role: "alert" }
-                },
-                [_vm._v("\n                    Error!!!\n                    ")]
-              )
-            ])
+            )
           ],
           1
-        )
+        ),
+        _vm._v(" "),
+        _c("div", [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.create_successed === true,
+                  expression: "create_successed === true"
+                }
+              ],
+              staticClass: "alert alert-success",
+              attrs: { role: "alert" }
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { href: "/albums/" + this.album.id }
+                },
+                [_vm._v("Created - go to album")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.create_successed === false,
+                  expression: "create_successed === false"
+                }
+              ],
+              staticClass: "alert alert-warning",
+              attrs: { role: "alert" }
+            },
+            [_vm._v("\n                    Error!!!\n                    ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.edit_successed === true,
+                  expression: "edit_successed === true"
+                }
+              ],
+              staticClass: "alert alert-success",
+              attrs: { role: "alert" }
+            },
+            [
+              _vm._v(
+                "\n                    Modify is success!!! \n                    "
+              ),
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { href: "/albums/" + _vm.album.id }
+                },
+                [_vm._v("Go to album")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.edit_successed === false,
+                  expression: "edit_successed === false"
+                }
+              ],
+              staticClass: "alert alert-warning",
+              attrs: { role: "alert" }
+            },
+            [_vm._v("\n                    Error!!!\n                    ")]
+          )
+        ])
       ])
     ]),
     _vm._v(" "),
@@ -47216,7 +47238,9 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _c("h5", [_vm._v(_vm._s(item.title))])
+                  _c("h5", { staticClass: "mt-2" }, [
+                    _vm._v(_vm._s(item.title))
+                  ])
                 ]),
                 _vm._v(" "),
                 _c("a", { attrs: { href: "/artists/" + item.artist_id } }, [

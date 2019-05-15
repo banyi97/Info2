@@ -24,7 +24,7 @@
                                             <img :src="'/storage/' + item.pic_url" alt="" width="200" height="200">
                                         </div>
                                     </div>
-                                    <h5>{{item.title}}</h5>
+                                    <h5 class="mt-2">{{item.title}}</h5>
                                 </a>
                                 <a :href="'/artists/' + item.artist_id">{{item.artist_name}}</a>
                             </div>

@@ -40,8 +40,9 @@
                             <td><div></div></td>
                             <td><button class="btn btn-danger" @click="removeRow(index)"> Remove </button></td>
                         </tr>
-                    </draggable> 
-                    <div>
+                    </draggable>                         
+                </table>   
+                <div>
                         <div v-show="create_successed === true" class="alert alert-success" role="alert">
                         <a class="btn btn-primary" :href="'/albums/'+this.album.id">Created - go to album</a>
                         </div>
@@ -49,13 +50,13 @@
                         Error!!!
                         </div>
                         <div v-show="edit_successed === true" class="alert alert-success" role="alert">
-                        Modify is success!!!
+                        Modify is success!!! 
+                        <a class="btn btn-primary" :href="'/albums/'+album.id">Go to album</a>
                         </div>
                         <div v-show="edit_successed === false" class="alert alert-warning" role="alert">
                         Error!!!
                         </div>
-                    </div>               
-                </table>       
+                    </div>     
            </div>
         </div>
         <div>
@@ -209,8 +210,12 @@ import util from 'util'
                     {
                         headers: { "Content-Type": "multipart/form-data" }
                     }).then(resp => {
+                        this.album.songs[index].is_success = true;
+                        this.album.songs.push({id:this.createid++, title:''});
+                        this.album.songs.splice(this.album.songs.length-1, 1);
                         console.log(resp.data.success);
                     }).catch(error =>{
+                        this.album.songs[index].is_success = false;
                         console.log(error.data)
                     }) 
             },
@@ -320,7 +325,7 @@ import util from 'util'
                                         })
                                 }
                             }); 
-                            window.location.href = "/albums/" + this.artist.album.id;  
+                              
                     }
                     else{
                         let fdata = new FormData();
@@ -347,8 +352,7 @@ import util from 'util'
                                             console.log(error)
                                         })
                                 }
-                            });  
-                            window.location.href = "/albums/" + this.artist.album.id;           
+                            }); 
                         })
                         .catch(error => {
                             console.log('upload FAILURE!!'); 
@@ -358,12 +362,15 @@ import util from 'util'
                 }); 
             },
             classObjectv2(index) {
+                console.log('call: '+ index)
                 if(this.album.songs[index].is_success){
+                    console.log('returned')
                     return {
                         'alert alert-success': this.album.songs[index].is_success,
                         'alert alert-warning': !this.album.songs[index].is_success
                     }
                 }
+                console.log('not success')
             }
         },
         computed: {
