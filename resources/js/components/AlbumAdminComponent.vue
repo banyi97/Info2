@@ -79,6 +79,7 @@ import util from 'util'
         },
         data: function () {
             return {
+                send: false,
                 create_successed: null,
                 edit_successed: null,
                 view_pic: null,
@@ -214,6 +215,10 @@ import util from 'util'
                     }) 
             },
             createAlbum(){
+                if(this.send == true){
+                    alert('Sended')
+                    return;
+                }              
                 if(this.album.title == null || this.album.title == ''){
                     alert('Title is empty')
                     return;
@@ -228,7 +233,8 @@ import util from 'util'
                         alert('Song title is empty');
                         return;
                     }
-                }              
+                } 
+                this.send = true;             
                 axios.post('/albums', {album : this.album}).then(response => {      
                         this.album.id = response.data.success.album_id;
                         this.create_successed = true;
@@ -275,6 +281,7 @@ import util from 'util'
                 }).catch(error =>{
                     this.create_successed = false;
                     console.log(error);
+                    this.send = false;
                 });;              
             },
             editAlbum(){

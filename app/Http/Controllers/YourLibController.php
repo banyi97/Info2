@@ -22,6 +22,7 @@ class YourLibController extends Controller
     {
         //
         $playlists = array();
+        $playlists['playlist'] = array();
         $user = Auth::user();
         $query = DB::table('playlists')
             ->select('playlists.id', 'playlists.name', 'playlists.pic_url')      
