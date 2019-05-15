@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid mt-2">
        <div class="row justify-content-center">
             <div class="accordion col-12" id="accordionExample">
                 <div class="card">

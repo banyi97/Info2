@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid mt-2">
         <div class="justify-content-center">           
             <div class="mt-2 mx-2">
                 <h4> <input v-on:keyup="onChange" v-model.trim="param" type="text" placeholder="Start typing"> </h4>

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mt-2">
         <div class="row justify-content-left">         
             <div class="row">
                 <div>
@@ -32,23 +32,37 @@
                         :disabled="!enabled" 
                         @start="dragging = true"
                         @end="dragging = false">
-                        <tr v-for="(item, index) in album.songs" :key="item.id">
+                        <tr v-bind:class="classObjectv2(index)" v-for="(item, index) in album.songs" :key="item.id">
                             <td scope="row">{{index +1}}</td>
                             <td><input v-model.trim="item.title" required type="text" placeholder="Title"></td>
                             <td><input type="file" :id="index" v-on:change="onSongChange" ></td>
-                            <td v-if="ismodify"><button @click="uploadSong(index)">Upload</button></td>
+                            <td v-if="ismodify"><button class="btn btn-primary" @click="uploadSong(index)">Upload</button></td>
                             <td><div></div></td>
-                            <td><button @click="removeRow(index)"> Remove </button></td>
+                            <td><button class="btn btn-danger" @click="removeRow(index)"> Remove </button></td>
                         </tr>
-                    </draggable>                
+                    </draggable> 
+                    <div>
+                        <div v-show="create_successed === true" class="alert alert-success" role="alert">
+                        <a class="btn btn-primary" :href="'/albums/'+this.album.id">Created - go to album</a>
+                        </div>
+                        <div v-show="create_successed === false" class="alert alert-warning" role="alert">
+                        Error!!!
+                        </div>
+                        <div v-show="edit_successed === true" class="alert alert-success" role="alert">
+                        Modify is success!!!
+                        </div>
+                        <div v-show="edit_successed === false" class="alert alert-warning" role="alert">
+                        Error!!!
+                        </div>
+                    </div>               
                 </table>       
            </div>
         </div>
         <div>
-            <button @click="addNew">Add new song</button>
-            <button v-show="!ismodify" @click="createAlbum">Create</button>
-            <button v-show="ismodify" @click="editAlbum">Save</button>
-            <button @click="returnToArtist">Return to Artist</button>     
+            <button class="btn btn-primary" @click="addNew">Add new song</button>
+            <button class="btn btn-primary" v-show="!ismodify" @click="createAlbum">Create</button>
+            <button class="btn btn-primary" v-show="ismodify" @click="editAlbum">Save</button>
+            <button class="btn btn-primary" @click="returnToArtist">Return to Artist</button>     
         </div>
     </div>
 </template>
@@ -57,13 +71,16 @@
 import axios from 'axios';
 import draggable from 'vuedraggable';
 import FileUpload  from 'vue-upload-component'
+import util from 'util'
     export default {
         components: {
             draggable,
-            FileUpload
+            FileUpload,
         },
         data: function () {
             return {
+                create_successed: null,
+                edit_successed: null,
                 view_pic: null,
                 enabled: true,
                 dragging: false,
@@ -213,7 +230,8 @@ import FileUpload  from 'vue-upload-component'
                     }
                 }              
                 axios.post('/albums', {album : this.album}).then(response => {      
-                              
+                        this.album.id = response.data.success.album_id;
+                        this.create_successed = true;
                         if(this.albumfiles.albumpic !== null){
                             let fdata = new FormData();
                             fdata.append('photo', this.albumfiles.albumpic);                       
@@ -225,15 +243,14 @@ import FileUpload  from 'vue-upload-component'
                                 })
                             .then(resp => {
                                 this.view_pic = resp.data.success;
-                                console.log('pic uploaded!!'); 
-                                window.location.href = "/albums/" + response.data.album_id;                            
+                                console.log(response.data);                            
                             })
                             .catch(error => {
-                                console.log('pic upload FAILURE!!');                        
+                                console.log('pic upload FAILURE!!');                       
                             });  
                         }      
                     for(let i = 0; i < this.album.songs.length; i++){
-                        if(this.album.songs[i].file){
+                        if(this.album.songs[i].file){                        
                             let fdata = new FormData();
                             fdata.append('songfile', this.album.songs[i].file);
                             console.log(fdata.get('songfile'))
@@ -242,7 +259,8 @@ import FileUpload  from 'vue-upload-component'
                                 fdata,
                                 {
                                     headers: { "Content-Type": "multipart/form-data" }
-                                }).then(resp => {                     
+                                }).then(resp => {  
+                                    this.album.songs[i].is_success = true;                   
                                 /*    axios.patch('/albums/songs/'+response.data.success.song_id[i], {length:666}).then(res => {
                                         console.log('long '+res.data.successq)
                                     }).catch(error => {
@@ -250,10 +268,12 @@ import FileUpload  from 'vue-upload-component'
                                     }) */
                                 }).catch(error =>{
                                     console.log("songupload fail "+error)
+                                    this.album.songs[i].is_success = false;
                                 });                           
                         }                  
                     }                                                              
                 }).catch(error =>{
+                    this.create_successed = false;
                     console.log(error);
                 });;              
             },
@@ -274,6 +294,7 @@ import FileUpload  from 'vue-upload-component'
                     }
                 }
                 axios.put('/albums/'+ this.artist.album.id, {album : this.album}).then(resp =>{
+                    this.edit_successed = true;
                     console.log(resp.data.success)
                     if(this.albumfiles.albumpic === null){
                             this.album.songs.forEach(element => {
@@ -323,17 +344,25 @@ import FileUpload  from 'vue-upload-component'
                             window.location.href = "/albums/" + this.artist.album.id;           
                         })
                         .catch(error => {
-                            console.log('upload FAILURE!!');                        
+                            console.log('upload FAILURE!!'); 
+                            this.edit_successed = false;                       
                     });;   
                     }
                 }); 
             },
+            classObjectv2(index) {
+                if(this.album.songs[index].is_success){
+                    return {
+                        'alert alert-success': this.album.songs[index].is_success,
+                        'alert alert-warning': !this.album.songs[index].is_success
+                    }
+                }
+            }
         },
         computed: {
             draggingInfo() {
                 return this.dragging ? "under drag" : "";
-            },     
-
+            },
         },
     }
 </script>

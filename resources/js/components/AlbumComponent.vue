@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mt-2">
         <div v-show="!isPlayListView">
             <div class="justify-content-left">
             <div class="row">                            
@@ -43,10 +43,10 @@
                 </tbody>                    
             </table>
             </div>
-            <a :href="'/albums/' + album.id + '/edit'">Edit</a>
-            <button @click="deleteAlbum">Delete</button>
-            <button @click="startClick">Start</button>
-            <button @click="stopClick">Stop</button>
+            <a class="btn btn-primary" :href="'/albums/' + album.id + '/edit'">Edit</a>
+            <button class="btn btn-danger" @click="deleteAlbum">Delete</button>
+            <button class="btn" @click="startClick">Start</button>
+            <button class="btn" @click="stopClick">Stop</button>
         </div>
 
         <div v-show="isPlayListView">

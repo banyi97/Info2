@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mt-2">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -10,7 +10,7 @@
                             <form @submit.prevent="create">
                                 <div class="form-group">
                                     <label for="artistName">Artist name</label>
-                                    <input v-model.trim="artist.name" type="text" class="form-control" id="artistName" placeholder="Name of artist">
+                                    <input v-model.trim="artist.name" type="text" required class="form-control" id="artistName" placeholder="Name of artist">
                                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                                 </div>
                                 <div class="form-group">
@@ -19,7 +19,7 @@
                                     <input type="file" name="pic" ref="artistpic" id="image" v-on:change="onImageChange" accept="image/jpeg, image/png">
                                 </div>
                                     <button @click="create" class="btn btn-primary">Create</button>
-                                    <a :href="'/home'">Home page</a>
+                                    <a class="btn btn-primary" :href="'/home'">Home page</a>
                             </form>
                         </div>                       
                     </div>

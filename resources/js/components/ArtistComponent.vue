@@ -1,14 +1,14 @@
 <template>
-    <div class="container">
+    <div class="container mt-2">
         <div class="justify-content-left">           
             <div class="row">  
                 <div>
                     <img :src="'/storage/'+artist.pic_url" class="img-responsive" height="200" width="200">    
                 </div>                          
-                <div>
+                <div class="mx-2">
                     <h2>{{artist.name}}</h2>
-                    <a :href="'/artists/' + artist.id + '/edit'">Edit</a>
-                    <button @click="deleteAlbum">Delete</button>
+                    <a class="btn btn-primary" :href="'/artists/' + artist.id + '/edit'">Edit</a>
+                    <button class="btn btn-danger" @click="deleteAlbum">Delete</button>
                 </div>
             </div>
         </div> 
@@ -32,7 +32,7 @@
                     </div>
                 </div>
         </div>
-        <a :href="'/albums/create/' + artist.id ">Create new Album</a>  
+        <a class="btn btn-primary" :href="'/albums/create/' + artist.id ">Create new Album</a>  
     </div>
 </template>
 

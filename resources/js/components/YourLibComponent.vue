@@ -1,7 +1,7 @@
 <template>
-    <div class="container-fluid">
-       <div>
-           <button data-toggle="modal" data-target="#exampleModal" type="button">Create new</button>
+    <div class="container-fluid mt-2">
+       <div class="d-flex justify-content-center">
+           <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" type="button">Create new</button>
        </div>
        <h2 class='mt-2 mx-2'>My playlists</h2>
                 <div class="row"> 
